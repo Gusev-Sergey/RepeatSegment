@@ -1,7 +1,7 @@
 # AI Notes — RepeatSegment C# Port
 
 > **Версия:** 15.06.2026
-> **Статус:** ✅ 0 ошибок, Deepgram + AssemblyAI работают, установщик готов
+> **Статус:** ✅ v1.1 — 0 ошибок, Deepgram + AssemblyAI, mouse-drag сегмент, установщик с авто-обновлением, GitHub
 
 ---
 
@@ -10,52 +10,65 @@
 | Файл | Роль | Статус |
 |------|------|--------|
 | `MainWindow.xaml` | UI: Меню→Волна→Слайдер→Кнопки→Транскрипция→Статус | ✅ |
-| `MainWindow.xaml.cs` | Логика окна (~180 строк) | ✅ |
-| `ManualWindow.xaml/.cs` | Окно инструкции пользователя (Help → User Guide) | ✅ |
+| `MainWindow.xaml.cs` | Логика окна (~220 строк) | ✅ |
+| `ManualWindow.xaml/.cs` | Окно инструкции (Help → User Guide) | ✅ |
 | `AudioEngine.cs` | NAudio MP3/WAV load + `WaveOutEvent` | ✅ |
 | `SilenceDetector.cs` | dBFS-based silence detection | ✅ |
 | `TranscriptionProvider.cs` | Deepgram + AssemblyAI, кеширование | ✅ |
-| `WaveformGraph.cs` | SkiaSharp волна + шкала | ✅ |
+| `WaveformGraph.cs` | SkiaSharp волна + mouse-drag выделение сегментов | ✅ |
 | `SettingsWindow.xaml/.cs` | API ключи, провайдеры | ✅ |
 | `VolumeWidget.cs` | 5-полосный виджет громкости | ✅ |
 | `ConfigManager.cs` | INI config, save/restore progress | ✅ |
-| `config.template.ini` | Шаблон конфига для установщика (с API-ключами) | ✅ |
+| `config.template.ini` | Шаблон конфига с API-ключами (для установщика) | ✅ |
 
-### Установщик
+### Инфраструктура
 | Файл | Роль |
 |------|------|
-| `Setup/Product.wxs` | WiX v5 — описание пакета |
+| `Setup/Product.wxs` | WiX v5 — описание пакета (v1.1, MajorUpgrade) |
 | `Setup/Setup.wixproj` | WiX проект |
 | `Setup/bin/Debug/RepeatSegment-Installer.msi` | Готовый установщик |
+| `.gitignore` | Исключения Git |
+| `AI_NOTES.md` | Этот файл |
 
 ---
 
-## Что сделано (15.06.2026)
+## Что сделано
 
 ### AssemblyAI
 - ✅ **Исправлен баг с Authorization header** — .NET silently ignores `Headers = { {"authorization", key} }`. Использовать ТОЛЬКО `req.Headers.Authorization = new AuthenticationHeaderValue(apiKey)`.
 - ✅ API ключ валиден
-- ⚠️ **AssemblyAI заблокирован на территории РФ** — запросы падают с `SocketException 10054` на TLS-уровне. Deepgram работает без VPN. Требуется VPN для AssemblyAI.
+- ⚠️ **AssemblyAI заблокирован на территории РФ** — запросы падают с `SocketException 10054` на TLS-уровне. Требуется VPN.
 - ✅ Парсинг ответа: `start`/`end` — миллисекунды (int64 → `/1000`)
 
+### Deepgram
+- ✅ Работает без VPN
+- ✅ Авторизация: `new AuthenticationHeaderValue("Token", apiKey)`
+
 ### Кеширование
-- ✅ `SaveChunkToCache` — сохранение результата в `%APPDATA%/RepeatSegment/output/`
+- ✅ `SaveChunkToCache` — сохранение в `%APPDATA%/RepeatSegment/output/`
 - ✅ `LoadChunkFromCache` — загрузка из кеша
 - ✅ `Transcribe(forceFresh: false)` — только кеш, без API
+
+### Mouse-drag сегмент на волне
+- ✅ Зажать ЛКМ → подсветка золотистым → отпустить → новый сегмент
+- ✅ Корректная перестройка фрагментов: обрезка, слияние, вставка
+- ✅ Плеер переходит в начало нового сегмента
 
 ### UI
 - ✅ Тёмный title bar через `DwmSetWindowAttribute(DWMWA_USE_IMMERSIVE_DARK_MODE)`
 - ✅ Иконка через `ApplicationIcon` в csproj + `SetWindowIcon()` из `BaseDirectory/Icons/app.ico`
 - ✅ Окно инструкции: Help → User Guide
-- ✅ About: "Version 0.1, 2026. Python ported to C# via AI (VS Code + Zoo Code + DeepSeek API)"
+- ✅ About: "Version 1.1, 2026. Python ported to C# via AI (VS Code + Zoo Code + DeepSeek API)"
 - ✅ Меню: кастомный ControlTemplate (тонкие границы), StackPanel вместо WrapPanel
-- ✅ Кнопки: адаптивный размер через `AdaptToScreen()`
+- ✅ Кнопки: адаптивный размер через `AdaptToScreen()`, HoverBorder в обрез
 - ✅ Скрыты нереализованные провайдеры (VK, Yandex, Salute) в Settings
-- ✅ Транскрипция перекрашивается при смене темы (BuildWordsParagraph в ApplyTheme)
+- ✅ Транскрипция перекрашивается при смене темы (`BuildWordsParagraph` в `ApplyTheme`)
 
 ### Установщик
-- ✅ WiX Toolset v5, `PublishSingleFile=true` → один EXE (173 MB, self-contained)
-- ✅ `config.ini` с API-ключами — миграция в `%APPDATA%` при первом запуске
+- ✅ WiX Toolset v5, `PublishSingleFile=true` → один EXE (~173 MB, self-contained)
+- ✅ `MajorUpgrade` — установка поверх старых версий
+- ✅ `config.ini` убран из MSI (не затирает при обновлении)
+- ✅ Миграция/создание `config.ini` в `%APPDATA%` при первом запуске
 - ✅ Shortcut в Start Menu + Desktop
 - ✅ WixUI_InstallDir (выбор папки установки)
 - ✅ Деинсталляция через стандартные средства Windows
@@ -63,6 +76,11 @@
 ### Данные
 - ✅ `config.ini` → `%APPDATA%/RepeatSegment/config.ini`
 - ✅ `output/` → `%APPDATA%/RepeatSegment/output/`
+
+### Git / GitHub
+- ✅ git init + коммит
+- ✅ `.gitignore`
+- ✅ Push: https://github.com/Gusev-Sergey/RepeatSegment
 
 ---
 
@@ -100,18 +118,31 @@ Run[]? _spaceRuns;  // пробелы между словами
 ### График волны
 ```csharp
 // WaveformGraph.cs
-// WindowWidthSec = 25.0 (Python DEFAULT_XWINDOW)
+// WindowWidthSec = 25.0
 // Сегментные линии: оранжевый #FF8C00, толщина 4px, штрих 8-4
 // Шкала времени: 22px снизу, метки каждые 5 сек
+// Mouse-drag: OnMouseLeftButtonDown → OnMouseMove → OnMouseLeftButtonUp
+// DragOverlay: золотой SKColor(0xFF, 0xD7, 0x00, 0x60)
+// Событие SegmentSelected(Action<double,double>) — подписка в MainWindow конструкторе
+```
+
+### Перестройка фрагментов (WaveformGraph_SegmentSelected)
+```csharp
+// MainWindow.xaml.cs — логика слияния:
+// - Фрагменты слева/справа от диапазона → сохраняются
+// - Фрагменты перекрывающие диапазон → обрезаются
+// - Фрагменты охватывающие диапазон → разрезаются на два
+// - Фрагменты внутри диапазона → удаляются
+// - Новый сегмент (t1,t2) вставляется, сортировка по T1
 ```
 
 ---
 
-## Что ДОРАБОТАТЬ (известные проблемы)
+## Что ДОРАБОТАТЬ
 
 ### 1. Другие провайдеры (VK Cloud, Yandex, SaluteSpeech)
 - В XAML скрыты (`Visibility="Collapsed"`)
-- Код в `TranscribeChunkAsync` → `_ => null` для них
+- Код в `TranscribeChunkAsync` → `_ => null`
 - Нужно реализовать методы транскрипции
 
 ### 2. Подгрузка чанков при проигрывании
@@ -121,14 +152,13 @@ Run[]? _spaceRuns;  // пробелы между словами
 
 ### 3. Иконка в таскбаре
 - Периодически пропадает (Windows кеширует старую)
-- `ApplicationIcon` в csproj должен решать, но не всегда
+- `ApplicationIcon` в csproj + `SetWindowIcon()` должны решать
 - При установке через MSI на чистой машине — работает
 
 ---
 
 ## Идеи (nice to have)
 
-- **Подсветка сегмента на волне** — сейчас подсвечивается только для repeat-кнопки
 - **Индикатор прогресса транскрибации на волне**
 - **Drag-and-drop файлов** на окно
 - **Логирование в файл** (сейчас только Debug.WriteLine)
@@ -147,7 +177,8 @@ Headers = { { "authorization", apiKey } }
 
 // ✅ CORRECT
 req.Headers.Authorization = new AuthenticationHeaderValue(apiKey);
-// Deepgram uses: new AuthenticationHeaderValue("Token", apiKey);
+// Deepgram: new AuthenticationHeaderValue("Token", apiKey);
+// AssemblyAI: new AuthenticationHeaderValue(apiKey);
 ```
 
 ### Brushes — всегда new SolidColorBrush()
@@ -167,9 +198,18 @@ string AppDataDir => Path.Combine(Environment.GetFolderPath(Environment.SpecialF
 ```
 
 ### Menu XAML
-- Кастомный ControlTemplate в MainWindow.xaml (строка 56-143)
+- Кастомный ControlTemplate в MainWindow.xaml
 - `MenuItem.Margin="-4,0,-4,0"` в `Menu.Resources` — убирает системные зазоры
 - `ItemsPanelTemplate → StackPanel` вместо WrapPanel
+
+### SKColor — порядок аргументов важен
+```csharp
+// ❌ WRONG — прозрачность как R
+new SKColor(0x60, 0xFF, 0xD7, 0x00)
+
+// ✅ CORRECT — R, G, B, A
+new SKColor(0xFF, 0xD7, 0x00, 0x60)
+```
 
 ---
 
@@ -208,7 +248,7 @@ string AppDataDir => Path.Combine(Environment.GetFolderPath(Environment.SpecialF
 
 ---
 
-## Сборка
+## Сборка и деплой
 
 ```bash
 # Debug
@@ -221,6 +261,12 @@ dotnet publish RepeatSegment.App\RepeatSegment.App.csproj -c Release -r win-x64 
 # MSI
 cd Setup && dotnet build
 # → Setup\bin\Debug\RepeatSegment-Installer.msi
+```
+
+**Git push:**
+```bash
+cd c:\ProjectsCSharp\RepeatSegment
+git add -A && git commit -m "update" && git push
 ```
 
 Предупреждения: 4 штуки CS1998 (async без await) — не критично.
