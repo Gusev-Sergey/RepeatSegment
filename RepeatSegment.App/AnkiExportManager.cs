@@ -54,9 +54,10 @@ public class AnkiExportManager
 
         File.WriteAllText(mediaJsonPath, JsonSerializer.Serialize(_mediaMap));
 
-        // Build DB — ensure all SQLite handles are released
+        // Build DB with DELETE journal mode (no WAL lock files)
         BuildDatabase(dbPath);
-        System.Threading.Thread.Sleep(50); // let SQLite WAL flush
+        GC.Collect(); GC.WaitForPendingFinalizers();
+        System.Threading.Thread.Sleep(100);
 
         string apkgPath = Path.Combine(DecksDir, SanitizeFileName(_deckName) + ".apkg");
         Directory.CreateDirectory(DecksDir);
@@ -66,11 +67,13 @@ public class AnkiExportManager
         else
             CreateNewApkg(apkgPath, dbPath);
 
+        GC.Collect(); GC.WaitForPendingFinalizers();
+
         // Cleanup with retry
         for (int retry = 0; retry < 10; retry++)
         {
             try { Directory.Delete(_workingDir, recursive: true); break; }
-            catch { System.Threading.Thread.Sleep(200); }
+            catch (IOException) { System.Threading.Thread.Sleep(300); GC.Collect(); }
         }
         return apkgPath;
     }
@@ -155,6 +158,9 @@ public class AnkiExportManager
         {
             using var conn = new SqliteConnection($"Data Source={existingDb}");
             conn.Open();
+            using var pragmaCmd = conn.CreateCommand();
+            pragmaCmd.CommandText = "PRAGMA journal_mode=DELETE;";
+            pragmaCmd.ExecuteNonQuery();
             using var cmd = conn.CreateCommand();
             cmd.CommandText = "SELECT flds FROM notes ORDER BY id";
             using var reader = cmd.ExecuteReader();
@@ -200,6 +206,8 @@ public class AnkiExportManager
     {
         using var conn = new SqliteConnection($"Data Source={dbPath}");
         conn.Open();
+        // Force DELETE journal mode — no WAL files to lock
+        Execute(conn, "PRAGMA journal_mode=DELETE;");
         using var tx = conn.BeginTransaction();
 
         Execute(conn, @"CREATE TABLE IF NOT EXISTS col (id INTEGER PRIMARY KEY, crt INTEGER NOT NULL, mod INTEGER NOT NULL, scm INTEGER NOT NULL, ver INTEGER NOT NULL, dty INTEGER NOT NULL, usn INTEGER NOT NULL, ls INTEGER NOT NULL, conf TEXT NOT NULL, models TEXT NOT NULL, decks TEXT NOT NULL, dconf TEXT NOT NULL, tags TEXT NOT NULL)");

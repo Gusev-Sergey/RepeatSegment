@@ -361,8 +361,10 @@ public class AudioEngine : IDisposable
         if (Samples == null)
             throw new InvalidOperationException("Audio not loaded");
 
-        int start = (int)(t1 * SampleRate);
-        int end = (int)(t2 * SampleRate);
+        // Add small padding to avoid cutting at exact word boundary
+        int start = (int)((t1 - 0.1) * SampleRate);
+        int end = (int)((t2 + 0.15) * SampleRate);
+        if (start < 0) start = 0;
         end = Math.Min(end, Samples.Length);
         int length = end - start;
         if (length <= 0)

@@ -101,10 +101,10 @@ public partial class AnkiCardWindow : Window
                     string leadText = lead.TryGetProperty("sections", out var sections)
                         ? string.Join(" ", sections.EnumerateArray().Select(s => s.TryGetProperty("text", out var t) ? t.GetString() ?? "" : ""))
                         : "";
-                    // Extract /IPA/ or [IPA] from lead
-                    var match = System.Text.RegularExpressions.Regex.Match(leadText, @"[/\[]([^/\]]+?)[/\]]");
-                    if (match.Success && match.Groups[1].Length > 1)
-                        ipa = match.Groups[1].Value;
+                    // Extract /IPA/ from lead (standard format in Wiktionary)
+                    var match = System.Text.RegularExpressions.Regex.Match(leadText, @"/[^/]+/");
+                    if (match.Success && match.Value.Length > 4)
+                        ipa = match.Value.Trim('/');
                 }
             }
             catch { }
