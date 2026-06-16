@@ -53,7 +53,10 @@ public class AnkiExportManager
         string mediaJsonPath = Path.Combine(_workingDir, "media");
 
         File.WriteAllText(mediaJsonPath, JsonSerializer.Serialize(_mediaMap));
+
+        // Build DB — ensure all SQLite handles are released
         BuildDatabase(dbPath);
+        System.Threading.Thread.Sleep(50); // let SQLite WAL flush
 
         string apkgPath = Path.Combine(DecksDir, SanitizeFileName(_deckName) + ".apkg");
         Directory.CreateDirectory(DecksDir);
@@ -63,11 +66,11 @@ public class AnkiExportManager
         else
             CreateNewApkg(apkgPath, dbPath);
 
-        // Retry cleanup with delays (SQLite/zip might still hold handles)
-        for (int retry = 0; retry < 5; retry++)
+        // Cleanup with retry
+        for (int retry = 0; retry < 10; retry++)
         {
             try { Directory.Delete(_workingDir, recursive: true); break; }
-            catch { System.Threading.Thread.Sleep(100); }
+            catch { System.Threading.Thread.Sleep(200); }
         }
         return apkgPath;
     }

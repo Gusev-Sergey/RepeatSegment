@@ -347,40 +347,50 @@ public partial class MainWindow : Window
         string wordText = range.Text.Trim();
         if (string.IsNullOrWhiteSpace(wordText) || wordText.Length < 2) return;
 
-        // ── Reliable timing: use _lastHlIdx (1:1 with WordTimings) ──
-        double wStart, wEnd;
+        // ── Reliable timing: find which _wordRuns are selected ──
+        double wStart = 0, wEnd = 0;
         var words = _transcriptionProvider?.WordTimings;
-        if (words != null && words.Count > 0 && _lastHlIdx >= 0 && _lastHlIdx < words.Count)
+        int firstWordIdx = -1;
+        if (_wordRuns != null && words != null && words.Count > 0)
         {
-            wStart = words[_lastHlIdx].Start;
-            // Walk forward matching words from selection to WordTimings
-            string[] selWords = wordText.Split(new[] { ' ', '\n', '\r', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-            int matchedIdx = _lastHlIdx;
-            for (int si = 0; si < selWords.Length && matchedIdx < words.Count; si++)
+            for (int i = 0; i < _wordRuns.Length && i < words.Count; i++)
             {
-                if (words[matchedIdx].Word.Trim().ToLower() == selWords[si].ToLower())
-                    matchedIdx++;
-                else if (si == 0)
-                    break; // first word didn't even match
+                if (_wordRuns[i] == null) continue;
+                // Check if this Run overlaps with the user's selection
+                if (sel.Start.CompareTo(_wordRuns[i].ElementEnd) <= 0 &&
+                    sel.End.CompareTo(_wordRuns[i].ContentStart) >= 0)
+                {
+                    if (firstWordIdx < 0)
+                    {
+                        firstWordIdx = i;
+                        wStart = words[i].Start;
+                    }
+                    wEnd = words[i].End;
+                }
             }
-            wEnd = matchedIdx > 0 ? words[matchedIdx - 1].End : words[_lastHlIdx].End + 0.5;
-        }
-        else
-        {
-            wStart = Math.Max(0, _positionSeconds - 1);
-            wEnd = Math.Min(_durationSeconds, _positionSeconds + 3);
         }
 
-        // ── Context ──
+        if (wEnd <= 0 || wEnd <= wStart)
+        {
+            wStart = Math.Max(0, _positionSeconds - 0.5);
+            wEnd = Math.Min(_durationSeconds, _positionSeconds + 2);
+        }
+
+        // ── Context: extract the sentence containing the selected word ──
         string context = wordText;
         var para = TextTranscription.Document?.Blocks.FirstBlock as Paragraph;
-        if (para != null) context = new TextRange(para.ContentStart, para.ContentEnd).Text.Trim();
+        if (para != null)
+        {
+            string fullText = new TextRange(para.ContentStart, para.ContentEnd).Text;
+            context = ExtractSentenceContaining(fullText, wordText);
+        }
 
         string? ru = TxtTranslationResult.Text;
         if (string.IsNullOrEmpty(ru) || ru == "Translating...") ru = null;
+        string? firstW = firstWordIdx >= 0 && firstWordIdx < (words?.Count ?? 0) ? words![firstWordIdx].Word : null;
 
         var window = new AnkiCardWindow(wordText, context, wStart, wEnd,
-            _audio, _transcriptionProvider, _translationProvider, ru, _lastHlIdx >= 0 ? words?[_lastHlIdx].Word : null);
+            _audio, _transcriptionProvider, _translationProvider, ru, firstW);
         window.Owner = this;
         window.ShowDialog();
     }
@@ -409,4 +419,26 @@ public partial class MainWindow : Window
     private void UpdateWaveform() { if (WaveformGraph == null || _audio == null) return; WaveformGraph.SamplesSmall = _audio.SamplesSmall; WaveformGraph.SampleRateSmall = _audio.SampleRateSmall; WaveformGraph.DurationSeconds = _durationSeconds; WaveformGraph.PositionSeconds = _positionSeconds; WaveformGraph.Fragments = _fragments; WaveformGraph.CurrentCounter = _counter; WaveformGraph.RepeatSegment = _repeatSegment; WaveformGraph.PlayGoMode = _playGoMode; }
     public ConfigManager? Config => _config; public TranscriptionProvider? Transcription => _transcriptionProvider;
     private static string FormatTime(double s) { if (s < 0) s = 0; var ts = TimeSpan.FromSeconds(s); return ts.Hours > 0 ? $"{ts.Hours}:{ts.Minutes:D2}:{ts.Seconds:D2}" : $"{ts.Minutes:D2}:{ts.Seconds:D2}"; }
+
+    /// <summary>Extract the sentence containing the given word/phrase.</summary>
+    private static string ExtractSentenceContaining(string fullText, string word)
+    {
+        if (string.IsNullOrWhiteSpace(fullText)) return word;
+        int pos = fullText.IndexOf(word, StringComparison.OrdinalIgnoreCase);
+        if (pos < 0) return word;
+
+        // Walk back to sentence start
+        int start = pos;
+        while (start > 0 && !IsSentenceEnd(fullText[start - 1]))
+            start--;
+        // Walk forward to sentence end
+        int end = pos + word.Length;
+        while (end < fullText.Length && !IsSentenceEnd(fullText[end]))
+            end++;
+        if (end < fullText.Length) end++; // include terminal punctuation
+
+        return fullText.Substring(start, end - start).Trim();
+    }
+
+    private static bool IsSentenceEnd(char c) => c == '.' || c == '!' || c == '?' || c == '\n' || c == '\r';
 }
