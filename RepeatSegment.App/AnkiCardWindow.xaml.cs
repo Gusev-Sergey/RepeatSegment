@@ -47,74 +47,74 @@ public partial class AnkiCardWindow : Window
 
     private async Task LookupIpaAsync()
     {
-        string word = _matchedWord ?? _selectedWord;
-        if (string.IsNullOrWhiteSpace(word)) return;
+        string fullPhrase = _matchedWord ?? _selectedWord;
+        if (string.IsNullOrWhiteSpace(fullPhrase)) return;
 
-        string? ipa = null;
+        // Collect IPA for each word in the phrase, separated by spaces
+        string[] wordsToTry = fullPhrase.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (wordsToTry.Length == 0) return;
 
-        // Try 1: Free Dictionary API
-        try
+        var ipaParts = new System.Collections.Generic.List<string>();
+
+        foreach (string w in wordsToTry)
         {
-            using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(5) };
-            string url = $"https://api.dictionaryapi.dev/api/v2/entries/en/{Uri.EscapeDataString(word.ToLower())}";
-            string json = await http.GetStringAsync(url);
-            using var doc = JsonDocument.Parse(json);
-            var root = doc.RootElement;
-            if (root.ValueKind == JsonValueKind.Array && root.GetArrayLength() > 0)
+            string word = w.Trim();
+            if (word.Length < 2) { ipaParts.Add(word); continue; }
+
+            string? ipa = null;
+
+            // Try 1: Free Dictionary API
+            try
             {
-                var entry = root[0];
-                if (entry.TryGetProperty("phonetic", out var ph) && !string.IsNullOrWhiteSpace(ph.GetString()))
-                    ipa = ph.GetString();
-                else if (entry.TryGetProperty("phonetics", out var phArr) && phArr.ValueKind == JsonValueKind.Array && phArr.GetArrayLength() > 0)
+                using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(5) };
+                string url = $"https://api.dictionaryapi.dev/api/v2/entries/en/{Uri.EscapeDataString(word.ToLower())}";
+                string json = await http.GetStringAsync(url);
+                using var doc = JsonDocument.Parse(json);
+                var root = doc.RootElement;
+                if (root.ValueKind == JsonValueKind.Array && root.GetArrayLength() > 0)
                 {
-                    for (int i = 0; i < phArr.GetArrayLength(); i++)
+                    var entry = root[0];
+                    if (entry.TryGetProperty("phonetic", out var ph) && !string.IsNullOrWhiteSpace(ph.GetString()))
+                        ipa = ph.GetString();
+                    else if (entry.TryGetProperty("phonetics", out var phArr) && phArr.ValueKind == JsonValueKind.Array && phArr.GetArrayLength() > 0)
                     {
-                        if (phArr[i].TryGetProperty("text", out var pt) && !string.IsNullOrWhiteSpace(pt.GetString()))
+                        for (int i = 0; i < phArr.GetArrayLength(); i++)
                         {
-                            ipa = pt.GetString();
-                            break;
+                            if (phArr[i].TryGetProperty("text", out var pt) && !string.IsNullOrWhiteSpace(pt.GetString()))
+                            { ipa = pt.GetString(); break; }
                         }
                     }
                 }
             }
-        }
-        catch { /* try fallback */ }
-
-        // Try 2: Wiktionary REST API (if dictionaryapi blocked)
-        if (string.IsNullOrWhiteSpace(ipa))
-        {
-            try
-            {
-                using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(5) };
-                string url = $"https://en.wiktionary.org/api/rest_v1/page/definition/{Uri.EscapeDataString(word.ToLower())}";
-                string json = await http.GetStringAsync(url);
-                using var doc = JsonDocument.Parse(json);
-
-                // Wiktionary response: {"en": [{"partOfSpeech": "noun", "definitions": [...]}]}
-                // Look for IPA in the response — not in this API, need the mobile-sections API
-                // Actually try /api/rest_v1/page/mobile-sections/{word}
-                url = $"https://en.wiktionary.org/api/rest_v1/page/mobile-sections/{Uri.EscapeDataString(word.ToLower())}";
-                json = await http.GetStringAsync(url);
-                using var doc2 = JsonDocument.Parse(json);
-                if (doc2.RootElement.TryGetProperty("lead", out var lead))
-                {
-                    string leadText = lead.TryGetProperty("sections", out var sections)
-                        ? string.Join(" ", sections.EnumerateArray().Select(s => s.TryGetProperty("text", out var t) ? t.GetString() ?? "" : ""))
-                        : "";
-                    // Extract /IPA/ from lead (standard format in Wiktionary)
-                    var match = System.Text.RegularExpressions.Regex.Match(leadText, @"/[^/]+/");
-                    if (match.Success && match.Value.Length > 4)
-                        ipa = match.Value.Trim('/');
-                }
-            }
             catch { }
+
+            // Try 2: Wiktionary
+            if (string.IsNullOrWhiteSpace(ipa))
+            {
+                try
+                {
+                    using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(5) };
+                    string url = $"https://en.wiktionary.org/api/rest_v1/page/mobile-sections/{Uri.EscapeDataString(word.ToLower())}";
+                    string json = await http.GetStringAsync(url);
+                    using var doc = JsonDocument.Parse(json);
+                    if (doc.RootElement.TryGetProperty("lead", out var lead))
+                    {
+                        string leadText = lead.TryGetProperty("sections", out var sections)
+                            ? string.Join(" ", sections.EnumerateArray().Select(s => s.TryGetProperty("text", out var t) ? t.GetString() ?? "" : ""))
+                            : "";
+                        var match = System.Text.RegularExpressions.Regex.Match(leadText, @"/[^/]+/");
+                        if (match.Success && match.Value.Length > 4)
+                            ipa = match.Value.Trim('/');
+                    }
+                }
+                catch { }
+            }
+
+            ipaParts.Add(ipa ?? word);
         }
 
-        if (!string.IsNullOrWhiteSpace(ipa))
-        {
-            string finalIpa = ipa.Trim('/').Trim('[').Trim(']');
-            Dispatcher.Invoke(() => TxtTranscription.Text = finalIpa);
-        }
+        string result = string.Join(" ", ipaParts);
+        Dispatcher.Invoke(() => TxtTranscription.Text = result);
     }
 
     private async void InitializeWebViewAsync()

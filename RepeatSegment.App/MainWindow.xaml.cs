@@ -387,10 +387,10 @@ public partial class MainWindow : Window
 
         string? ru = TxtTranslationResult.Text;
         if (string.IsNullOrEmpty(ru) || ru == "Translating...") ru = null;
-        string? firstW = firstWordIdx >= 0 && firstWordIdx < (words?.Count ?? 0) ? words![firstWordIdx].Word : null;
 
+        // Pass full selected phrase for IPA lookup and image search
         var window = new AnkiCardWindow(wordText, context, wStart, wEnd,
-            _audio, _transcriptionProvider, _translationProvider, ru, firstW);
+            _audio, _transcriptionProvider, _translationProvider, ru, wordText);
         window.Owner = this;
         window.ShowDialog();
     }
