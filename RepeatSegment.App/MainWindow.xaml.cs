@@ -347,45 +347,40 @@ public partial class MainWindow : Window
         string wordText = range.Text.Trim();
         if (string.IsNullOrWhiteSpace(wordText) || wordText.Length < 2) return;
 
-        // Find timing from WordTimings
-        double wStart = 0, wEnd = 0;
+        // ── Reliable timing: use _lastHlIdx (1:1 with WordTimings) ──
+        double wStart, wEnd;
         var words = _transcriptionProvider?.WordTimings;
-        if (words != null && words.Count > 0)
+        if (words != null && words.Count > 0 && _lastHlIdx >= 0 && _lastHlIdx < words.Count)
         {
-            string firstWord = wordText.Split(' ')[0].Trim().ToLower();
-            for (int i = 0; i < words.Count; i++)
+            wStart = words[_lastHlIdx].Start;
+            // Walk forward matching words from selection to WordTimings
+            string[] selWords = wordText.Split(new[] { ' ', '\n', '\r', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+            int matchedIdx = _lastHlIdx;
+            for (int si = 0; si < selWords.Length && matchedIdx < words.Count; si++)
             {
-                if (words[i].Word.Trim().ToLower() == firstWord)
-                {
-                    wStart = words[i].Start;
-                    // Find last word in selection
-                    int j = i;
-                    string[] selWords = wordText.Split(new[] { ' ', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
-                    while (j < words.Count && (j - i) < selWords.Length &&
-                           words[j].Word.Trim().ToLower() == selWords[j - i].ToLower()) j++;
-                    wEnd = words[Math.Min(j - 1, words.Count - 1)].End;
-                    break;
-                }
+                if (words[matchedIdx].Word.Trim().ToLower() == selWords[si].ToLower())
+                    matchedIdx++;
+                else if (si == 0)
+                    break; // first word didn't even match
             }
+            wEnd = matchedIdx > 0 ? words[matchedIdx - 1].End : words[_lastHlIdx].End + 0.5;
         }
-
-        // Fallback: use position +/- 1s
-        if (wEnd <= wStart) { wStart = Math.Max(0, _positionSeconds - 1); wEnd = Math.Min(_durationSeconds, _positionSeconds + 3); }
-
-        // Get context (full paragraph around the word)
-        string context = wordText; // fallback
-        var para = TextTranscription.Document?.Blocks.FirstBlock as Paragraph;
-        if (para != null)
+        else
         {
-            var paraRange = new TextRange(para.ContentStart, para.ContentEnd);
-            context = paraRange.Text.Trim();
+            wStart = Math.Max(0, _positionSeconds - 1);
+            wEnd = Math.Min(_durationSeconds, _positionSeconds + 3);
         }
 
-        string? ru = TxtTranslationResult.Text == "Translating..." ? null : TxtTranslationResult.Text;
-        if (ru == "Translating...") ru = null;
+        // ── Context ──
+        string context = wordText;
+        var para = TextTranscription.Document?.Blocks.FirstBlock as Paragraph;
+        if (para != null) context = new TextRange(para.ContentStart, para.ContentEnd).Text.Trim();
+
+        string? ru = TxtTranslationResult.Text;
+        if (string.IsNullOrEmpty(ru) || ru == "Translating...") ru = null;
 
         var window = new AnkiCardWindow(wordText, context, wStart, wEnd,
-            _audio, _transcriptionProvider, _translationProvider, ru, "");
+            _audio, _transcriptionProvider, _translationProvider, ru, _lastHlIdx >= 0 ? words?[_lastHlIdx].Word : null);
         window.Owner = this;
         window.ShowDialog();
     }

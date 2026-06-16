@@ -1,11 +1,10 @@
 using System;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using Microsoft.Web.WebView2.Core;
+using System.Windows.Media.Imaging;
 using Microsoft.Web.WebView2.Wpf;
 using SkiaSharp;
 
@@ -14,34 +13,71 @@ namespace RepeatSegment.App;
 public partial class AnkiCardWindow : Window
 {
     private readonly AudioEngine? _audio;
-    private readonly TranscriptionProvider? _transcriptionProvider;
     private readonly TranslationProvider? _translationProvider;
     private readonly string _selectedWord;
     private readonly double _wordStart;
     private readonly double _wordEnd;
     private string? _savedAudioPath;
     private string? _savedImagePath;
+    private string? _matchedWord;
 
     public AnkiCardWindow(string selectedWord, string context, double wordStart, double wordEnd,
                           AudioEngine? audio, TranscriptionProvider? transcription, TranslationProvider? translation,
-                          string? ruTranslation, string? transcriptionText)
+                          string? ruTranslation, string? matchedWord)
     {
         InitializeComponent();
         _selectedWord = selectedWord;
         _wordStart = wordStart;
         _wordEnd = wordEnd;
         _audio = audio;
-        _transcriptionProvider = transcription;
         _translationProvider = translation;
+        _matchedWord = matchedWord;
 
         TxtEn.Text = selectedWord;
-        TxtTranscription.Text = transcriptionText ?? "";
         TxtRu.Text = ruTranslation ?? "";
         TxtContext.Text = context;
-        TxtSearchQuery.Text = selectedWord;
+        TxtSearchQuery.Text = matchedWord ?? selectedWord;
+
+        // Try IPA lookup
+        _ = LookupIpaAsync();
 
         LoadDecks();
         InitializeWebViewAsync();
+    }
+
+    private async Task LookupIpaAsync()
+    {
+        string word = _matchedWord ?? _selectedWord;
+        if (string.IsNullOrWhiteSpace(word)) return;
+
+        try
+        {
+            using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(5) };
+            string url = $"https://api.dictionaryapi.dev/api/v2/entries/en/{Uri.EscapeDataString(word.ToLower())}";
+            string json = await http.GetStringAsync(url);
+            using var doc = JsonDocument.Parse(json);
+            var root = doc.RootElement;
+            if (root.ValueKind == JsonValueKind.Array && root.GetArrayLength() > 0)
+            {
+                var entry = root[0];
+                if (entry.TryGetProperty("phonetic", out var ph) && !string.IsNullOrWhiteSpace(ph.GetString()))
+                {
+                    Dispatcher.Invoke(() => TxtTranscription.Text = ph.GetString() ?? "");
+                }
+                else if (entry.TryGetProperty("phonetics", out var phArr) && phArr.ValueKind == JsonValueKind.Array && phArr.GetArrayLength() > 0)
+                {
+                    for (int i = 0; i < phArr.GetArrayLength(); i++)
+                    {
+                        if (phArr[i].TryGetProperty("text", out var pt) && !string.IsNullOrWhiteSpace(pt.GetString()))
+                        {
+                            Dispatcher.Invoke(() => TxtTranscription.Text = pt.GetString() ?? "");
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        catch { /* no IPA — field stays editable */ }
     }
 
     private async void InitializeWebViewAsync()
@@ -79,7 +115,6 @@ public partial class AnkiCardWindow : Window
             _savedAudioPath = _audio.SaveSnippetWav(_wordStart, _wordEnd);
             TxtAudio.Text = _savedAudioPath;
             TxtStatus.Text = "Audio saved ✓";
-            // Play
             var player = new System.Media.SoundPlayer(_savedAudioPath);
             player.Play();
         }
@@ -95,14 +130,23 @@ public partial class AnkiCardWindow : Window
         if (string.IsNullOrWhiteSpace(query)) return;
         string url = $"https://yandex.ru/images/search?text={Uri.EscapeDataString(query)}";
         if (ImageBrowser.CoreWebView2 != null)
+        {
+            PicturePreview.Visibility = Visibility.Collapsed;
+            ImageBrowser.Visibility = Visibility.Visible;
             ImageBrowser.CoreWebView2.Navigate(url);
-        else
-            TxtStatus.Text = "WebView2 not ready yet...";
+        }
+        else TxtStatus.Text = "WebView2 not ready yet...";
+    }
+
+    private void BtnSearchAgain_Click(object s, RoutedEventArgs e)
+    {
+        // Go back to image search
+        PicturePreview.Visibility = Visibility.Collapsed;
+        ImageBrowser.Visibility = Visibility.Visible;
     }
 
     private void BtnDownloadImage_Click(object s, RoutedEventArgs e)
     {
-        // Get current URL from WebView2
         if (ImageBrowser.CoreWebView2 == null) return;
         _ = DownloadImageFromBrowserAsync();
     }
@@ -111,13 +155,12 @@ public partial class AnkiCardWindow : Window
     {
         try
         {
-            // Execute JS to get the URL of the currently selected/visible image
             string url = await ImageBrowser.CoreWebView2.ExecuteScriptAsync(
                 "document.querySelector('.serp-item_selected img')?.src || document.querySelector('.ImagesContentImage-Image')?.src || document.querySelector('img.MMImage-Origin')?.src || ''");
             url = url.Trim('"');
             if (string.IsNullOrWhiteSpace(url) || url == "null")
             {
-                TxtStatus.Text = "Click on an image to select it, then press ✓ Use selected";
+                TxtStatus.Text = "Click on an image to select it, then press ✓ Use";
                 return;
             }
 
@@ -157,15 +200,16 @@ public partial class AnkiCardWindow : Window
             _savedImagePath = Path.Combine(mediaDir, $"img_{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}.jpg");
             File.WriteAllBytes(_savedImagePath, data);
 
-            // Show preview
-            var bitmap = new System.Windows.Media.Imaging.BitmapImage();
+            var bitmap = new BitmapImage();
             bitmap.BeginInit();
             bitmap.StreamSource = new MemoryStream(data);
-            bitmap.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
+            bitmap.CacheOption = BitmapCacheOption.OnLoad;
             bitmap.EndInit();
             ImgPreview.Source = bitmap;
-            PicturePreview.Visibility = Visibility.Visible;
+
+            // Show preview, hide browser (Search again button to go back)
             ImageBrowser.Visibility = Visibility.Collapsed;
+            PicturePreview.Visibility = Visibility.Visible;
 
             TxtStatus.Text = "Image saved ✓";
         }
@@ -187,15 +231,22 @@ public partial class AnkiCardWindow : Window
         try
         {
             var mgr = new AnkiExportManager(deckName);
+            string imgId = "", audId = "";
 
-            string imgId = "";
-            string audId = "";
-
+            // Copy media to temp before adding (avoid file lock on source)
             if (!string.IsNullOrEmpty(_savedImagePath) && File.Exists(_savedImagePath))
-                imgId = mgr.AddMedia(_savedImagePath);
+            {
+                string tmpImg = Path.Combine(Path.GetTempPath(), $"anki_img_{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}.jpg");
+                File.Copy(_savedImagePath, tmpImg, overwrite: true);
+                try { imgId = mgr.AddMedia(tmpImg); } finally { try { File.Delete(tmpImg); } catch { } }
+            }
 
             if (!string.IsNullOrEmpty(_savedAudioPath) && File.Exists(_savedAudioPath))
-                audId = mgr.AddMedia(_savedAudioPath);
+            {
+                string tmpAud = Path.Combine(Path.GetTempPath(), $"anki_aud_{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}.wav");
+                File.Copy(_savedAudioPath, tmpAud, overwrite: true);
+                try { audId = mgr.AddMedia(tmpAud); } finally { try { File.Delete(tmpAud); } catch { } }
+            }
 
             mgr.AddNote(
                 TxtEn.Text.Trim(),
@@ -207,12 +258,15 @@ public partial class AnkiCardWindow : Window
             );
 
             string apkgPath = mgr.Finalize();
-            TxtStatus.Text = $"Cards created! Deck: {apkgPath}";
-            MessageBox.Show($"Cards added to deck:\n{apkgPath}", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            TxtStatus.Text = $"Cards created!";
+            MessageBox.Show($"Cards added to deck:\n{apkgPath}", "Success",
+                MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception ex)
         {
             TxtStatus.Text = $"Error: {ex.Message}";
+            MessageBox.Show($"Failed to create cards:\n{ex.Message}", "Error",
+                MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 

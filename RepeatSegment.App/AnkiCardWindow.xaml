@@ -81,11 +81,16 @@
                 <TextBlock Grid.Column="0" Text="Picture:" VerticalAlignment="Center" Foreground="{DynamicResource TextBrush}"/>
                 <TextBox Grid.Column="1" x:Name="TxtSearchQuery" Padding="4"/>
                 <Button Grid.Column="2" x:Name="BtnSearchImages" Content="Search" Padding="8,2" Margin="8,0,4,0" Click="BtnSearchImages_Click" Background="{DynamicResource ButtonBgBrush}"/>
-                <Button Grid.Column="3" x:Name="BtnDownloadImage" Content="✓ Use selected" Padding="8,2" Click="BtnDownloadImage_Click" Background="{DynamicResource ButtonBgBrush}"/>
+                <Button Grid.Column="3" x:Name="BtnDownloadImage" Content="✓ Use" Padding="8,2" Click="BtnDownloadImage_Click" Background="{DynamicResource ButtonBgBrush}"/>
             </Grid>
-            <wv2:WebView2 Grid.Row="1" x:Name="ImageBrowser" />
+            <wv2:WebView2 Grid.Row="1" x:Name="ImageBrowser"/>
             <Border Grid.Row="1" x:Name="PicturePreview" Visibility="Collapsed" BorderBrush="{DynamicResource SeparatorBrush}" BorderThickness="1" CornerRadius="4">
-                <Image x:Name="ImgPreview" Stretch="Uniform"/>
+                <Grid>
+                    <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                    <Image Grid.Row="0" x:Name="ImgPreview" Stretch="Uniform"/>
+                    <Button Grid.Row="1" Content="🔍 Search again" HorizontalAlignment="Center" Margin="0,4,0,0"
+                            Padding="10,3" Click="BtnSearchAgain_Click" Background="{DynamicResource ButtonBgBrush}"/>
+                </Grid>
             </Border>
         </Grid>
 

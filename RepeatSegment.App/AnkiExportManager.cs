@@ -63,7 +63,12 @@ public class AnkiExportManager
         else
             CreateNewApkg(apkgPath, dbPath);
 
-        try { Directory.Delete(_workingDir, recursive: true); } catch { }
+        // Retry cleanup with delays (SQLite/zip might still hold handles)
+        for (int retry = 0; retry < 5; retry++)
+        {
+            try { Directory.Delete(_workingDir, recursive: true); break; }
+            catch { System.Threading.Thread.Sleep(100); }
+        }
         return apkgPath;
     }
 
