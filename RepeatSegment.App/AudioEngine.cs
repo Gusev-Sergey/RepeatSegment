@@ -355,6 +355,41 @@ public class AudioEngine : IDisposable
         return tmpPath;
     }
 
+    /// <summary>Save a snippet of audio as a WAV file for Anki cards.</summary>
+    public string SaveSnippetWav(double t1, double t2)
+    {
+        if (Samples == null)
+            throw new InvalidOperationException("Audio not loaded");
+
+        int start = (int)(t1 * SampleRate);
+        int end = (int)(t2 * SampleRate);
+        end = Math.Min(end, Samples.Length);
+        int length = end - start;
+        if (length <= 0)
+            throw new ArgumentException("Invalid snippet bounds");
+
+        string snippetDir = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "RepeatSegment", "decks", "media");
+        Directory.CreateDirectory(snippetDir);
+        string path = Path.Combine(snippetDir, $"snippet_{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}.wav");
+
+        var waveFormat = new WaveFormat(SampleRate, 16, 1);
+        using var writer = new WaveFileWriter(path, waveFormat);
+        var chunkSamples = new float[length];
+        Array.Copy(Samples, start, chunkSamples, 0, length);
+
+        var bytes = new byte[length * 2];
+        for (int i = 0; i < length; i++)
+        {
+            short val = (short)Math.Max(-32768, Math.Min(32767, chunkSamples[i] * 32767));
+            bytes[i * 2] = (byte)(val & 0xFF);
+            bytes[i * 2 + 1] = (byte)((val >> 8) & 0xFF);
+        }
+        writer.Write(bytes, 0, bytes.Length);
+        return path;
+    }
+
     /// <summary>Extract segment from SamplesSmall for waveform drawing.</summary>
     public float[]? GetPlotSamples(double t1Sec, double t2Sec)
     {

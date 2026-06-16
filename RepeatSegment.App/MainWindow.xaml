@@ -295,11 +295,19 @@
                 BorderBrush="{DynamicResource SeparatorBrush}" BorderThickness="1"
                 Background="{DynamicResource PanelBackgroundBrush}">
             <Grid x:Name="TranslationInnerGrid">
-                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" x:Name="TxtTranslationOriginal" FontSize="11"
                            Foreground="{DynamicResource TextDimBrush}" TextWrapping="Wrap" Margin="0,0,0,4"/>
                 <TextBlock Grid.Row="1" x:Name="TxtTranslationResult" FontSize="14" FontWeight="Bold"
                            Foreground="{DynamicResource TextBrush}" TextWrapping="Wrap"/>
+                <Button Grid.Row="2" x:Name="BtnAddToAnki" Content="Add to Anki" Padding="10,4" Margin="0,8,0,0"
+                        HorizontalAlignment="Right" Click="BtnAddToAnki_Click"
+                        Background="#FFC107" Foreground="#222" FontWeight="Bold"
+                        ToolTip="Create Anki flashcards from the selected word/phrase"/>
             </Grid>
         </Border>
 

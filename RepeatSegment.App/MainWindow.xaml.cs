@@ -338,6 +338,58 @@ public partial class MainWindow : Window
         };
     }
 
+    private void BtnAddToAnki_Click(object s, RoutedEventArgs e)
+    {
+        var sel = TextTranscription.Selection;
+        if (sel == null || sel.IsEmpty || _audio == null) return;
+
+        var range = new TextRange(sel.Start, sel.End);
+        string wordText = range.Text.Trim();
+        if (string.IsNullOrWhiteSpace(wordText) || wordText.Length < 2) return;
+
+        // Find timing from WordTimings
+        double wStart = 0, wEnd = 0;
+        var words = _transcriptionProvider?.WordTimings;
+        if (words != null && words.Count > 0)
+        {
+            string firstWord = wordText.Split(' ')[0].Trim().ToLower();
+            for (int i = 0; i < words.Count; i++)
+            {
+                if (words[i].Word.Trim().ToLower() == firstWord)
+                {
+                    wStart = words[i].Start;
+                    // Find last word in selection
+                    int j = i;
+                    string[] selWords = wordText.Split(new[] { ' ', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+                    while (j < words.Count && (j - i) < selWords.Length &&
+                           words[j].Word.Trim().ToLower() == selWords[j - i].ToLower()) j++;
+                    wEnd = words[Math.Min(j - 1, words.Count - 1)].End;
+                    break;
+                }
+            }
+        }
+
+        // Fallback: use position +/- 1s
+        if (wEnd <= wStart) { wStart = Math.Max(0, _positionSeconds - 1); wEnd = Math.Min(_durationSeconds, _positionSeconds + 3); }
+
+        // Get context (full paragraph around the word)
+        string context = wordText; // fallback
+        var para = TextTranscription.Document?.Blocks.FirstBlock as Paragraph;
+        if (para != null)
+        {
+            var paraRange = new TextRange(para.ContentStart, para.ContentEnd);
+            context = paraRange.Text.Trim();
+        }
+
+        string? ru = TxtTranslationResult.Text == "Translating..." ? null : TxtTranslationResult.Text;
+        if (ru == "Translating...") ru = null;
+
+        var window = new AnkiCardWindow(wordText, context, wStart, wEnd,
+            _audio, _transcriptionProvider, _translationProvider, ru, "");
+        window.Owner = this;
+        window.ShowDialog();
+    }
+
     // Ctrl+T hotkey — also triggers translation of selection
     protected override void OnPreviewKeyDown(KeyEventArgs e)
     {

@@ -1,0 +1,101 @@
+<Window x:Class="RepeatSegment.App.AnkiCardWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        Title="Anki Card" Width="700" Height="750"
+        MinWidth="600" MinHeight="600"
+        WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource WindowBackgroundBrush}"
+        FontFamily="Segoe UI" FontSize="12pt">
+    <Window.Resources>
+        <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#F0F2F5"/>
+        <SolidColorBrush x:Key="TextBrush" Color="#222222"/>
+        <SolidColorBrush x:Key="TextDimBrush" Color="#666666"/>
+        <SolidColorBrush x:Key="PanelBackgroundBrush" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="SeparatorBrush" Color="#CCCCCC"/>
+        <SolidColorBrush x:Key="ButtonBgBrush" Color="#E0E0E0"/>
+    </Window.Resources>
+
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Deck selector -->
+        <Grid Grid.Row="0" Margin="0,0,0,8">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Deck:" VerticalAlignment="Center" Foreground="{DynamicResource TextBrush}" Margin="0,0,8,0"/>
+            <ComboBox Grid.Column="1" x:Name="CmbDeck" MinWidth="200" VerticalAlignment="Center"/>
+            <Button Grid.Column="2" x:Name="BtnNewDeck" Content="+ New" Padding="8,2" Margin="8,0,0,0" Click="BtnNewDeck_Click" Background="{DynamicResource ButtonBgBrush}"/>
+        </Grid>
+
+        <!-- EN -->
+        <Grid Grid.Row="1" Margin="0,0,0,6">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="EN:" VerticalAlignment="Center" Foreground="{DynamicResource TextBrush}" FontWeight="Bold"/>
+            <TextBox Grid.Column="1" x:Name="TxtEn" Padding="4"/>
+        </Grid>
+
+        <!-- Transcription -->
+        <Grid Grid.Row="2" Margin="0,0,0,6">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Transcription:" VerticalAlignment="Center" Foreground="{DynamicResource TextBrush}"/>
+            <TextBox Grid.Column="1" x:Name="TxtTranscription" Padding="4"/>
+        </Grid>
+
+        <!-- RU -->
+        <Grid Grid.Row="3" Margin="0,0,0,6">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="RU:" VerticalAlignment="Center" Foreground="{DynamicResource TextBrush}" FontWeight="Bold"/>
+            <TextBox Grid.Column="1" x:Name="TxtRu" Padding="4"/>
+        </Grid>
+
+        <!-- Context -->
+        <Grid Grid.Row="4" Margin="0,0,0,6">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Context:" VerticalAlignment="Center" Foreground="{DynamicResource TextBrush}"/>
+            <TextBox Grid.Column="1" x:Name="TxtContext" Padding="4" TextWrapping="Wrap" MinHeight="40" MaxHeight="60" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
+        </Grid>
+
+        <!-- Audio -->
+        <Grid Grid.Row="5" Margin="0,0,0,6">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Audio:" VerticalAlignment="Center" Foreground="{DynamicResource TextBrush}"/>
+            <TextBox Grid.Column="1" x:Name="TxtAudio" Padding="4" IsReadOnly="True" Background="#F5F5F5"/>
+            <Button Grid.Column="2" x:Name="BtnPlayAudio" Content="▶ Play" Padding="8,2" Margin="8,0,0,0" Click="BtnPlayAudio_Click" Background="{DynamicResource ButtonBgBrush}" MinWidth="70"/>
+        </Grid>
+
+        <!-- Image search -->
+        <Grid Grid.Row="6" Margin="0,0,0,6">
+            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+            <Grid Grid.Row="0" Margin="0,0,0,4">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Picture:" VerticalAlignment="Center" Foreground="{DynamicResource TextBrush}"/>
+                <TextBox Grid.Column="1" x:Name="TxtSearchQuery" Padding="4"/>
+                <Button Grid.Column="2" x:Name="BtnSearchImages" Content="Search" Padding="8,2" Margin="8,0,4,0" Click="BtnSearchImages_Click" Background="{DynamicResource ButtonBgBrush}"/>
+                <Button Grid.Column="3" x:Name="BtnDownloadImage" Content="✓ Use selected" Padding="8,2" Click="BtnDownloadImage_Click" Background="{DynamicResource ButtonBgBrush}"/>
+            </Grid>
+            <wv2:WebView2 Grid.Row="1" x:Name="ImageBrowser" />
+            <Border Grid.Row="1" x:Name="PicturePreview" Visibility="Collapsed" BorderBrush="{DynamicResource SeparatorBrush}" BorderThickness="1" CornerRadius="4">
+                <Image x:Name="ImgPreview" Stretch="Uniform"/>
+            </Border>
+        </Grid>
+
+        <!-- Status -->
+        <TextBlock Grid.Row="7" x:Name="TxtStatus" Foreground="{DynamicResource TextDimBrush}" Margin="0,0,0,6" FontSize="11"/>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="8" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="BtnCancel" Content="Cancel" Width="80" Padding="8,4" Margin="0,0,10,0" Click="BtnCancel_Click" Background="{DynamicResource ButtonBgBrush}"/>
+            <Button x:Name="BtnCreate" Content="Create Cards" Width="120" Padding="8,4" Click="BtnCreate_Click" Background="#FF56B4E9" Foreground="White" FontWeight="Bold"/>
+        </StackPanel>
+    </Grid>
+</Window>
