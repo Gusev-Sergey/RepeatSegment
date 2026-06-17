@@ -355,15 +355,14 @@ public class AudioEngine : IDisposable
         return tmpPath;
     }
 
-    /// <summary>Save a snippet of audio as a WAV file for Anki cards.</summary>
+    /// <summary>Save a snippet of audio as a WAV file for preview playback.</summary>
     public string SaveSnippetWav(double t1, double t2)
     {
         if (Samples == null)
             throw new InvalidOperationException("Audio not loaded");
 
-        // Tiny padding — just enough to avoid clicks, not enough to overlap next word
-        int start = (int)((t1 - 0.03) * SampleRate);
-        int end = (int)((t2 + 0.03) * SampleRate);
+        int start = (int)((t1 - 0.02) * SampleRate);
+        int end = (int)((t2 + 0.02) * SampleRate);
         if (start < 0) start = 0;
         end = Math.Min(end, Samples.Length);
         int length = end - start;
@@ -381,6 +380,16 @@ public class AudioEngine : IDisposable
         var chunkSamples = new float[length];
         Array.Copy(Samples, start, chunkSamples, 0, length);
 
+        int fadeInSamples = (int)(0.005 * SampleRate);
+        int fadeOutSamples = (int)(0.005 * SampleRate);
+        for (int i = 0; i < length; i++)
+        {
+            float gain = 1f;
+            if (i < fadeInSamples) gain = (float)i / fadeInSamples;
+            else if (i >= length - fadeOutSamples) gain = (float)(length - 1 - i) / fadeOutSamples;
+            chunkSamples[i] *= gain;
+        }
+
         var bytes = new byte[length * 2];
         for (int i = 0; i < length; i++)
         {
@@ -389,6 +398,54 @@ public class AudioEngine : IDisposable
             bytes[i * 2 + 1] = (byte)((val >> 8) & 0xFF);
         }
         writer.Write(bytes, 0, bytes.Length);
+        return path;
+    }
+
+    /// <summary>Save a snippet as MP3 for Anki cards (WAV is not well supported).</summary>
+    public string SaveSnippetMp3(double t1, double t2)
+    {
+        if (Samples == null)
+            throw new InvalidOperationException("Audio not loaded");
+
+        int start = (int)((t1 - 0.02) * SampleRate);
+        int end = (int)((t2 + 0.02) * SampleRate);
+        if (start < 0) start = 0;
+        end = Math.Min(end, Samples.Length);
+        int length = end - start;
+        if (length <= 0)
+            throw new ArgumentException("Invalid snippet bounds");
+
+        string snippetDir = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "RepeatSegment", "decks", "media");
+        Directory.CreateDirectory(snippetDir);
+        string path = Path.Combine(snippetDir, $"snippet_{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}.mp3");
+
+        var chunkSamples = new float[length];
+        Array.Copy(Samples, start, chunkSamples, 0, length);
+
+        int fadeInSamples = (int)(0.005 * SampleRate);
+        int fadeOutSamples = (int)(0.005 * SampleRate);
+        for (int i = 0; i < length; i++)
+        {
+            float gain = 1f;
+            if (i < fadeInSamples) gain = (float)i / fadeInSamples;
+            else if (i >= length - fadeOutSamples) gain = (float)(length - 1 - i) / fadeOutSamples;
+            chunkSamples[i] *= gain;
+        }
+
+        var shorts = new short[length];
+        for (int i = 0; i < length; i++)
+            shorts[i] = (short)Math.Max(-32768, Math.Min(32767, chunkSamples[i] * 32767));
+
+        using var ms = new MemoryStream();
+        using var mp3Writer = new NAudio.Lame.LameMP3FileWriter(ms, new WaveFormat(SampleRate, 16, 1), 128);
+        var shortBytes = new byte[length * 2];
+        Buffer.BlockCopy(shorts, 0, shortBytes, 0, shortBytes.Length);
+        mp3Writer.Write(shortBytes, 0, shortBytes.Length);
+        mp3Writer.Flush();
+        File.WriteAllBytes(path, ms.ToArray());
+
         return path;
     }
 

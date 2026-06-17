@@ -31,10 +31,11 @@
 
         <!-- Deck selector -->
         <Grid Grid.Row="0" Margin="0,0,0,8">
-            <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Text="Deck:" VerticalAlignment="Center" Foreground="{DynamicResource TextBrush}" Margin="0,0,8,0"/>
-            <ComboBox Grid.Column="1" x:Name="CmbDeck" MinWidth="200" VerticalAlignment="Center"/>
-            <Button Grid.Column="2" x:Name="BtnNewDeck" Content="+ New" Padding="8,2" Margin="8,0,0,0" Click="BtnNewDeck_Click" Background="{DynamicResource ButtonBgBrush}"/>
+            <ComboBox Grid.Column="1" x:Name="CmbDeck" MinWidth="150" VerticalAlignment="Center"/>
+            <Button Grid.Column="2" x:Name="BtnNewDeck" Content="+ New" Padding="6,2" Margin="4,0,0,0" Click="BtnNewDeck_Click" Background="{DynamicResource ButtonBgBrush}"/>
+            <Button Grid.Column="3" x:Name="BtnOpenDeck" Content="Open" Padding="6,2" Margin="4,0,0,0" Click="BtnOpenDeck_Click" Background="{DynamicResource ButtonBgBrush}" ToolTip="Open selected .apkg file"/>
         </Grid>
 
         <!-- EN -->
@@ -67,10 +68,11 @@
 
         <!-- Audio -->
         <Grid Grid.Row="5" Margin="0,0,0,6">
-            <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Text="Audio:" VerticalAlignment="Center" Foreground="{DynamicResource TextBrush}"/>
             <TextBox Grid.Column="1" x:Name="TxtAudio" Padding="4" IsReadOnly="True" Background="#F5F5F5"/>
-            <Button Grid.Column="2" x:Name="BtnPlayAudio" Content="▶ Play" Padding="8,2" Margin="8,0,0,0" Click="BtnPlayAudio_Click" Background="{DynamicResource ButtonBgBrush}" MinWidth="70"/>
+            <Button Grid.Column="2" x:Name="BtnPlayAudio" Content="Play" Padding="6,2" Margin="4,0,0,0" Click="BtnPlayAudio_Click" Background="{DynamicResource ButtonBgBrush}" MinWidth="55"/>
+            <Button Grid.Column="3" x:Name="BtnRecordAudio" Content="Rec" Padding="6,2" Margin="4,0,0,0" Click="BtnRecordAudio_Click" Background="{DynamicResource ButtonBgBrush}" MinWidth="55" ToolTip="Record from microphone"/>
         </Grid>
 
         <!-- Image search -->

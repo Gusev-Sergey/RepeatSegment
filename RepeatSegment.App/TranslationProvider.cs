@@ -25,13 +25,16 @@ public class TranslationProvider
     /// </summary>
     public async Task<string> TranslateEnRu(string text)
     {
-        // Try free Google Translate (MyMemory endpoint)
-        try
+        // Try free Google Translate with retry (rate-limit resilience)
+        for (int attempt = 0; attempt < 3; attempt++)
         {
-            string encoded = Uri.EscapeDataString(text);
-            string url = $"https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ru&dt=t&q={encoded}";
-            using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
-            string response = await http.GetStringAsync(url);
+            try
+            {
+                if (attempt > 0) await Task.Delay(500 * attempt);
+                string encoded = Uri.EscapeDataString(text);
+                string url = $"https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ru&dt=t&q={encoded}";
+                using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
+                string response = await http.GetStringAsync(url);
 
             // Response: [[["sent1","orig1",...],["sent2","orig2",...],...],null,"en"]
             // For multi-sentence text, Google splits into sentence-level arrays — join all
@@ -57,7 +60,8 @@ public class TranslationProvider
                 }
             }
         }
-        catch { /* fall through to Yandex */ }
+            catch { /* fall through to Yandex */ }
+        }
 
         // Fallback: Yandex.Translate
         if (!string.IsNullOrEmpty(_yandexKey) && !string.IsNullOrEmpty(_yandexFolderId))

@@ -347,33 +347,43 @@ public partial class MainWindow : Window
         string wordText = range.Text.Trim();
         if (string.IsNullOrWhiteSpace(wordText) || wordText.Length < 2) return;
 
-        // ── Reliable timing: find which _wordRuns are selected ──
+        // ── Reliable timing: match via _wordRuns (1:1 with WordTimings) ──
         double wStart = 0, wEnd = 0;
         var words = _transcriptionProvider?.WordTimings;
-        int firstWordIdx = -1;
         if (_wordRuns != null && words != null && words.Count > 0)
         {
+            int first = -1, last = -1;
             for (int i = 0; i < _wordRuns.Length && i < words.Count; i++)
             {
                 if (_wordRuns[i] == null) continue;
-                // Check if this Run overlaps with the user's selection
-                if (sel.Start.CompareTo(_wordRuns[i].ElementEnd) <= 0 &&
-                    sel.End.CompareTo(_wordRuns[i].ContentStart) >= 0)
+                // Run overlaps with user selection
+                if (sel.Start.CompareTo(_wordRuns[i].ElementEnd) < 0 &&
+                    sel.End.CompareTo(_wordRuns[i].ContentStart) > 0)
                 {
-                    if (firstWordIdx < 0)
-                    {
-                        firstWordIdx = i;
-                        wStart = words[i].Start;
-                    }
-                    wEnd = words[i].End;
+                    if (first < 0) first = i;
+                    last = i;
                 }
+            }
+            if (first >= 0 && last >= first)
+            {
+                wStart = Math.Max(0, words[first].Start - 0.02);
+                wEnd = Math.Max(wStart + 0.05, words[last].End - 0.08);
             }
         }
 
+        // Fallback: use _lastHlIdx
         if (wEnd <= 0 || wEnd <= wStart)
         {
-            wStart = Math.Max(0, _positionSeconds - 0.5);
-            wEnd = Math.Min(_durationSeconds, _positionSeconds + 2);
+            if (_lastHlIdx >= 0 && _lastHlIdx < (words?.Count ?? 0))
+            {
+                wStart = words![_lastHlIdx].Start;
+                wEnd = words[_lastHlIdx].End;
+            }
+            else
+            {
+                wStart = Math.Max(0, _positionSeconds - 0.5);
+                wEnd = Math.Min(_durationSeconds, _positionSeconds + 2);
+            }
         }
 
         // ── Context: extract the sentence containing the selected word ──
