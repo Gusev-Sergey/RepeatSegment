@@ -549,7 +549,32 @@ public class AudioEngine : IDisposable
 /// </summary>
 internal static class Log
 {
-    public static void Info(string message) => System.Diagnostics.Debug.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] {message}");
-    public static void Error(string message) => System.Diagnostics.Debug.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] [ERROR] {message}");
-    public static void Warn(string message) => System.Diagnostics.Debug.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] [WARN] {message}");
+    private static readonly string LogFilePath;
+    private static readonly object _lock = new();
+
+    static Log()
+    {
+        LogFilePath = System.IO.Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "RepeatSegment", "repeat_segment.log");
+        System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(LogFilePath)!);
+    }
+
+    public static void Info(string message) => WriteLine(message, "INFO");
+    public static void Error(string message) => WriteLine(message, "ERROR");
+    public static void Warn(string message) => WriteLine(message, "WARN");
+
+    private static void WriteLine(string message, string level)
+    {
+        string line = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] [{level}] {message}";
+        System.Diagnostics.Debug.WriteLine(line);
+        try
+        {
+            lock (_lock)
+            {
+                System.IO.File.AppendAllText(LogFilePath, line + Environment.NewLine);
+            }
+        }
+        catch { /* best-effort */ }
+    }
 }

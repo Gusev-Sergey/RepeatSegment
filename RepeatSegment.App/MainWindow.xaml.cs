@@ -75,7 +75,7 @@ public partial class MainWindow : Window
             var s = _audio.GetSamples(); if (_silenceDetector.Detect(s ?? Array.Empty<float>(), _audio.SampleRate, _durationSeconds)) _fragments = _silenceDetector.T1T2Array.ToList();
             if (_fragments.Count > 0) { if (_counter >= _fragments.Count) _counter = 0; _t1 = _fragments[_counter].T1; _t2 = _fragments[_counter].T2; _positionSeconds = _t1; } else { _t1 = 0; _t2 = _durationSeconds; }
             _transcriptionProvider = new TranscriptionProvider(_config, _audio);
-            _translationProvider = new TranslationProvider(_config.YandexTranslateApiKey, _config.YandexTranslateFolderId);
+            _translationProvider = new TranslationProvider(_config.YandexTranslateApiKey, _config.YandexTranslateFolderId, _config.TranslationProviderPreference);
             _transcriptionProvider.StatusChanged += msg => Dispatcher.Invoke(() => TxtStatus.Text = msg);
             SliderPosition.Minimum = 0; SliderPosition.Maximum = _durationSeconds; SliderPosition.Value = _positionSeconds;
             LabelPosition.Text = FormatTime(_positionSeconds); LabelDuration.Text = FormatTime(_durationSeconds);
@@ -273,7 +273,9 @@ public partial class MainWindow : Window
 
         string result = await _translationProvider.TranslateEnRu(text);
         TxtTranslationResult.Text = result;
-        TxtStatus.Text = "Translation ready";
+        TxtStatus.Text = _translationProvider.LastUsedProvider != null
+            ? $"Translation ready (via {_translationProvider.LastUsedProvider})"
+            : "Translation ready";
 
         // After content is set and layout runs, grow window if needed
         Dispatcher.InvokeAsync(() => GrowWindowForTranslation(), DispatcherPriority.Loaded);
@@ -418,7 +420,7 @@ public partial class MainWindow : Window
     }
     private static string TruncStatus(string s, int max = 60) => s.Length <= max ? s : s[..max] + "...";
 
-    private void OpenSettings() { if (_settingsWindow != null && _settingsWindow.IsVisible) { _settingsWindow.Focus(); return; } if (_config == null) { _config = new ConfigManager(AppDomain.CurrentDomain.BaseDirectory); _config.Load(); } _settingsWindow = new SettingsWindow(_config, this) { Owner = this }; _settingsWindow.ShowDialog(); }
+    private void OpenSettings() { if (_settingsWindow != null && _settingsWindow.IsVisible) { _settingsWindow.Focus(); return; } if (_config == null) { _config = new ConfigManager(AppDomain.CurrentDomain.BaseDirectory); _config.Load(); } _settingsWindow = new SettingsWindow(_config, this) { Owner = this }; _settingsWindow.ShowDialog(); if (_settingsWindow.Saved) { _translationProvider = new TranslationProvider(_config.YandexTranslateApiKey, _config.YandexTranslateFolderId, _config.TranslationProviderPreference); } }
     private void ButtonSettings_Click(object s, RoutedEventArgs e) => OpenSettings();
     public void OnFileSelected(string fp) => LoadAudioFile(fp);
     private void VolumeControl_VolumeChanged(object s, double v) { if (_audio != null) _audio.Volume = (float)v; }

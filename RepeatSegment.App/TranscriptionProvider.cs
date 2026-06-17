@@ -182,7 +182,13 @@ public class TranscriptionProvider
 
             var resp = await http.SendAsync(req);
             string body = await resp.Content.ReadAsStringAsync();
-            if (!resp.IsSuccessStatusCode) { StatusChanged?.Invoke($"DG error {(int)resp.StatusCode}"); return null; }
+            if (!resp.IsSuccessStatusCode)
+            {
+                string detail = body.Length > 200 ? body[..200] : body;
+                StatusChanged?.Invoke($"DG error {(int)resp.StatusCode}: {detail}");
+                Log.Error($"Deepgram {(int)resp.StatusCode}: {body}");
+                return null;
+            }
 
             using var doc = JsonDocument.Parse(body);
             var root = doc.RootElement;
@@ -208,7 +214,7 @@ public class TranscriptionProvider
             StatusChanged?.Invoke($"DG: {words.Count} words");
             return new TranscriptionResult { Text = text, Words = words };
         }
-        catch (Exception ex) { StatusChanged?.Invoke($"DG ex: {ex.Message}"); return null; }
+        catch (Exception ex) { StatusChanged?.Invoke($"DG ex: {ex.Message}"); Log.Error($"Deepgram exception: {ex}"); return null; }
     }
 
     // ── AssemblyAI ─────────────────────────────────────────────────

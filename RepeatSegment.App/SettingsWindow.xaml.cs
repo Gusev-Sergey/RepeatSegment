@@ -101,6 +101,12 @@ public partial class SettingsWindow : Window
         TxtYandexTranslateKey.Text = _cfg.YandexTranslateApiKey ?? "";
         TxtYandexTranslateFolderId.Text = _cfg.YandexTranslateFolderId ?? "";
 
+        // Translation provider — mutual exclusion: Google default, Yandex optional
+        bool preferYandex = _cfg.TranslationProviderPreference == "yandex";
+        CbTranslationGoogle.IsChecked = !preferYandex;
+        CbTranslationYandex.IsChecked = preferYandex;
+        PanelYandexTranslate.Visibility = preferYandex ? Visibility.Visible : Visibility.Collapsed;
+
         string curLang = _cfg.SaluteLang ?? "ru-RU";
         foreach (ComboBoxItem item in CmbSaluteLang.Items)
         {
@@ -136,6 +142,9 @@ public partial class SettingsWindow : Window
         _cfg.YandexTranslateApiKey = TxtYandexTranslateKey.Text.Trim();
         _cfg.YandexTranslateFolderId = TxtYandexTranslateFolderId.Text.Trim();
 
+        // Translation provider preference — mutual exclusion
+        _cfg.TranslationProviderPreference = CbTranslationYandex.IsChecked == true ? "yandex" : "google";
+
         if (int.TryParse(TxtChunkMinutes.Text.Trim(), out int cm))
             _cfg.ChunkMinutes = cm;
         if (float.TryParse(TxtPlaybackLatency.Text.Trim(),
@@ -153,5 +162,32 @@ public partial class SettingsWindow : Window
         Saved = false;
         DialogResult = false;
         Close();
+    }
+
+    // --- Translation provider mutual exclusion ---
+
+    private void CbTranslationGoogle_Checked(object sender, RoutedEventArgs e)
+    {
+        CbTranslationYandex.IsChecked = false;
+        PanelYandexTranslate.Visibility = Visibility.Collapsed;
+    }
+
+    private void CbTranslationGoogle_Unchecked(object sender, RoutedEventArgs e)
+    {
+        if (CbTranslationYandex.IsChecked != true)
+            CbTranslationGoogle.IsChecked = true; // keep at least one checked
+    }
+
+    private void CbTranslationYandex_Checked(object sender, RoutedEventArgs e)
+    {
+        CbTranslationGoogle.IsChecked = false;
+        PanelYandexTranslate.Visibility = Visibility.Visible;
+    }
+
+    private void CbTranslationYandex_Unchecked(object sender, RoutedEventArgs e)
+    {
+        PanelYandexTranslate.Visibility = Visibility.Collapsed;
+        if (CbTranslationGoogle.IsChecked != true)
+            CbTranslationGoogle.IsChecked = true; // fall back to Google
     }
 }
