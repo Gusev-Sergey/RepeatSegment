@@ -14,3 +14,7 @@ RepeatSegment_Archive/
 deepgram_debug.json
 __pycache__/
 *.pyc
+
+# Secrets — NEVER commit real keys
+config.ini
+.env
