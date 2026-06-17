@@ -72,15 +72,27 @@ public static class AnkiBuilder
         c.Execute(@"CREATE TABLE cards (id INTEGER PRIMARY KEY, nid INTEGER NOT NULL, did INTEGER NOT NULL, ord INTEGER NOT NULL, mod INTEGER NOT NULL, usn INTEGER NOT NULL, type INTEGER NOT NULL DEFAULT 0, queue INTEGER NOT NULL DEFAULT 0, due INTEGER NOT NULL, ivl INTEGER NOT NULL DEFAULT 0, factor INTEGER NOT NULL DEFAULT 0, reps INTEGER NOT NULL DEFAULT 0, lapses INTEGER NOT NULL DEFAULT 0, left INTEGER NOT NULL DEFAULT 0, odue INTEGER NOT NULL DEFAULT 0, odid INTEGER NOT NULL DEFAULT 0, flags INTEGER NOT NULL DEFAULT 0, data TEXT NOT NULL DEFAULT '')");
         c.Execute("CREATE TABLE graves (usn INTEGER NOT NULL, oid INTEGER NOT NULL, type INTEGER NOT NULL)"); c.Execute("CREATE TABLE revlog (id INTEGER PRIMARY KEY, cid INTEGER NOT NULL, usn INTEGER NOT NULL, ease INTEGER NOT NULL, ivl INTEGER NOT NULL, lastIvl INTEGER NOT NULL, factor INTEGER NOT NULL, time INTEGER NOT NULL, type INTEGER NOT NULL)");
 
-        int ts = (int)DateTimeOffset.UtcNow.ToUnixTimeSeconds(); long did = 1234567890, mid = 1728000001L;
-        c.Execute("INSERT INTO col (id,crt,mod,scm,ver,dty,usn,ls,conf,models,decks,dconf,tags) VALUES (@id,@crt,@mod,@scm,@ver,@dty,@usn,@ls,@conf,@models,@decks,@dconf,@tags)", ("@id",1L),("@crt",ts),("@mod",ts),("@scm",ts),("@ver",11L),("@dty",0L),("@usn",-1L),("@ls",0L),("@conf","{}"),("@models",MJson(mid,ts)),("@decks",DJson(did,ts,deckName)),("@dconf",DCJson()),("@tags","{}"));
+        int ts = (int)DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        long did = 1234567890;
+        long mid = 1728000001L;
+        long dcid = 900000000 + (DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() % 100000000); // unique conf = no cache
+        c.Execute("INSERT INTO col (id,crt,mod,scm,ver,dty,usn,ls,conf,models,decks,dconf,tags) VALUES (@id,@crt,@mod,@scm,@ver,@dty,@usn,@ls,@conf,@models,@decks,@dconf,@tags)", ("@id",1L),("@crt",ts),("@mod",ts),("@scm",ts),("@ver",11L),("@dty",0L),("@usn",-1L),("@ls",0L),("@conf","{}"),("@models",MJson(mid,ts)),("@decks",DJson(did,ts,deckName,dcid)),("@dconf",DCJson(dcid)),("@tags","{}"));
 
         long nid = 1, cid = 1;
         foreach (var n in notes)
         {
             // EXACT July_2015 format: <img src="filename"> and [sound:filename]
             string img = string.IsNullOrEmpty(n.PictureMediaId) ? "" : $"<img src=\"{n.PictureMediaId}\">";
-            string snd = string.IsNullOrEmpty(n.AudioMediaId) ? "" : $"[sound:{n.AudioMediaId}]";
+            // Both audios as [sound:...] — Anki doesn't render <audio> HTML tags
+            // TTS only via [sound:] (auto-play), sentence as link (manual)
+            var sndParts = new List<string>();
+            if (!string.IsNullOrEmpty(n.TtsAudioMediaId))
+                sndParts.Add($"[sound:{n.TtsAudioMediaId}]");
+            if (!string.IsNullOrEmpty(n.SentenceAudioMediaId))
+                sndParts.Add($"[sound:{n.SentenceAudioMediaId}]");
+            if (sndParts.Count == 0 && !string.IsNullOrEmpty(n.AudioMediaId))
+                sndParts.Add($"[sound:{n.AudioMediaId}]");
+            string snd = string.Join("", sndParts);
             string flds = string.Join("\x1f", n.En, n.Transcription, n.Ru, img, snd, n.Context);
             int cs = unchecked((int)Cr32(flds));
             c.Execute("INSERT INTO notes (id,guid,mid,mod,usn,tags,flds,sfld,csum,flags,data) VALUES (@id,@guid,@mid,@mod,@usn,@tags,@flds,@sfld,@csum,@flags,@data)", ("@id",nid),("@guid",Guid.NewGuid().ToString("N")),("@mid",mid),("@mod",ts),("@usn",-1L),("@tags",""),("@flds",flds),("@sfld",n.En),("@csum",cs),("@flags",0L),("@data",""));
@@ -103,11 +115,11 @@ public static class AnkiBuilder
             latexPre="",latexPost="", req=new[]{new object[]{0,"any",new[]{0,1,4}},new object[]{1,"any",new[]{2,3,5}}},vers=Array.Empty<object>()}};
         return JsonSerializer.Serialize(m,new JsonSerializerOptions{WriteIndented=false});
     }
-    static string DJson(long did, int ts, string dn) => $@"{{""1"":{{""id"":1,""name"":""Default"",""mod"":{ts},""usn"":-1,""lrnToday"":[0,0],""revToday"":[0,0],""newToday"":[20,0],""timeToday"":[0,0],""collapsed"":false,""dyn"":0,""desc"":"""",""extendNew"":10,""extendRev"":50,""browserCollapsed"":false,""conf"":1}},""{did}"":{{""id"":{did},""name"":{JsonSerializer.Serialize(dn)},""mod"":{ts},""usn"":-1,""lrnToday"":[0,0],""revToday"":[0,0],""newToday"":[20,0],""timeToday"":[0,0],""collapsed"":false,""dyn"":0,""desc"":"""",""extendNew"":10,""extendRev"":50,""browserCollapsed"":false,""conf"":1}}}}";
-    static string DCJson() => @"{""1"":{""id"":1,""name"":""Default"",""mod"":0,""usn"":-1,""maxTaken"":60,""autoplay"":true,""timer"":0,""replayq"":true,""new"":{""delays"":[1.0,10.0],""ints"":[1,4,7],""initialFactor"":2500,""bury"":true,""order"":1,""perDay"":20},""rev"":{""perDay"":200,""ease4"":1.3,""fuzz"":0.05,""minSpace"":1,""ivlFct"":1.0,""maxIvl"":36500,""bury"":true,""hardFactor"":1.2},""lapse"":{""delays"":[10.0],""minInt"":1,""leechFails"":8,""leechAction"":0},""dyn"":false}}";
+    static string DJson(long did, int ts, string dn, long dcid) => $@"{{""1"":{{""id"":1,""name"":""Default"",""mod"":{ts},""usn"":-1,""lrnToday"":[0,0],""revToday"":[0,0],""newToday"":[20,0],""timeToday"":[0,0],""collapsed"":false,""dyn"":0,""desc"":"""",""extendNew"":10,""extendRev"":50,""browserCollapsed"":false,""conf"":1}},""{did}"":{{""id"":{did},""name"":{JsonSerializer.Serialize(dn)},""mod"":{ts},""usn"":-1,""lrnToday"":[0,0],""revToday"":[0,0],""newToday"":[20,0],""timeToday"":[0,0],""collapsed"":false,""dyn"":0,""desc"":"""",""extendNew"":10,""extendRev"":50,""browserCollapsed"":false,""conf"":{dcid}}}}}";
+    static string DCJson(long dcid) => $@"{{""1"":{{""id"":1,""name"":""Default"",""mod"":0,""usn"":-1,""maxTaken"":60,""autoplay"":true,""timer"":0,""replayq"":true,""new"":{{""delays"":[1.0,10.0],""ints"":[1,4,7],""initialFactor"":2500,""bury"":true,""order"":1,""perDay"":20}},""rev"":{{""perDay"":200,""ease4"":1.3,""fuzz"":0.05,""minSpace"":1,""ivlFct"":1.0,""maxIvl"":36500,""bury"":true,""hardFactor"":1.2}},""lapse"":{{""delays"":[10.0],""minInt"":1,""leechFails"":8,""leechAction"":0}},""dyn"":false}},""{dcid}"":{{""id"":{dcid},""name"":""RepeatSegment"",""mod"":0,""usn"":-1,""maxTaken"":60,""autoplay"":false,""timer"":0,""replayq"":false,""new"":{{""delays"":[1.0,10.0],""ints"":[1,4,7],""initialFactor"":2500,""bury"":true,""order"":1,""perDay"":20}},""rev"":{{""perDay"":200,""ease4"":1.3,""fuzz"":0.05,""minSpace"":1,""ivlFct"":1.0,""maxIvl"":36500,""bury"":true,""hardFactor"":1.2}},""lapse"":{{""delays"":[10.0],""minInt"":1,""leechFails"":8,""leechAction"":0}},""dyn"":false}}}}";
     static uint Cr32(string s){uint c=0xFFFFFFFF;foreach(char ch in s){c^=(byte)ch;for(int i=0;i<8;i++)c=(c>>1)^((c&1)!=0?0xEDB88320:0);if(ch>255){c^=(byte)(ch>>8);for(int i=0;i<8;i++)c=(c>>1)^((c&1)!=0?0xEDB88320:0);}}return c^0xFFFFFFFF;}
     public static string[] ListDecks(){string d=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),"RepeatSegment","decks");Directory.CreateDirectory(d);return Directory.GetFiles(d,"*.apkg").Select(f=>Path.GetFileNameWithoutExtension(f)??"").Where(f=>f!="").Distinct().ToArray();}
 }
-public class NoteData{public string En="",Transcription="",Ru="",PictureMediaId="",AudioMediaId="",Context="";}
+public class NoteData{public string En="",Transcription="",Ru="",PictureMediaId="",AudioMediaId="",SentenceAudioMediaId="",TtsAudioMediaId="",Context="";}
 public class MediaData{public byte[] Bytes=Array.Empty<byte>();public string Extension="",DescriptiveName="",ZipName="";}
 static class SqE{public static void Execute(this SqliteConnection c,string sql,params(string,object)[]p){using var cmd=c.CreateCommand();cmd.CommandText=sql;foreach(var(n,v)in p){var px=cmd.CreateParameter();px.ParameterName=n;px.Value=v;cmd.Parameters.Add(px);}cmd.ExecuteNonQuery();}}

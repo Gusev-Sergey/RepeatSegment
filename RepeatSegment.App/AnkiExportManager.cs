@@ -44,11 +44,24 @@ public class AnkiExportManager
                 var f = r.GetString(0).Split('\x1f');
                 // Strip HTML/sound wrappers — BuildDb adds them fresh
                 string pic = StripImgTag(Pf(f, 3));
-                string aud = StripSoundTag(Pf(f, 4));
+                string soundField = Pf(f, 4);
+                // Try to extract dual audio: sentence + TTS
+                string sentenceAud = "", ttsAud = "";
+                var soundMatches = Regex.Matches(soundField, @"\[sound:([^\]]+)\]");
+                if (soundMatches.Count >= 2)
+                {
+                    sentenceAud = soundMatches[0].Groups[1].Value;
+                    ttsAud = soundMatches[1].Groups[1].Value;
+                }
+                else if (soundMatches.Count == 1)
+                {
+                    sentenceAud = soundMatches[0].Groups[1].Value;
+                }
                 _notes.Add(new NoteData
                 {
                     En = Pf(f, 0), Transcription = Pf(f, 1), Ru = Pf(f, 2),
-                    PictureMediaId = pic, AudioMediaId = aud, Context = Pf(f, 5)
+                    PictureMediaId = pic, SentenceAudioMediaId = sentenceAud,
+                    TtsAudioMediaId = ttsAud, Context = Pf(f, 5)
                 });
             }
             c.Close();
@@ -58,7 +71,7 @@ public class AnkiExportManager
             // Find max IDs
             foreach (var n in _notes)
             {
-                foreach (var mid in new[] { n.PictureMediaId, n.AudioMediaId })
+                foreach (var mid in new[] { n.PictureMediaId, n.SentenceAudioMediaId, n.TtsAudioMediaId })
                 {
                     if (string.IsNullOrEmpty(mid)) continue;
                     int dot = mid.LastIndexOf('.');
@@ -100,8 +113,8 @@ public class AnkiExportManager
         return name;
     }
 
-    public void AddNote(string en, string tr, string ru, string pic, string aud, string ctx)
-        => _notes.Add(new NoteData { En = en, Transcription = tr, Ru = ru, PictureMediaId = pic, AudioMediaId = aud, Context = ctx });
+    public void AddNote(string en, string tr, string ru, string pic, string sentenceAud, string? ttsAud, string ctx)
+        => _notes.Add(new NoteData { En = en, Transcription = tr, Ru = ru, PictureMediaId = pic, SentenceAudioMediaId = sentenceAud, TtsAudioMediaId = ttsAud ?? "", Context = ctx });
 
     public string Finalize() => AnkiBuilder.BuildDeck(_deckName, _notes, _media);
 

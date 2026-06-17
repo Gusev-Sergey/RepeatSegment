@@ -7,19 +7,29 @@
 **Путь**: `c:\ProjectsCSharp\RepeatSegment`
 **Бэкап**: `c:\ProjectsCSharp\RepeatSegment_Backup`
 
-## Текущее состояние (17 июня 2026)
+## Текущее состояние (18 июня 2026, ~1:00 MSK)
 
 ### Работает:
 - Загрузка аудиофайлов и отображение волновой формы (OxyPlot)
 - Транскрипция через Deepgram API (с пословным таймингом `WordTimings`)
-- Перевод через Google Translate (en→ru), 3 ретрая при rate-limit
+- Перевод через Google Translate (en→ru), 3 ретрая при rate-limit; выбор сервиса в Settings (Google/Yandex)
 - Ручное выделение сегментов мышкой на графике
 - Подсветка активного слова при воспроизведении
 - **Anki экспорт** — ПОЛНОСТЬЮ РАБОЧИЙ
-- WebView2 поиск картинок (Yandex Images)
+- **Двойное аудио в карточках Anki** — sentence из книги + TTS слова (Deepgram/Google)
+- **TTS** — произнесение слов через Deepgram Aura + Google TTS fallback (кешируется)
+- WebView2 поиск картинок (Yandex Images), автоочистка кеша при закрытии
 - Запись аудио с микрофона (NAudio)
 - IPA транскрипция через dictionaryapi.dev + Wiktionary
 - Инсталлятор (WiX)
+- **Файловое логирование** (`%APPDATA%/RepeatSegment/repeat_segment.log`)
+- **Pre-commit хук** — блокирует коммиты с API-ключами
+
+### Безопасность (важно):
+- Ключи в `config.template.ini` заменены на `YOUR_*` плейсхолдеры
+- Вся git-история очищена от реальных ключей (`git filter-branch` + force push)
+- `config.ini` и `.env` в `.gitignore`
+- `.env.template` для справки
 
 ### Anki .apkg экспорт — КЛЮЧЕВЫЕ ФАЙЛЫ:
 - [`RepeatSegment.App/AnkiBuilder.cs`](RepeatSegment.App/AnkiBuilder.cs) — основная логика сборки .apkg
@@ -69,7 +79,18 @@ RepeatSegment/
 - SkiaSharp.Views.WPF 2.88.7
 - OxyPlot.Wpf 2.2.0
 
+## Новые ключевые файлы:
+| Файл | Назначение |
+|------|-----------|
+| [`RepeatSegment.App/TtsProvider.cs`](RepeatSegment.App/TtsProvider.cs) | TTS: Deepgram Aura + Google fallback |
+| [`RepeatSegment.App/.env.template`](RepeatSegment.App/.env.template) | Шаблон для .env с ключами |
+| [`plans/tts_dual_audio_plan.md`](plans/tts_dual_audio_plan.md) | Архитектурный план TTS + dual audio |
+| [`.git/hooks/pre-commit`](.git/hooks/pre-commit) | Pre-commit хук (защита от утечек) |
+| `.git/hooks/pre-commit.ps1` | PowerShell версия хука |
+
 ## Известные TODO / недоделки:
-- Аудио-фрагмент "in" плохо слышен в "in front of" — проблема тайминга обрезки
-- WebView2 иногда зависает при поиске картинок
+- Anki auto-play проигрывает все `[sound:...]` теги подряд (обход: уникальный dconf id)
 - Слияние колод работает но может дублировать медиафайлы при повторном создании
+- Deepgram ключ был отозван (засвечен) — получен новый, актуален
+- AssemblyAI ключ пока жив, но тоже был в истории — может быть отозван
+- `autoplay` в dconf кешируется Anki локально — обход через уникальный `dcid`

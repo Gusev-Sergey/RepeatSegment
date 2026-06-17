@@ -32,6 +32,7 @@ public partial class MainWindow : Window
     private TranscriptionProvider? _transcriptionProvider;
     private ConfigManager _config = null!;
     private TranslationProvider? _translationProvider;
+    private TtsProvider? _ttsProvider;
     private SettingsWindow? _settingsWindow;
     private BitmapImage? _iconFirst, _iconLast, _iconPrePlay, _iconNextPlay, _iconPlay, _iconRepeat, _iconPlayGo, _iconStopPlay;
     private bool _pop = true, _pte, _repeatSegment, _playGoMode, _isDarkTheme;
@@ -76,6 +77,7 @@ public partial class MainWindow : Window
             if (_fragments.Count > 0) { if (_counter >= _fragments.Count) _counter = 0; _t1 = _fragments[_counter].T1; _t2 = _fragments[_counter].T2; _positionSeconds = _t1; } else { _t1 = 0; _t2 = _durationSeconds; }
             _transcriptionProvider = new TranscriptionProvider(_config, _audio);
             _translationProvider = new TranslationProvider(_config.YandexTranslateApiKey, _config.YandexTranslateFolderId, _config.TranslationProviderPreference);
+            _ttsProvider = new TtsProvider(_config.DeepgramApiKey);
             _transcriptionProvider.StatusChanged += msg => Dispatcher.Invoke(() => TxtStatus.Text = msg);
             SliderPosition.Minimum = 0; SliderPosition.Maximum = _durationSeconds; SliderPosition.Value = _positionSeconds;
             LabelPosition.Text = FormatTime(_positionSeconds); LabelDuration.Text = FormatTime(_durationSeconds);
@@ -402,7 +404,8 @@ public partial class MainWindow : Window
 
         // Pass full selected phrase for IPA lookup and image search
         var window = new AnkiCardWindow(wordText, context, wStart, wEnd,
-            _audio, _transcriptionProvider, _translationProvider, ru, wordText);
+            _audio, _transcriptionProvider, _translationProvider, ru, wordText,
+            _transcriptionProvider?.WordTimings, _ttsProvider);
         window.Owner = this;
         window.ShowDialog();
     }
