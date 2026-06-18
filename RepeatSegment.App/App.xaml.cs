@@ -34,6 +34,8 @@ public partial class App : Application
         }
 
         Strings.SetLanguage(lang);
-        base.OnStartup(e); // creates MainWindow via StartupUri
+        Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
+        var mw = new MainWindow();
+        mw.Show();
     }
 }
