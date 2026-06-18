@@ -35,7 +35,8 @@ public class ConfigManager
     public string DeepgramApiKey { get; set; } = "";
     public string YandexTranslateApiKey { get; set; } = "";
     public string YandexTranslateFolderId { get; set; } = "";
-    public string TranslationProviderPreference { get; set; } = "google"; // "google" or "yandex"
+    public string TranslationProviderPreference { get; set; } = "google";
+    public string TranscriptionLanguage { get; set; } = "en";
     public int ChunkMinutes { get; set; } = 10;
     public double PlaybackLatency { get; set; } = 0.32;
 
@@ -123,6 +124,7 @@ public class ConfigManager
                 YandexTranslateApiKey = GetValue(trans, "yandex_translate_api_key", "");
                 YandexTranslateFolderId = GetValue(trans, "yandex_translate_folder_id", "");
                 TranslationProviderPreference = GetValue(trans, "translation_provider", "google").ToLowerInvariant();
+                TranscriptionLanguage = GetValue(trans, "transcription_language", "en").ToLowerInvariant();
                 if (TranslationProviderPreference != "google" && TranslationProviderPreference != "yandex")
                     TranslationProviderPreference = "google";
                 ChunkMinutes = GetInt(trans, "chunk_minutes", 10);
@@ -187,6 +189,7 @@ public class ConfigManager
                 $"yandex_translate_api_key = {YandexTranslateApiKey}",
                 $"yandex_translate_folder_id = {YandexTranslateFolderId}",
                 $"translation_provider = {TranslationProviderPreference}",
+                $"transcription_language = {TranscriptionLanguage}",
                 $"chunk_minutes = {ChunkMinutes}",
                 $"playback_latency = {PlaybackLatency}",
                 ""

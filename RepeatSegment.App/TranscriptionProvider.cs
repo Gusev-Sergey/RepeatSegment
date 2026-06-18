@@ -82,7 +82,7 @@ public class TranscriptionProvider
         // Try known providers; pick first matching cache file
         foreach (var prov in new[] { "deepgram", "assemblyai" })
         {
-            string glob = $"{audioName}_chunk{ci:D4}_{prov}_en.json";
+            string glob = $"{audioName}_chunk{ci:D4}_{prov}_{_cfg.TranscriptionLanguage}.json";
             if (Directory.GetFiles(cacheDir, glob).Length == 0)
                 glob = $"{audioName}_chunk{ci:D4}_{prov}_*.json"; // wildcard fallback
             var files = Directory.GetFiles(cacheDir, glob);
@@ -187,7 +187,7 @@ public class TranscriptionProvider
             string cacheDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "RepeatSegment", "output");
             Directory.CreateDirectory(cacheDir);
             string audioName = Path.GetFileNameWithoutExtension(_ae.FilePath);
-            string filePath = Path.Combine(cacheDir, $"{audioName}_chunk{ci:D4}_{provider}_en.json");
+            string filePath = Path.Combine(cacheDir, $"{audioName}_chunk{ci:D4}_{provider}_{_cfg.TranscriptionLanguage}.json");
             string json = JsonSerializer.Serialize(data);
             File.WriteAllText(filePath, json);
         }
@@ -202,7 +202,8 @@ public class TranscriptionProvider
         try
         {
             var http = new HttpClient { Timeout = TimeSpan.FromSeconds(MaxTranscribeWaitSec) };
-            string url = $"{DeepgramApiUrl}?model=nova-2&smart_format=true&language=en";
+            string lang = _cfg.TranscriptionLanguage;
+            string url = $"{DeepgramApiUrl}?model=nova-2&smart_format=true&language={lang}";
             var req = new HttpRequestMessage(HttpMethod.Post, url);
             req.Headers.Authorization = new AuthenticationHeaderValue("Token", apiKey);
             req.Content = new ByteArrayContent(await File.ReadAllBytesAsync(wavPath));
@@ -272,7 +273,7 @@ public class TranscriptionProvider
 
             // ── Step 2: Submit transcription ──
             StatusChanged?.Invoke("AA submitting...");
-            var payload = JsonSerializer.Serialize(new { audio_url = audioUrl, language_code = "en" });
+            var payload = JsonSerializer.Serialize(new { audio_url = audioUrl, language_code = _cfg.TranscriptionLanguage });
             var crReq = new HttpRequestMessage(HttpMethod.Post, AssemblyAiTranscriptUrl)
             {
                 Content = new StringContent(payload, Encoding.UTF8, "application/json")

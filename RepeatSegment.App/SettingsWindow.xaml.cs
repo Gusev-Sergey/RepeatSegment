@@ -107,6 +107,20 @@ public partial class SettingsWindow : Window
         CbTranslationYandex.IsChecked = preferYandex;
         PanelYandexTranslate.Visibility = preferYandex ? Visibility.Visible : Visibility.Collapsed;
 
+        // Transcription language
+        var transLangs = new[] { ("en","English"), ("es","Español"), ("fr","Français"),
+            ("de","Deutsch"), ("it","Italiano"), ("pt","Português"), ("ru","Русский"),
+            ("ja","日本語"), ("ko","한국어"), ("zh","中文"), ("hi","हिन्दी") };
+        CmbTranscriptionLang.Items.Clear();
+        foreach (var (code, name) in transLangs)
+        {
+            var item = new ComboBoxItem { Content = name, Tag = code };
+            CmbTranscriptionLang.Items.Add(item);
+            if (code == _cfg.TranscriptionLanguage) item.IsSelected = true;
+        }
+        if (CmbTranscriptionLang.SelectedIndex < 0 && CmbTranscriptionLang.Items.Count > 0)
+            CmbTranscriptionLang.SelectedIndex = 0;
+
         string curLang = _cfg.SaluteLang ?? "ru-RU";
         foreach (ComboBoxItem item in CmbSaluteLang.Items)
         {
@@ -144,6 +158,8 @@ public partial class SettingsWindow : Window
 
         // Translation provider preference — mutual exclusion
         _cfg.TranslationProviderPreference = CbTranslationYandex.IsChecked == true ? "yandex" : "google";
+
+        _cfg.TranscriptionLanguage = (CmbTranscriptionLang.SelectedItem as ComboBoxItem)?.Tag as string ?? "en";
 
         if (int.TryParse(TxtChunkMinutes.Text.Trim(), out int cm))
             _cfg.ChunkMinutes = cm;

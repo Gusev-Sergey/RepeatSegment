@@ -219,6 +219,15 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Transcription language:"
+                           VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <ComboBox Grid.Column="1" x:Name="CmbTranscriptionLang" Margin="0,0,0,4"/>
+            </Grid>
+            <Grid Margin="0,8,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" Text="Chunk minutes:"
                            VerticalAlignment="Center" Margin="0,0,8,0"/>
                 <TextBox Grid.Column="1" x:Name="TxtChunkMinutes" Text="10"/>
