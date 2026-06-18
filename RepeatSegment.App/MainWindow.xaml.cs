@@ -45,7 +45,7 @@ public partial class MainWindow : Window
     private Run[]? _wordRuns; private Run[]? _spaceRuns; private int _lastHlIdx = -1; private int _prevWordCount;
 
     private static string AppDataDir => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "RepeatSegment");
-    public MainWindow() { InitializeComponent(); SetWindowIcon(); LoadIcons(); ApplyInitialSkins(); _positionTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(TMR_INTERVAL) }; _positionTimer.Tick += PositionTimer_Tick; AdaptToScreen(); ApplyTheme(false); Closed += (_, _) => SaveState(); Loaded += (_, _) => LoadOnStartup(); WaveformGraph.SegmentSelected += WaveformGraph_SegmentSelected; }
+    public MainWindow() { InitializeComponent(); SetWindowIcon(); LoadIcons(); ApplyInitialSkins(); _positionTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(TMR_INTERVAL) }; _positionTimer.Tick += PositionTimer_Tick; AdaptToScreen(); ApplyTheme(false); Closed += (_, _) => SaveState(); Loaded += (_, _) => { LoadOnStartup(); ApplyAllStrings(); }; WaveformGraph.SegmentSelected += WaveformGraph_SegmentSelected; }
     private void SetWindowIcon()
     {
         string ico = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Icons", "app.ico");
