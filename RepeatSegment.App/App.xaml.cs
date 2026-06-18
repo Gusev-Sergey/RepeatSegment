@@ -8,10 +8,9 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         ApplySavedLanguage();
-        base.OnStartup(e);
-        // Defer — MainWindow already created via StartupUri, just needs strings
-        if (Current.MainWindow is MainWindow mw)
-            mw.Dispatcher.BeginInvoke(() => mw.ApplyAllStrings());
+        var mw = new MainWindow();
+        mw.ApplyAllStrings();
+        mw.Show();
     }
 
     internal static void ApplySavedLanguage()
@@ -44,4 +43,3 @@ public partial class App : Application
         Strings.SetLanguage(lang);
     }
 }
-
