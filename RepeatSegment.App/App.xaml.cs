@@ -7,14 +7,7 @@ public partial class App : Application
 {
     protected override void OnStartup(StartupEventArgs e)
     {
-        ApplySavedLanguage();
-        var mw = new MainWindow();
-        mw.ApplyAllStrings();
-        mw.Show();
-    }
-
-    internal static void ApplySavedLanguage()
-    {
+        // Read/ask language BEFORE MainWindow is created by StartupUri
         string configDir = Path.Combine(
             System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData),
             "RepeatSegment");
@@ -41,5 +34,6 @@ public partial class App : Application
         }
 
         Strings.SetLanguage(lang);
+        base.OnStartup(e); // creates MainWindow via StartupUri
     }
 }
