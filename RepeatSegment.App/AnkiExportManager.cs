@@ -45,17 +45,20 @@ public class AnkiExportManager
                 // Strip HTML/sound wrappers — BuildDb adds them fresh
                 string pic = StripImgTag(Pf(f, 3));
                 string soundField = Pf(f, 4);
-                // Try to extract dual audio: sentence + TTS
+                // Extract dual audio — detect by labels: 🔊 for TTS, 📖 for sentence
                 string sentenceAud = "", ttsAud = "";
                 var soundMatches = Regex.Matches(soundField, @"\[sound:([^\]]+)\]");
-                if (soundMatches.Count >= 2)
+                var ttsMatch = Regex.Match(soundField, @"🔊[^\[]*\[sound:([^\]]+)\]");
+                var sentMatch = Regex.Match(soundField, @"📖[^\[]*\[sound:([^\]]+)\]");
+                if (ttsMatch.Success)
+                    ttsAud = ttsMatch.Groups[1].Value;
+                if (sentMatch.Success)
+                    sentenceAud = sentMatch.Groups[1].Value;
+                // Fallback: no labels → first is sentence, second is TTS (old format)
+                if (string.IsNullOrEmpty(ttsAud) && string.IsNullOrEmpty(sentenceAud))
                 {
-                    sentenceAud = soundMatches[0].Groups[1].Value;
-                    ttsAud = soundMatches[1].Groups[1].Value;
-                }
-                else if (soundMatches.Count == 1)
-                {
-                    sentenceAud = soundMatches[0].Groups[1].Value;
+                    if (soundMatches.Count == 2) { sentenceAud = soundMatches[0].Groups[1].Value; ttsAud = soundMatches[1].Groups[1].Value; }
+                    else if (soundMatches.Count == 1) { sentenceAud = soundMatches[0].Groups[1].Value; }
                 }
                 _notes.Add(new NoteData
                 {

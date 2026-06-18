@@ -320,10 +320,16 @@ public partial class AnkiCardWindow : Window
                     w = (int)(w * scale); h = (int)(h * scale);
                     using var resized = bmp.Resize(new SKImageInfo(w, h), SKFilterQuality.Medium);
                     using var image = SKImage.FromBitmap(resized);
-                    using var data2 = image.Encode(SKEncodedImageFormat.Jpeg, 85);
+                    using var data2 = image.Encode(SKEncodedImageFormat.Jpeg, 75);
                     data = data2.ToArray();
                 }
-                else { using var image = SKImage.FromBitmap(bmp); using var data2 = image.Encode(SKEncodedImageFormat.Jpeg, 85); data = data2.ToArray(); }
+                else if (w * h > 100_000) // > 100k pixels → recompress
+                {
+                    using var image = SKImage.FromBitmap(bmp);
+                    using var data2 = image.Encode(SKEncodedImageFormat.Jpeg, 75);
+                    data = data2.ToArray();
+                }
+                // else: small image — keep as-is (no need to recompress)
             }
 
             string mediaDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "RepeatSegment", "decks", "media");
