@@ -258,10 +258,10 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- Collapse toggle (left of buttons, inside left padding area) -->
+            <!-- Collapse toggle: left edge, bottom-aligned -->
             <Button x:Name="BtnCollapseTranscription" Width="28" Height="28"
-                    Padding="0" Margin="0,0,8,0"
-                    HorizontalAlignment="Right" VerticalAlignment="Center"
+                    Padding="0" Margin="0"
+                    HorizontalAlignment="Left" VerticalAlignment="Bottom"
                     Click="BtnCollapseTranscription_Click"
                     Background="{DynamicResource ButtonBgBrush}"
                     BorderBrush="{DynamicResource ButtonBorderBrush}"
