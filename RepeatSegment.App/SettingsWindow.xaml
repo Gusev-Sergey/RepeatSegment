@@ -177,6 +177,8 @@
 
                 <TextBlock Text="───── AssemblyAI ─────" FontSize="11"
                            Foreground="{DynamicResource TextDimBrush}" Margin="0,4,0,2"/>
+                <TextBlock Text="Get free API key: assemblyai.com" FontSize="10"
+                           Foreground="{DynamicResource TextDimBrush}" Margin="0,0,0,2"/>
                 <TextBlock Text="API key:" Margin="0,2,0,0"/>
                 <TextBox x:Name="TxtAssemblyAiKey" Margin="0,0,0,4"/>
                 <TextBlock Text="⚠ AssemblyAI blocked in Russia — use VPN" FontSize="11"
@@ -184,6 +186,8 @@
 
                 <TextBlock Text="───── Deepgram ─────" FontSize="11"
                            Foreground="{DynamicResource TextDimBrush}" Margin="0,4,0,2"/>
+                <TextBlock Text="Get free API key ($200 credit): deepgram.com" FontSize="10"
+                           Foreground="{DynamicResource TextDimBrush}" Margin="0,0,0,2"/>
                 <TextBlock Text="API key:" Margin="0,2,0,0"/>
                 <TextBox x:Name="TxtDeepgramKey" Margin="0,0,0,8"/>
 
