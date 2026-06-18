@@ -207,4 +207,11 @@ public partial class SettingsWindow : Window
         if (CbTranslationGoogle.IsChecked != true)
             CbTranslationGoogle.IsChecked = true; // fall back to Google
     }
+
+    private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+    {
+        try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true }); }
+        catch { }
+        e.Handled = true;
+    }
 }
