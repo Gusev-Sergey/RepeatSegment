@@ -63,7 +63,7 @@ public partial class MainWindow : Window
     private void ApplyInitialSkins() { ImgFirst.Source = _iconFirst; ImgLast.Source = _iconLast; ImgPrev.Source = _iconPrePlay; ImgNext.Source = _iconNextPlay; ImgPlayPause.Source = _iconPlay; ImgRepeat.Source = _iconRepeat; ImgPlayGo.Source = _iconPlayGo; SetAllButtonsEnabled(false); SliderPosition.IsEnabled = false; }
     private void SetAllButtonsEnabled(bool e) { ButtonFirst.IsEnabled = ButtonLast.IsEnabled = ButtonPrevSegment.IsEnabled = ButtonNextSegment.IsEnabled = ButtonPlay.IsEnabled = ButtonRepeat.IsEnabled = ButtonPlayGo.IsEnabled = e; }
 
-    public async void LoadAudioFile(string fp)
+    public void LoadAudioFile(string fp)
     {
         try
         {
@@ -141,7 +141,7 @@ public partial class MainWindow : Window
     }
 
     // PATCH: old handler kept for keyboard shortcut compatibility
-    private async void BtnTranscribe_Click(object s, RoutedEventArgs e) => BtnTranscribeApi_Click(s, e);
+    private void BtnTranscribe_Click(object s, RoutedEventArgs e) => BtnTranscribeApi_Click(s, e);
 
     private void UpdateSkinsPlaying() { ImgPlayPause.Source = _iconStopPlay; ImgRepeat.Source = _iconStopPlay; ImgPlayGo.Source = _iconStopPlay; }
     private void UpdateSkinsStopped() { ImgPlayPause.Source = _iconPlay; ImgRepeat.Source = _iconRepeat; ImgPlayGo.Source = _iconPlayGo; }
@@ -261,6 +261,7 @@ public partial class MainWindow : Window
         var range = new TextRange(sel.Start, sel.End);
         string text = range.Text.Trim();
         if (string.IsNullOrWhiteSpace(text) || text.Length < 2) return;
+        if (_translationProvider == null) return;
 
         TxtTranslationOriginal.Text = text;
         TxtTranslationResult.Text = "Translating...";
@@ -280,7 +281,7 @@ public partial class MainWindow : Window
             : "Translation ready";
 
         // After content is set and layout runs, grow window if needed
-        Dispatcher.InvokeAsync(() => GrowWindowForTranslation(), DispatcherPriority.Loaded);
+        _ = Dispatcher.InvokeAsync(() => GrowWindowForTranslation(), DispatcherPriority.Loaded);
     }
 
     /// <summary>
