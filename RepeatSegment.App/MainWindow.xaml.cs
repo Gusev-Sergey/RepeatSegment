@@ -267,12 +267,13 @@ public partial class MainWindow : Window
         TxtTranslationResult.Text = "Translating...";
         TranslationPanel.Visibility = Visibility.Visible;
 
-        // Save original height before any resize
-        if (_originalHeight <= 0) _originalHeight = ActualHeight;
-
         // Row 5 = Auto so panel sizes to its natural content height
         LayoutRoot.RowDefinitions[4].Height = new GridLength(1, GridUnitType.Star);
         LayoutRoot.RowDefinitions[5].Height = GridLength.Auto;
+
+        // Ensure minimum growth so panel is visible + border is shown
+        double minGrowth = Math.Max(0, 80 - LayoutRoot.RowDefinitions[5].ActualHeight);
+        if (minGrowth > 0) Height += minGrowth;
 
         string result = await _translationProvider.TranslateEnRu(text);
         TxtTranslationResult.Text = result;
@@ -280,7 +281,6 @@ public partial class MainWindow : Window
             ? $"Translation ready (via {_translationProvider.LastUsedProvider})"
             : "Translation ready";
 
-        // After content is set and layout runs, grow window if needed
         _ = Dispatcher.InvokeAsync(() => GrowWindowForTranslation(), DispatcherPriority.Loaded);
     }
 
