@@ -9,7 +9,6 @@ public partial class FirstRunWindow : Window
     public FirstRunWindow()
     {
         InitializeComponent();
-        Owner = Application.Current.MainWindow;
     }
 
     private void BtnEn_Click(object s, RoutedEventArgs e)
