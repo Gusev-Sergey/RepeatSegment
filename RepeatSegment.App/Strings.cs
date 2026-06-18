@@ -329,14 +329,74 @@ public static class Strings
 
     // ── User Guide (large text, loaded on demand) ──
 
-    public static string GetUserGuide()
+    /// <summary>Intro paragraph for manual window.</summary>
+    public static string GetUserGuideIntro()
     {
-        if (CurrentLang == "ru")
-            return RuGuide;
-        return EnGuide;
+        return CurrentLang == "ru"
+            ? "Программа для изучения английского языка через аудиокниги. Разбивает аудио на речевые сегменты (по паузам), позволяет повторять каждый сегмент, отображает текст транскрипции с синхронной подсветкой произносимых слов."
+            : "Program for learning English through audiobooks. Splits audio into speech segments (by pauses), allows repeating each segment, and displays transcription text with synchronized word highlighting.";
     }
 
-    private const string EnGuide = @"RepeatSegment — Study English with Audio Books
+    /// <summary>Section heading by number.</summary>
+    public static string GetGuideSection(int num) => (CurrentLang, num) switch
+    {
+        (_, 1) => CurrentLang == "ru" ? "1. Загрузка аудио" : "1. Loading Audio",
+        (_, 2) => CurrentLang == "ru" ? "2. Управление воспроизведением" : "2. Playback Controls",
+        (_, 3) => CurrentLang == "ru" ? "3. Транскрипция" : "3. Transcription",
+        (_, 4) => CurrentLang == "ru" ? "4. Перевод" : "4. Translation",
+        (_, 5) => CurrentLang == "ru" ? "5. Интервал тишины" : "5. Silence Interval",
+        (_, 6) => CurrentLang == "ru" ? "6. Экспорт в Anki" : "6. Anki Export",
+        (_, 7) => CurrentLang == "ru" ? "7. TTS и аудио предложений" : "7. TTS & Sentence Audio",
+        (_, 8) => CurrentLang == "ru" ? "8. Поиск картинок" : "8. Image Search",
+        (_, 9) => CurrentLang == "ru" ? "9. Настройки" : "9. Settings",
+        (_, 10) => CurrentLang == "ru" ? "10. Тема и язык" : "10. Theme & Language",
+        (_, 11) => CurrentLang == "ru" ? "11. Горячие клавиши" : "11. Hotkeys",
+        _ => ""
+    };
+
+    /// <summary>Section content by number.</summary>
+    public static string GetGuideContent(int num)
+    {
+        bool ru = CurrentLang == "ru";
+        return num switch
+        {
+            1 => ru
+                ? "Файл → Загрузить (Ctrl+O) — выберите MP3 или WAV файл. Программа автоматически найдёт паузы между фразами и разобьёт аудио на сегменты."
+                : "File → Load (Ctrl+O) — select an MP3 or WAV file. The program automatically finds pauses between phrases and splits the audio into segments.",
+            3 => ru
+                ? "Перед первым использованием откройте Настройки → API ключи и введите API-ключ хотя бы одного провайдера (Deepgram или AssemblyAI).\nЗапросить через API (Ctrl+T) — отправить аудио на расшифровку. Результат кэшируется.\nЗагрузить из кэша (Ctrl+L) — загрузить ранее полученную транскрипцию.\nВо время воспроизведения произносимое слово подсвечивается жёлтым. Текст автоматически прокручивается.\nВнимание: AssemblyAI заблокирован на территории РФ — требуется VPN."
+                : "Before first use, open Settings → API keys and enter the API key of at least one provider (Deepgram or AssemblyAI).\nRequest from API (Ctrl+T) — send audio for transcription. The result is cached.\nLoad from cache (Ctrl+L) — load previously obtained transcription.\nDuring playback, the spoken word is highlighted in yellow. Text auto-scrolls.\nNote: AssemblyAI is blocked in Russia — VPN required.",
+            4 => ru
+                ? "Выделите слово или фразу в тексте — она будет автоматически переведена. Результат появляется в нижней панели.\nПо умолчанию используется Google Translate (бесплатно). При наличии ключа Яндекс можно переключиться на Yandex.Translate в Настройках.\nНажмите «В Anki» чтобы создать карточки из выделенного текста."
+                : "Select a word or phrase in the text — it will be automatically translated. The result appears in the bottom panel.\nBy default, Google Translate is used (free). If you have a Yandex API key, you can switch to Yandex.Translate in Settings.\nClick «Add to Anki» to create flashcards from the selected text.",
+            5 => ru
+                ? "Меню 'Интервал тишины' позволяет выбрать длину аудиофрагмента: 100, 200, 300, 500, 800 мс или Свой... (50–5000 мс). Чем меньше значение — тем короче сегменты."
+                : "The 'Split interval' menu allows selecting audio fragment length: 100, 200, 300, 500, 800 ms or Custom... (50–5000 ms). The smaller the value, the shorter the segments.",
+            6 => ru
+                ? "Нажмите «В Anki» после перевода слова/фразы, чтобы открыть окно создания карточки.\n• Выберите или создайте колоду\n• Проверьте английское слово, транскрипцию, русский перевод\n• Контекст — предложение из книги (можно редактировать)\n• Sentence — извлечь аудио целого предложения из книги\n• TTS — скачать точное произнесение слова через Deepgram/Google\n• Картинка — поиск изображений в Яндексе\n• Запись — записать свой голос с микрофона\nНажмите «Создать карточки» — создаются две карточки: en→ru и ru→en. Каждая содержит две кнопки аудио: 🔊 Word (TTS) и 📖 Sentence."
+                : "Click «Add to Anki» after translating a word/phrase to open the card creation window.\n• Select or create a deck\n• Check the English word, transcription, Russian translation\n• Context — the sentence from the book (editable)\n• Sentence — extract the full sentence audio from the book\n• TTS — download precise word pronunciation from Deepgram/Google\n• Picture — search for images in Yandex\n• Record — record your own voice via microphone\nClick «Create Cards» — two cards are generated: en→ru and ru→en. Each contains two audio buttons: 🔊 Word (TTS) and 📖 Sentence.",
+            7 => ru
+                ? "TTS (озвучка) скачивает произнесение слова/фразы через Deepgram Aura или Google Translate (запасной). Аудио предложения извлекается из оригинальной аудиокниги — полное предложение, содержащее выбранное слово. Оба аудиофайла встраиваются в карточки Anki как отдельные кнопки воспроизведения."
+                : "TTS (Text-to-Speech) downloads pronunciation of a word/phrase via Deepgram Aura or Google Translate (backup). Sentence audio is extracted from the original audiobook — the full sentence containing the selected word. Both audio files are embedded into Anki cards as separate play buttons.",
+            8 => ru
+                ? "В окне карточки встроен браузер WebView2, который ищет картинки в Яндекс.Картинках по выбранному слову. Нажмите на любую картинку → ✓ Взять чтобы сохранить её в карточку."
+                : "The card window has a built-in WebView2 browser that searches Yandex Images by the selected word. Click on any image → ✓ Use to save it to the card.",
+            9 => ru
+                ? "Файл → Настройки → API ключи... позволяет:\n• Выбрать активных провайдеров транскрипции (Deepgram, AssemblyAI)\n• Ввести API-ключи для Deepgram и AssemblyAI\n• Выбрать язык транскрипции\n• Выбрать провайдера перевода (Google Translate или Yandex.Translate)\n• Настроить размер чанка для API транскрипции (минут)\n• Настроить задержку подсветки слов"
+                : "File → Settings → API keys... allows you to:\n• Select active transcription providers (Deepgram, AssemblyAI)\n• Enter API keys for Deepgram and AssemblyAI\n• Select transcription language\n• Select translation provider (Google Translate or Yandex.Translate)\n• Set chunk size for API transcription (minutes)\n• Set highlight latency for word tracking",
+            10 => ru
+                ? "Меню Тема → Светлая / Тёмная — переключение темы оформления. Меню Язык → English / Русский — переключение языка интерфейса. Выбор сохраняется."
+                : "Menu Theme → Light / Dark — switch between themes. Menu Language → English / Русский — switch interface language. The choice is saved.",
+            11 => ru
+                ? "Ctrl+O — Загрузить аудиофайл\nSpace — Играть/Пауза\nCtrl+Space — Играть и дальше\nM — Повторить сегмент\n← → — Предыдущий/Следующий сегмент\nHome/End — Первый/Последний сегмент\nEsc — Остановить\nCtrl+T — Запросить транскрипцию через API\nCtrl+L — Загрузить транскрипцию из кэша\nCtrl+F — Перевести выделенный текст\n▲ — Скрыть/показать транскрипцию"
+                : "Ctrl+O — Load audio file\nSpace — Play/Pause\nCtrl+Space — Play and Go\nM — Repeat segment\n← → — Previous/Next segment\nHome/End — First/Last segment\nEsc — Stop\nCtrl+T — Request transcription from API\nCtrl+L — Load transcription from cache\nCtrl+F — Translate selected text\n▲ — Collapse/expand transcription",
+            _ => ""
+        };
+    }
+
+    public static string GetUserGuide() { return ""; }
+
+    private const string EnGuideOBSOLETE = @"RepeatSegment — Study English with Audio Books
 
 Program for learning English through audiobooks. Splits audio into speech segments (by pauses), allows repeating each segment, and displays transcription text with synchronized word highlighting.
 
@@ -413,7 +473,7 @@ Ctrl+T — Request transcription from API
 Ctrl+L — Load transcription from cache
 Ctrl+F — Translate selected text";
 
-    private const string RuGuide = @"RepeatSegment — Изучение английского по аудиокнигам
+    private const string RuGuideOBSOLETE = @"RepeatSegment — Изучение английского по аудиокнигам
 
 Программа для изучения английского языка через аудиокниги. Разбивает аудио на речевые сегменты (по паузам), позволяет повторять каждый сегмент, отображает текст транскрипции с синхронной подсветкой произносимых слов.
 
