@@ -22,6 +22,7 @@ public class TranscriptionProvider
     private readonly ConfigManager _cfg;
     private readonly AudioEngine _ae;
     private readonly double _chunkSec;
+    private List<(double Start, double End)> _silenceZones = new();
     private readonly Dictionary<int, TranscriptionChunk> _loadedChunks = new();
     private readonly HashSet<int> _transcribing = new();
     private List<(double, double)> _speechFragments = new();
@@ -32,6 +33,9 @@ public class TranscriptionProvider
     public event Action<string>? StatusChanged;
 
     public TranscriptionProvider(ConfigManager cfg, AudioEngine ae) { _cfg = cfg; _ae = ae; _chunkSec = cfg.ChunkMinutes * 60; }
+
+    /// <summary>Set silence zones for smart chunk boundary adjustment.</summary>
+    public void SetSilenceZones(List<(double Start, double End)> zones) { _silenceZones = zones; }
 
     public async Task<string> Transcribe(string filePath, bool forceFresh = false)
     {
@@ -100,7 +104,31 @@ public class TranscriptionProvider
 
     public void EnsureChunk(int ci) { if (_loadedChunks.ContainsKey(ci) || _transcribing.Contains(ci)) return; _transcribing.Add(ci); _ = TranscribeChunkAsync(ci); }
 
-    private (double, double) ChunkRange(int ci) => (ci * _chunkSec, (ci + 1) * _chunkSec);
+    private (double, double) ChunkRange(int ci)
+    {
+        double t1 = ci * _chunkSec;
+        double t2 = (ci + 1) * _chunkSec;
+        // Snap boundaries to nearest silence to avoid cutting words
+        if (_silenceZones.Count > 0 && ci > 0)
+            t1 = SnapToSilence(t1);
+        double dur = _ae.Duration.TotalSeconds;
+        if (_silenceZones.Count > 0 && t2 < dur)
+            t2 = SnapToSilence(t2);
+        return (Math.Max(0, t1 - 0.5), Math.Min(dur, t2 + 0.5)); // 0.5s padding for overlap
+    }
+
+    private double SnapToSilence(double boundary)
+    {
+        double best = boundary;
+        double bestDist = 5.0; // max 5 second search radius
+        foreach (var (s, e) in _silenceZones)
+        {
+            double mid = (s + e) / 2;
+            double dist = Math.Abs(mid - boundary);
+            if (dist < bestDist) { bestDist = dist; best = mid; }
+        }
+        return best;
+    }
 
     private async Task TranscribeChunkAsync(int ci)
     {

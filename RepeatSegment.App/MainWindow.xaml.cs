@@ -76,6 +76,7 @@ public partial class MainWindow : Window
             var s = _audio.GetSamples(); if (_silenceDetector.Detect(s ?? Array.Empty<float>(), _audio.SampleRate, _durationSeconds)) _fragments = _silenceDetector.T1T2Array.ToList();
             if (_fragments.Count > 0) { if (_counter >= _fragments.Count) _counter = 0; _t1 = _fragments[_counter].T1; _t2 = _fragments[_counter].T2; _positionSeconds = _t1; } else { _t1 = 0; _t2 = _durationSeconds; }
             _transcriptionProvider = new TranscriptionProvider(_config, _audio);
+            _transcriptionProvider.SetSilenceZones(_silenceDetector.Silence);
             _translationProvider = new TranslationProvider(_config.YandexTranslateApiKey, _config.YandexTranslateFolderId, _config.TranslationProviderPreference);
             _ttsProvider = new TtsProvider(_config.DeepgramApiKey);
             _transcriptionProvider.StatusChanged += msg => Dispatcher.Invoke(() => TxtStatus.Text = msg);
