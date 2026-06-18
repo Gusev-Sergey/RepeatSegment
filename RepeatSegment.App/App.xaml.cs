@@ -7,8 +7,9 @@ public partial class App : Application
 {
     protected override void OnStartup(StartupEventArgs e)
     {
-        ApplySavedLanguage(); // MUST run before MainWindow — sets language
+        ApplySavedLanguage();
         var mw = new MainWindow();
+        mw.ApplyAllStrings();
         mw.Show();
     }
 
