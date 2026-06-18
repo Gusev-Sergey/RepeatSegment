@@ -250,15 +250,25 @@
             <TextBlock x:Name="LabelDuration" Grid.Column="2" Text="00:00" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="{DynamicResource TextDimBrush}" FontSize="13"/>
         </Grid>
 
-        <!-- BUTTONS -->
+        <!-- BUTTONS + COLLAPSE TOGGLE -->
         <Grid Grid.Row="3" Margin="10,6,10,4">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <!-- Buttons: centered overall (4th button = center of window) -->
+            <!-- Collapse toggle -->
+            <Button Grid.Column="0" x:Name="BtnCollapseTranscription" Width="28" Height="28"
+                    Padding="0" Margin="0,0,6,0"
+                    Click="BtnCollapseTranscription_Click"
+                    Background="{DynamicResource ButtonBgBrush}"
+                    BorderBrush="{DynamicResource ButtonBorderBrush}"
+                    Foreground="{DynamicResource TextBrush}"
+                    FontSize="14" Cursor="Hand"
+                    ToolTip="Show/Hide transcription">▲</Button>
+
+            <!-- Buttons: centered -->
             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button x:Name="ButtonFirst" Style="{StaticResource ImageButtonStyle}" Click="ButtonFirst_Click" IsEnabled="False" ToolTip="First segment (Home)"><Image x:Name="ImgFirst" Source="Icons/first.png" Stretch="Uniform"/></Button>
                 <Button x:Name="ButtonPrevSegment" Style="{StaticResource ImageButtonStyle}" Click="ButtonPrevSegment_Click" IsEnabled="False" ToolTip="Previous / Rewind (Left)"><Image x:Name="ImgPrev" Source="Icons/pre_play.png" Stretch="Uniform"/></Button>
@@ -269,7 +279,7 @@
                 <Button x:Name="ButtonLast" Style="{StaticResource ImageButtonStyle}" Click="ButtonLast_Click" IsEnabled="False" ToolTip="Last segment (End)"><Image x:Name="ImgLast" Source="Icons/last.png" Stretch="Uniform"/></Button>
             </StackPanel>
 
-            <!-- Volume: centered in right space -->
+            <!-- Volume: right side -->
             <local:VolumeWidget Grid.Column="2" x:Name="VolumeControl" Width="160" Height="44"
                                 HorizontalAlignment="Center" VerticalAlignment="Center"
                                 VolumeChanged="VolumeControl_VolumeChanged"/>
@@ -293,9 +303,9 @@
             </Grid>
         </Border>
 
-        <!-- TRANSLATION PANEL (ScrollViewer added dynamically only when window hits max height) -->
+        <!-- TRANSLATION PANEL -->
         <Border Grid.Row="5" x:Name="TranslationPanel" Visibility="Collapsed"
-                Margin="10,4,10,12" Padding="8,6,8,12" CornerRadius="4"
+                Margin="10,4,10,16" Padding="8,6,8,12" CornerRadius="4"
                 BorderBrush="{DynamicResource SeparatorBrush}" BorderThickness="1"
                 Background="{DynamicResource PanelBackgroundBrush}">
             <Grid x:Name="TranslationInnerGrid">

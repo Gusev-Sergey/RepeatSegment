@@ -443,6 +443,17 @@ public partial class MainWindow : Window
         ApplyAllStrings();
     }
 
+    private bool _transcriptionCollapsed;
+    private void BtnCollapseTranscription_Click(object s, RoutedEventArgs e)
+    {
+        _transcriptionCollapsed = !_transcriptionCollapsed;
+        var border = LayoutRoot.Children.OfType<System.Windows.Controls.Border>()
+            .FirstOrDefault(b => b.Child is Grid g && g.Children.OfType<ScrollViewer>().Any());
+        if (border != null)
+            border.Visibility = _transcriptionCollapsed ? Visibility.Collapsed : Visibility.Visible;
+        BtnCollapseTranscription.Content = _transcriptionCollapsed ? "▼" : "▲";
+    }
+
     public void ApplyAllStrings()
     {
         if (MainMenu.Items.Count > 0) ((MenuItem)MainMenu.Items[0]).Header = Strings.Get("mw.menu.file");
