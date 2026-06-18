@@ -253,14 +253,15 @@
         <!-- BUTTONS + COLLAPSE TOGGLE -->
         <Grid Grid.Row="3" Margin="10,6,10,4">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- Collapse toggle -->
-            <Button Grid.Column="0" x:Name="BtnCollapseTranscription" Width="28" Height="28"
-                    Padding="0" Margin="0,0,6,0"
+            <!-- Collapse toggle (left of buttons, inside left padding area) -->
+            <Button x:Name="BtnCollapseTranscription" Width="28" Height="28"
+                    Padding="0" Margin="0,0,8,0"
+                    HorizontalAlignment="Right" VerticalAlignment="Center"
                     Click="BtnCollapseTranscription_Click"
                     Background="{DynamicResource ButtonBgBrush}"
                     BorderBrush="{DynamicResource ButtonBorderBrush}"
@@ -268,7 +269,7 @@
                     FontSize="14" Cursor="Hand"
                     ToolTip="Show/Hide transcription">▲</Button>
 
-            <!-- Buttons: centered -->
+            <!-- Buttons: CENTERED — 4th button (PlayGo) is center of grid -->
             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button x:Name="ButtonFirst" Style="{StaticResource ImageButtonStyle}" Click="ButtonFirst_Click" IsEnabled="False" ToolTip="First segment (Home)"><Image x:Name="ImgFirst" Source="Icons/first.png" Stretch="Uniform"/></Button>
                 <Button x:Name="ButtonPrevSegment" Style="{StaticResource ImageButtonStyle}" Click="ButtonPrevSegment_Click" IsEnabled="False" ToolTip="Previous / Rewind (Left)"><Image x:Name="ImgPrev" Source="Icons/pre_play.png" Stretch="Uniform"/></Button>
