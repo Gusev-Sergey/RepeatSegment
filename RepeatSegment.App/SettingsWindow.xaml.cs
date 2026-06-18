@@ -108,9 +108,10 @@ public partial class SettingsWindow : Window
         PanelYandexTranslate.Visibility = preferYandex ? Visibility.Visible : Visibility.Collapsed;
 
         // Transcription language
-        var transLangs = new[] { ("en","English"), ("es","Español"), ("fr","Français"),
-            ("de","Deutsch"), ("it","Italiano"), ("pt","Português"), ("ru","Русский"),
-            ("ja","日本語"), ("ko","한국어"), ("zh","中文"), ("hi","हिन्दी") };
+        var transLangs = new[] { ("en","English"), ("es","Español — Spanish"), ("fr","Français — French"),
+            ("de","Deutsch — German"), ("it","Italiano — Italian"), ("pt","Português — Portuguese"),
+            ("ru","Русский — Russian"), ("ja","日本語 — Japanese"), ("ko","한국어 — Korean"),
+            ("zh","中文 — Chinese"), ("hi","हिन्दी — Hindi") };
         CmbTranscriptionLang.Items.Clear();
         foreach (var (code, name) in transLangs)
         {
