@@ -7,23 +7,27 @@
 **Путь**: `c:\ProjectsCSharp\RepeatSegment`
 **Бэкап**: `c:\ProjectsCSharp\RepeatSegment_Backup`
 
-## Текущее состояние (18 июня 2026, ~1:00 MSK)
+## Текущее состояние (18 июня 2026, ~02:00 MSK)
 
 ### Работает:
-- Загрузка аудиофайлов и отображение волновой формы (OxyPlot)
-- Транскрипция через Deepgram API (с пословным таймингом `WordTimings`)
+- Загрузка аудиофайлов и отображение волновой формы (SkiaSharp)
+- Транскрипция через Deepgram/AssemblyAI (с пословным таймингом `WordTimings`), **11 языков**
+- **Smart chunk boundaries** — границы чанков привязываются к тишине, не режут слова
 - Перевод через Google Translate (en→ru), 3 ретрая при rate-limit; выбор сервиса в Settings (Google/Yandex)
 - Ручное выделение сегментов мышкой на графике
 - Подсветка активного слова при воспроизведении
-- **Anki экспорт** — ПОЛНОСТЬЮ РАБОЧИЙ
-- **Двойное аудио в карточках Anki** — sentence из книги + TTS слова (Deepgram/Google)
-- **TTS** — произнесение слов через Deepgram Aura + Google TTS fallback (кешируется)
-- WebView2 поиск картинок (Yandex Images), автоочистка кеша при закрытии
+- **Anki экспорт** — ПОЛНОСТЬЮ РАБОЧИЙ (две карточки: en→ru + ru→en)
+- **Двойное аудио в карточках Anki** — 🔊 Word (TTS) + 📖 Sentence (из книги)
+- **TTS** — произнесение слов через Deepgram Aura + Google TTS fallback (кешируется на диск)
+- WebView2 поиск картинок (Yandex Images), автоочистка кеша при закрытии, JPEG сжатие quality=75
 - Запись аудио с микрофона (NAudio)
 - IPA транскрипция через dictionaryapi.dev + Wiktionary
 - Инсталлятор (WiX)
 - **Файловое логирование** (`%APPDATA%/RepeatSegment/repeat_segment.log`)
 - **Pre-commit хук** — блокирует коммиты с API-ключами
+- **Интернационализация** — EN/RU словари, меню Language с сохранением в config.ini
+- **User Guide** — RichTextBox с иконками кнопок, двухязычный, 11 разделов
+- **Схлопывание транскрипции** — кнопка ▲/▼ слева-внизу от плеера
 
 ### Безопасность (важно):
 - Ключи в `config.template.ini` заменены на `YOUR_*` плейсхолдеры
@@ -83,14 +87,39 @@ RepeatSegment/
 | Файл | Назначение |
 |------|-----------|
 | [`RepeatSegment.App/TtsProvider.cs`](RepeatSegment.App/TtsProvider.cs) | TTS: Deepgram Aura + Google fallback |
+| [`RepeatSegment.App/Strings.cs`](RepeatSegment.App/Strings.cs) | I18n: EN/RU словари + User Guide |
 | [`RepeatSegment.App/.env.template`](RepeatSegment.App/.env.template) | Шаблон для .env с ключами |
 | [`plans/tts_dual_audio_plan.md`](plans/tts_dual_audio_plan.md) | Архитектурный план TTS + dual audio |
+| [`plans/i18n_and_userguide.md`](plans/i18n_and_userguide.md) | Архитектурный план i18n |
+| [`plans/android_port_plan.md`](plans/android_port_plan.md) | План портирования на Android |
 | [`.git/hooks/pre-commit`](.git/hooks/pre-commit) | Pre-commit хук (защита от утечек) |
 | `.git/hooks/pre-commit.ps1` | PowerShell версия хука |
 
 ## Известные TODO / недоделки:
-- Anki auto-play проигрывает все `[sound:...]` теги подряд (обход: уникальный dconf id)
+- Anki auto-play проигрывает все `[sound:...]` теги подряд (обход: `bury:false` в dconf)
 - Слияние колод работает но может дублировать медиафайлы при повторном создании
-- Deepgram ключ был отозван (засвечен) — получен новый, актуален
-- AssemblyAI ключ пока жив, но тоже был в истории — может быть отозван
 - `autoplay` в dconf кешируется Anki локально — обход через уникальный `dcid`
+
+## ⚠️ Критические правила (выстраданы, не нарушать)
+
+### Anki
+1. **mid** всегда уникальный при изменении шаблонов — иначе Anki кеширует старую модель
+2. **name модели** тоже должен быть уникальным — Anki deduplicates по name, а не только по mid
+3. **`[sound:...]`** должен быть на отдельной строке, без HTML-тегов перед ним
+4. HTML `<audio>` тег **не работает** в поле `{{sound}}` — только `[sound:...]`
+5. **`bury:false`** в dconf — иначе sibling-карточки скрываются
+6. **`req`** используй `"any"` вместо `"all"` — иначе карточка не генерируется без картинки/контекста
+
+### Запуск приложения
+7. **Не использовать `FirstRunWindow` с `ShowDialog()` в `OnStartup`** — WPF завершает приложение когда закрывается последнее окно. StartupUri должен быть всегда
+8. Если нужно диалоговое окно до MainWindow — делать его в `OnStartup` ДО `base.OnStartup(e)`
+9. **`ShutdownMode = OnMainWindowClose`** обязательно при ручном создании MainWindow
+
+### Транскрипция
+10. Язык передаётся через `_cfg.TranscriptionLanguage` — не хардкодить `"en"`
+11. Кэш-файлы именуются с языком: `..._chunk0000_deepgram_{lang}.json`
+
+### Anki карточки — расположение
+12. **en→ru лицо:** word + transcription + sound + `<br>` + image. **Оборот:** FrontSide + `<hr>` + translation + context
+13. **ru→en лицо:** translation + image. **Оборот:** FrontSide + `<hr>` + word + transcription + sound + context
+14. **Image сжатие:** JPEG quality 75, ресайз до 600px. Маленькие картинки не пережимать
