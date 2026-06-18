@@ -9,7 +9,6 @@ public partial class ManualWindow : Window
         Owner = mainWindow;
         WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
-        // Inject brushes from MainWindow for theme support
         foreach (var key in mainWindow.Resources.Keys)
         {
             if (mainWindow.Resources[key] is System.Windows.Media.SolidColorBrush brush)
@@ -19,6 +18,9 @@ public partial class ManualWindow : Window
             Background = bg;
 
         InitializeComponent();
+        Title = Strings.Get("manual.title");
+        TxtGuide.Text = Strings.GetUserGuide();
+        TxtGuide.FontFamily = new System.Windows.Media.FontFamily("Segoe UI");
     }
 
     private void BtnClose_Click(object sender, RoutedEventArgs e) => Close();

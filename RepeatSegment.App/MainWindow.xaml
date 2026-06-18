@@ -190,7 +190,7 @@
         </Grid.RowDefinitions>
 
         <!-- MENU -->
-        <Menu Grid.Row="0" Background="{DynamicResource MenuBackgroundBrush}" Foreground="{DynamicResource MenuTextBrush}" FontSize="16"
+        <Menu x:Name="MainMenu" Grid.Row="0" Background="{DynamicResource MenuBackgroundBrush}" Foreground="{DynamicResource MenuTextBrush}" FontSize="16"
               HorizontalAlignment="Left" Padding="0" Margin="6,0,0,0">
             <Menu.Resources>
                 <Style TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
@@ -226,6 +226,10 @@
             </MenuItem>
             <MenuItem Header="Settings" FontSize="16">
                 <MenuItem Header="API keys..." Click="ButtonSettings_Click" FontSize="16"/>
+            </MenuItem>
+            <MenuItem Header="Language" FontSize="16">
+                <MenuItem x:Name="MnuLangEn" Header="English" Click="MnuLangEn_Click" FontSize="16"/>
+                <MenuItem x:Name="MnuLangRu" Header="Русский" Click="MnuLangRu_Click" FontSize="16"/>
             </MenuItem>
             <MenuItem Header="Help" FontSize="16">
                 <MenuItem Header="User Guide" Click="BtnManual_Click" FontSize="16"/>

@@ -429,8 +429,31 @@ public partial class MainWindow : Window
     public void OnFileSelected(string fp) => LoadAudioFile(fp);
     private void VolumeControl_VolumeChanged(object s, double v) { if (_audio != null) _audio.Volume = (float)v; }
     private void BtnManual_Click(object s, RoutedEventArgs e) => new ManualWindow(this).ShowDialog();
-    private void BtnAbout_Click(object s, RoutedEventArgs e) => MessageBox.Show("RepeatSegment — Study English with Audio Books\n\nVersion 0.1, 2026\nOriginally developed in Python\nPorted to C# (.NET 8 WPF) with AI\nVS Code + Zoo Code + DeepSeek API", "About RepeatSegment");
+    private void BtnAbout_Click(object s, RoutedEventArgs e) => MessageBox.Show(Strings.Get("mw.dlg.about"), Strings.Get("mw.dlg.about_title"));
     protected override void OnClosed(EventArgs e) { SaveState(); _audio?.Stop(); _audio?.Dispose(); _positionTimer?.Stop(); _settingsWindow?.Close(); base.OnClosed(e); }
+
+    // ── Language switching ──
+    private void MnuLangEn_Click(object s, RoutedEventArgs e) => SwitchLanguage("en");
+    private void MnuLangRu_Click(object s, RoutedEventArgs e) => SwitchLanguage("ru");
+
+    private void SwitchLanguage(string lang)
+    {
+        Strings.SetLanguage(lang);
+        if (_config != null) { _config.Language = lang; _config.Save(_config.Path, _config.FileName, _positionSeconds, _counter); }
+        ApplyAllStrings();
+    }
+
+    public void ApplyAllStrings()
+    {
+        if (MainMenu.Items.Count > 0) ((MenuItem)MainMenu.Items[0]).Header = Strings.Get("mw.menu.file");
+        if (MainMenu.Items.Count > 1) ((MenuItem)MainMenu.Items[1]).Header = Strings.Get("mw.menu.split");
+        if (MainMenu.Items.Count > 2) ((MenuItem)MainMenu.Items[2]).Header = Strings.Get("mw.menu.theme");
+        if (MainMenu.Items.Count > 3) ((MenuItem)MainMenu.Items[3]).Header = Strings.Get("mw.menu.transcription");
+        if (MainMenu.Items.Count > 4) ((MenuItem)MainMenu.Items[4]).Header = Strings.Get("mw.menu.settings");
+        if (MainMenu.Items.Count > 5) ((MenuItem)MainMenu.Items[5]).Header = Strings.Get("mw.menu.lang");
+        if (MainMenu.Items.Count > 6) ((MenuItem)MainMenu.Items[6]).Header = Strings.Get("mw.menu.help");
+    }
+
     private void AdaptToScreen() { double sw = SystemParameters.WorkArea.Width, sh = SystemParameters.WorkArea.Height; Width = sw * 0.85; Height = sh * 0.48; MinWidth = sw * 0.5; MinHeight = 500; double bs = Math.Max(64, Math.Min(sw * 0.055, 100)), isize = bs * 0.85; foreach (var btn in new Button[] { ButtonFirst, ButtonPrevSegment, ButtonRepeat, ButtonPlayGo, ButtonPlay, ButtonNextSegment, ButtonLast }) { btn.Width = bs; btn.Height = bs; } foreach (var img in new[] { ImgFirst, ImgPrev, ImgRepeat, ImgPlayGo, ImgPlayPause, ImgNext, ImgLast }) if (img != null) { img.Width = isize; img.Height = isize; } if (WaveformGraph != null) WaveformGraph.Height = Math.Max(70, sh * 0.09); if (VolumeControl != null) VolumeControl.Width = Math.Max(160, Math.Min(sw * 0.25, 650)); }
     private void UpdateWaveform() { if (WaveformGraph == null || _audio == null) return; WaveformGraph.SamplesSmall = _audio.SamplesSmall; WaveformGraph.SampleRateSmall = _audio.SampleRateSmall; WaveformGraph.DurationSeconds = _durationSeconds; WaveformGraph.PositionSeconds = _positionSeconds; WaveformGraph.Fragments = _fragments; WaveformGraph.CurrentCounter = _counter; WaveformGraph.RepeatSegment = _repeatSegment; WaveformGraph.PlayGoMode = _playGoMode; }
     public ConfigManager? Config => _config; public TranscriptionProvider? Transcription => _transcriptionProvider;

@@ -1,75 +1,24 @@
 <Window x:Class="RepeatSegment.App.ManualWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="RepeatSegment &#x2014; User Guide"
-        Width="600" Height="620"
+        Title="RepeatSegment — User Guide"
+        Width="650" Height="680"
         MinWidth="460" MinHeight="480"
         ResizeMode="CanResizeWithGrip"
+        WindowStartupLocation="CenterOwner"
         FontFamily="Segoe UI"
         FontSize="12pt">
-
     <Grid Margin="16">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-
         <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
-            <StackPanel>
-                <TextBlock Text="RepeatSegment" FontSize="20" FontWeight="Bold"
-                           Foreground="{DynamicResource TextBrush}" Margin="0,0,0,8"/>
-                <TextBlock Foreground="{DynamicResource TextBrush}" Margin="0,0,0,12" TextWrapping="Wrap">
-                    Программа для изучения английского языка по аудиокнигам. Разбивает аудио на речевые сегменты (по паузам), позволяет повторять каждый сегмент, а также отображает текст транскрипции с синхронной подсветкой произносимых слов.
-                </TextBlock>
-
-                <TextBlock Text="1. Загрузка аудио" FontSize="15" FontWeight="Bold"
-                           Foreground="{DynamicResource TextBrush}" Margin="0,12,0,4"/>
-                <TextBlock Foreground="{DynamicResource TextBrush}" Margin="0,0,0,8" TextWrapping="Wrap">
-                    File → Load (Ctrl+O) — выберите MP3 или WAV файл. Программа автоматически найдёт паузы между фразами и разобьёт аудио на сегменты.
-                </TextBlock>
-
-                <TextBlock Text="2. Управление воспроизведением" FontSize="15" FontWeight="Bold"
-                           Foreground="{DynamicResource TextBrush}" Margin="0,12,0,4"/>
-                <TextBlock Foreground="{DynamicResource TextBrush}" Margin="0,0,0,4" TextWrapping="Wrap">
-                    Play — воспроизведение с текущего сегмента до конца (Space)
-                    Repeat — повторить сегмент и остановиться (M)
-                    Play and Go — проиграть и перейти к следующему (Ctrl+Space)
-                    Предыдущий/Следующий сегмент — стрелки Left / Right
-                    Первый/Последний сегмент — Home / End
-                    Stop — остановить (Esc)
-                    Громкость регулируется ползунком справа от кнопок.
-                </TextBlock>
-
-                <TextBlock Text="3. Транскрипция" FontSize="15" FontWeight="Bold"
-                           Foreground="{DynamicResource TextBrush}" Margin="0,12,0,4"/>
-                <TextBlock Foreground="{DynamicResource TextBrush}" Margin="0,0,0,8" TextWrapping="Wrap">
-                    Перед первым использованием откройте Settings → API keys и введите API-ключ хотя бы одного провайдера (Deepgram или AssemblyAI).
-                    Request from API (Ctrl+T) — отправить аудио на расшифровку. Результат сохраняется в output/ рядом с программой.
-                    Load from cache (Ctrl+L) — загрузить ранее полученную транскрипцию.
-                    При воспроизведении произносимое слово подсвечивается жёлтым. Текст автоматически прокручивается.
-                    Внимание: AssemblyAI заблокирован на территории РФ — требуется VPN.
-                </TextBlock>
-
-                <TextBlock Text="4. Интервал тишины" FontSize="15" FontWeight="Bold"
-                           Foreground="{DynamicResource TextBrush}" Margin="0,12,0,4"/>
-                <TextBlock Foreground="{DynamicResource TextBrush}" Margin="0,0,0,8" TextWrapping="Wrap">
-                    Меню Split interval позволяет выбрать длину аудио фрагмента: 100, 200, 300, 500, 800 мс или Custom... (50–5000 мс). Чем меньше значение — тем короче сегменты.
-                </TextBlock>
-
-                <TextBlock Text="5. Оформление" FontSize="15" FontWeight="Bold"
-                           Foreground="{DynamicResource TextBrush}" Margin="0,12,0,4"/>
-                <TextBlock Foreground="{DynamicResource TextBrush}" Margin="0,0,0,8" TextWrapping="Wrap">
-                    Меню Theme — переключение между светлой и тёмной темой.
-                </TextBlock>
-            </StackPanel>
+            <TextBlock x:Name="TxtGuide" TextWrapping="Wrap"
+                       Foreground="{DynamicResource TextBrush}"/>
         </ScrollViewer>
-
         <Button Grid.Row="1" Content="Close" Width="80" Height="30"
                 Margin="0,12,0,0" HorizontalAlignment="Right"
-                Click="BtnClose_Click" IsCancel="True"
-                Background="{DynamicResource ButtonBgBrush}"
-                Foreground="{DynamicResource TextBrush}"
-                BorderBrush="{DynamicResource ButtonBorderBrush}"
-                Cursor="Hand"/>
+                Click="BtnClose_Click" IsCancel="True"/>
     </Grid>
 </Window>

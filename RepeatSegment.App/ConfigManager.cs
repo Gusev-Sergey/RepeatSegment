@@ -19,6 +19,7 @@ public class ConfigManager
     public double Position { get; set; }
     public int Counter { get; set; }
     public int MinSilenceLenMs { get; set; } = 400;
+    public string Language { get; set; } = ""; // "en" or "ru" — empty = first run
 
     // ---- Transcription section ----
     public List<string> ProvidersEnabled { get; set; } = new() { "yandex" };
@@ -74,6 +75,8 @@ public class ConfigManager
                 Position = GetDouble(settings, "position", 0.0);
                 Counter = GetInt(settings, "counter", 0);
                 MinSilenceLenMs = GetInt(settings, "split_interval", 400);
+                Language = GetValue(settings, "language", "").ToLowerInvariant();
+                if (Language != "en" && Language != "ru") Language = "";
 
                 Log.Info($"[INFO] Config loaded: file={FileName}, position={Position:F1}, counter={Counter}");
             }
@@ -167,6 +170,7 @@ public class ConfigManager
                 $"position = {position}",
                 $"counter = {counter}",
                 $"split_interval = {MinSilenceLenMs}",
+                $"language = {Language}",
                 "",
                 "[Transcription]",
                 $"providers_enabled = {string.Join(",", ProvidersEnabled)}",
