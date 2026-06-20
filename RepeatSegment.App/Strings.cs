@@ -72,6 +72,8 @@ public static class Strings
         ["mw.overlay.transcribing"] = "Transcribing...",
         ["mw.overlay.loading"] = "Loading from cache...",
         ["mw.open_file"] = "Select audio file",
+        ["mw.speed"] = "Speed",
+        ["mw.speed.tip"] = "Playback speed",
 
         // ── AnkiCardWindow ──
         ["acw.title"] = "Anki Card",
@@ -231,6 +233,8 @@ public static class Strings
         ["mw.overlay.transcribing"] = "Транскрибирование...",
         ["mw.overlay.loading"] = "Загрузка из кэша...",
         ["mw.open_file"] = "Выберите аудиофайл",
+        ["mw.speed"] = "Скорость",
+        ["mw.speed.tip"] = "Скорость воспроизведения",
 
         // ── AnkiCardWindow ──
         ["acw.title"] = "Карточка Anki",

@@ -49,6 +49,9 @@ public class AudioEngine : IDisposable
     }
     private float _volume = 1.0f;
 
+    /// <summary>Playback speed multiplier (0.4 to 1.5). 1.0 = normal. Pitch preserved via SOLA.</summary>
+    public double PlaybackSpeed { get; set; } = 1.0;
+
     // ── Playback internals ─────────────────────────────────────────
     private WaveOutEvent? _waveOut;
     private IWaveProvider? _playbackProvider;
@@ -149,6 +152,110 @@ public class AudioEngine : IDisposable
     /// <summary>Returns the full-quality sample array (called as _audio.GetSamples() in MainWindow).</summary>
     public float[]? GetSamples() => Samples;
 
+    // ── Fast WSOLA time-stretch (pitch-preserving) ────────────────
+
+    /// <summary>
+    /// Waveform-Similarity Overlap-Add time stretch.
+    /// Frame = 4096, output hop = 2048 (50% overlap). Bartlett window (perfect COLA).
+    /// Simple cross-correlation align on 512 samples, ±64 radius.
+    /// speed > 1 = faster (shorter), speed < 1 = slower (longer).
+    /// </summary>
+    public static float[] StretchSola(float[] input, double speed)
+    {
+        if (Math.Abs(speed - 1.0) < 0.005 || input.Length < 4096)
+            return (float[])input.Clone();
+
+        const int frameSize = 4096;
+        const int outputHop = 2048; // 50% overlap
+        const int corrLen = 2048; // full overlap zone
+        const int searchRadius = 32;
+
+        // Bartlett (triangle) window: w[n] = 1 - |2n/(N-1) - 1|
+        // Perfect COLA at 50% overlap: w[n] + w[n+N/2] = 1 for all n
+        var window = new float[frameSize];
+        for (int i = 0; i < frameSize; i++)
+            window[i] = 1f - Math.Abs(2f * i / (frameSize - 1f) - 1f);
+
+        double inputHop = outputHop * speed;
+        int maxFrames = (int)((input.Length - frameSize) / inputHop) + 2;
+        if (maxFrames < 1) maxFrames = 1;
+        int outputLength = maxFrames * outputHop + frameSize;
+        var output = new float[outputLength];
+
+        double inputPos = 0;
+        for (int outFrame = 0; outFrame < maxFrames; outFrame++)
+        {
+            int outCenter = outFrame * outputHop + frameSize / 2;
+            if (outCenter >= outputLength) break;
+
+            int baseInCenter = (int)Math.Round(inputPos + frameSize / 2.0);
+            int inCenter = baseInCenter;
+
+            // WSOLA: align input frame with existing output via cross-correlation
+            if (outFrame > 0)
+            {
+                int overlapOutStart = outCenter - frameSize / 2;
+                float bestCorr = float.NegativeInfinity;
+                int bestOffset = 0;
+
+                for (int offset = -searchRadius; offset <= searchRadius; offset++)
+                {
+                    int trialCenter = baseInCenter + offset;
+                    int trialStart = trialCenter - frameSize / 2;
+                    if (trialStart + corrLen >= input.Length || trialStart < 0)
+                        continue;
+
+                    float corr = 0;
+                    for (int s = 0; s < corrLen; s++)
+                        corr += output[overlapOutStart + s] * input[trialStart + s];
+
+                    if (corr > bestCorr)
+                    {
+                        bestCorr = corr;
+                        bestOffset = offset;
+                    }
+                }
+                inCenter = baseInCenter + bestOffset;
+            }
+
+            int inStart = inCenter - frameSize / 2;
+            int outStart = outCenter - frameSize / 2;
+
+            for (int k = 0; k < frameSize; k++)
+            {
+                int inIdx = inStart + k;
+                int outIdx = outStart + k;
+                if (outIdx < 0 || outIdx >= outputLength) continue;
+
+                float sample = (inIdx >= 0 && inIdx < input.Length) ? input[inIdx] : 0f;
+                output[outIdx] += sample * window[k];
+            }
+
+            inputPos += inputHop;
+            if (inputPos + frameSize > input.Length) break;
+        }
+
+        // Clamp and trim trailing silence
+        int validEnd = outputLength;
+        for (int i = outputLength - 1; i >= 0; i--)
+        {
+            float v = output[i];
+            if (v < -1f) v = -1f;
+            if (v > 1f) v = 1f;
+            output[i] = v;
+            if (Math.Abs(v) > 0.0001f) { validEnd = i + 1; break; }
+        }
+
+        if (validEnd > 0 && validEnd < outputLength)
+        {
+            var trimmed = new float[validEnd];
+            Array.Copy(output, trimmed, validEnd);
+            return trimmed;
+        }
+
+        return output;
+    }
+
     // ── Playback control ───────────────────────────────────────────
 
     /// <summary>Play a pre-extracted float[] segment directly (called from MainWindow).</summary>
@@ -159,7 +266,10 @@ public class AudioEngine : IDisposable
 
         StopPlaybackInternal();
 
-        var rawProvider = new RawSampleProvider(segmentSamples, SampleRate);
+        // Apply SOLA time-stretch if speed != 1.0
+        float[] played = StretchSola(segmentSamples, PlaybackSpeed);
+
+        var rawProvider = new RawSampleProvider(played, SampleRate);
         _playbackProvider = rawProvider;
         _playbackStartSample = 0;
         _playbackStartTick = Environment.TickCount64;
@@ -170,7 +280,7 @@ public class AudioEngine : IDisposable
         _waveOut.Volume = _volume;
         _waveOut.Play();
 
-        Log.Info($"[INFO] PlaySegment started, {segmentSamples.Length} samples");
+        Log.Info($"[INFO] PlaySegment started, {segmentSamples.Length} samples, speed={PlaybackSpeed:F2}, stretched={played.Length}");
     }
 
     /// <summary>Start playback from the given position in seconds.</summary>
@@ -189,7 +299,9 @@ public class AudioEngine : IDisposable
         var segmentSamples = new float[Samples.Length - startSample];
         Array.Copy(Samples, startSample, segmentSamples, 0, segmentSamples.Length);
 
-        var rawProvider = new RawSampleProvider(segmentSamples, SampleRate);
+        float[] played = StretchSola(segmentSamples, PlaybackSpeed);
+
+        var rawProvider = new RawSampleProvider(played, SampleRate);
         _playbackProvider = rawProvider;
         _playbackStartSample = startSample;
         _playbackStartTick = Environment.TickCount64;
@@ -207,7 +319,7 @@ public class AudioEngine : IDisposable
         _waveOut.Init(rawProvider);
         _waveOut.Play();
 
-        Log.Info($"[INFO] Playback started from {positionSeconds:F1}s");
+        Log.Info($"[INFO] Playback started from {positionSeconds:F1}s, speed={PlaybackSpeed:F2}");
     }
 
     /// <summary>Pause playback, keeping position.</summary>
@@ -246,7 +358,9 @@ public class AudioEngine : IDisposable
         var segmentSamples = new float[Samples.Length - startSample];
         Array.Copy(Samples, startSample, segmentSamples, 0, segmentSamples.Length);
 
-        var rawProvider = new RawSampleProvider(segmentSamples, SampleRate);
+        float[] played = StretchSola(segmentSamples, PlaybackSpeed);
+
+        var rawProvider = new RawSampleProvider(played, SampleRate);
         _playbackProvider = rawProvider;
         _playbackStartSample = startSample;
         _playbackStartTick = Environment.TickCount64;
@@ -258,7 +372,7 @@ public class AudioEngine : IDisposable
         if (wasPlaying)
             _waveOut.Play();
 
-        Log.Info($"[INFO] Seek to {positionSeconds:F1}s");
+        Log.Info($"[INFO] Seek to {positionSeconds:F1}s, speed={PlaybackSpeed:F2}");
     }
 
     /// <summary>Get current playback position in seconds.</summary>
@@ -511,6 +625,7 @@ public class AudioEngine : IDisposable
     /// <summary>
     /// Simple IWaveProvider that feeds float[] samples to WaveOutEvent.
     /// Converts float [-1..1] to 16-bit PCM on the fly.
+    /// Time-stretching is handled before this stage (via StretchSola).
     /// </summary>
     private class RawSampleProvider : IWaveProvider
     {
