@@ -82,3 +82,51 @@ using (var writer = new LameMP3FileWriter(ms, fmt, 128)) { writer.Write(data, 0,
 byte[] result = ms.ToArray();
 ```
 После `using` writer закрыт → MP3 полный.
+
+---
+
+# Технические находки и решения (июнь 2026)
+
+## MP3 битрейт
+- 128 kbps — избыточно для речи. 64 kbps mono — золотая середина для TTS.
+- Anki 26.05 поддерживает только MP3 (не Opus).
+- Добавлен выбор 64/128 kbps в Settings → General.
+
+## Anki auto-play
+- При двух аудио (sentence + TTS) Anki проигрывает все `[sound:...]` теги подряд.
+- Решение: `"autoplay":false` в dconf. Осознанно отключено.
+
+## dcid (deck configuration ID)
+- Anki кеширует deck configuration на клиенте.
+- Решение: `dcid = 900000000 + (timestamp % 100000000)` — всегда уникальный.
+- Побочный эффект: накопление старых dconf-записей в JSON (не критично).
+
+## Слияние колод и дублирование медиа
+- `BuildDeck()` не делает content-based дедупликации.
+- При повторном создании карточек с тем же аудио — новый ID, дубликат в ZIP.
+- Не критично при полной замене колоды.
+
+## Кодировка recent.txt
+- `File.WriteAllLines` без `Encoding.UTF8` → ANSI (windows-1251) портит кириллицу.
+- Решение: всегда `Encoding.UTF8` при чтении и записи.
+- Добавлена автоочистка битых ANSI-файлов по наличию `\uFFFD`.
+
+## Frozen Brush в ApplyTheme
+- `SolidColorBrush` из XAML заморожен — менять `.Color` нельзя.
+- Решение: `Resources[key] = new SolidColorBrush(value)` при каждой смене темы.
+- Цвета вынесены в статические словари `DarkColors`/`LightColors`.
+
+## RichTextBox и FlowDocument отступы
+- `FlowDocument.PagePadding` по умолчанию `{5,5,5,5}`.
+- `Paragraph.Margin` по умолчанию `{0,0,0,10}`.
+- Решение: `PagePadding="0"`, `Paragraph Margin="0"`.
+
+## Дочерние окна и тёмная тема
+- Title bar красится через `DwmSetWindowAttribute` с `DWMWA_USE_IMMERSIVE_DARK_MODE=20`.
+- Для дочерних окон нужен `Loaded` event с доступом к `MainWindow.IsDarkTheme`.
+- Кисти копируются из MainWindow через `InjectBrushes()`.
+
+## Размер окна и SizeToContent
+- `SizeToContent` не может опуститься ниже `MinHeight`.
+- `AdaptToScreen()` задаёт `Width`/`Height` — `SizeToContent` не переопределяет.
+- Решение для кнопки ▲/▼: `Height = double.NaN; MinHeight = 0; SizeToContent = Height`.
