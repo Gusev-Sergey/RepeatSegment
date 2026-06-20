@@ -9,8 +9,7 @@
         WindowStartupLocation="CenterScreen"
         KeyDown="Window_KeyDown"
         Background="{DynamicResource WindowBackgroundBrush}"
-        FontFamily="Segoe UI"
-        FontSize="11pt">
+        FontFamily="Segoe UI" FontSize="11pt">
 
     <Window.Resources>
         <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#F0F2F5"/>
@@ -61,188 +60,85 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="MenuItem">
-                        <Border x:Name="Border"
-                                Background="{TemplateBinding Background}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                Padding="{TemplateBinding Padding}"
-                                SnapsToDevicePixels="True">
+                        <Border x:Name="Border" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
                             <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" SharedSizeGroup="Icon"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto" SharedSizeGroup="Shortcut"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <ContentPresenter Grid.Column="0" x:Name="Icon"
-                                                  Margin="0,0,4,0"
-                                                  VerticalAlignment="Center"
-                                                  ContentSource="Icon"
-                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                                <ContentPresenter Grid.Column="1"
-                                                  ContentSource="Header"
-                                                  RecognizesAccessKey="True"
-                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                                <TextBlock Grid.Column="2"
-                                           x:Name="InputGestureText"
-                                           Text="{TemplateBinding InputGestureText}"
-                                           Margin="16,0,0,0"
-                                           Foreground="{DynamicResource TextDimBrush}"
-                                           VerticalAlignment="Center"/>
-                                <Path Grid.Column="3"
-                                      x:Name="SubMenuArrow"
-                                      Data="M 0 0 L 4 4 L 0 8 Z"
-                                      Fill="{DynamicResource TextDimBrush}"
-                                      Margin="8,0,0,0"
-                                      VerticalAlignment="Center"
-                                      Visibility="Collapsed"/>
-                                <Popup x:Name="PART_Popup"
-                                       AllowsTransparency="True"
-                                       Focusable="False"
-                                       IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
-                                       PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}"
-                                       Placement="Right">
-                                    <Border x:Name="SubMenuBorder"
-                                            Background="{DynamicResource MenuDropBgBrush}"
-                                            BorderBrush="{DynamicResource SeparatorBrush}"
-                                            BorderThickness="1"
-                                            Padding="2">
-                                        <ScrollViewer CanContentScroll="True"
-                                                      Style="{DynamicResource {ComponentResourceKey TypeInTargetAssembly={x:Type FrameworkElement}, ResourceId=MenuScrollViewer}}">
-                                            <ItemsPresenter x:Name="ItemsPresenter"
-                                                            Grid.IsSharedSizeScope="True"
-                                                            KeyboardNavigation.DirectionalNavigation="Cycle"
-                                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="Icon"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto" SharedSizeGroup="Shortcut"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                <ContentPresenter Grid.Column="0" x:Name="Icon" Margin="0,0,4,0" VerticalAlignment="Center" ContentSource="Icon" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                <ContentPresenter Grid.Column="1" ContentSource="Header" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                <TextBlock Grid.Column="2" x:Name="InputGestureText" Text="{TemplateBinding InputGestureText}" Margin="16,0,0,0" Foreground="{DynamicResource TextDimBrush}" VerticalAlignment="Center"/>
+                                <Path Grid.Column="3" x:Name="SubMenuArrow" Data="M 0 0 L 4 4 L 0 8 Z" Fill="{DynamicResource TextDimBrush}" Margin="8,0,0,0" VerticalAlignment="Center" Visibility="Collapsed"/>
+                                <Popup x:Name="PART_Popup" AllowsTransparency="True" Focusable="False" IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}" Placement="Right">
+                                    <Border x:Name="SubMenuBorder" Background="{DynamicResource MenuDropBgBrush}" BorderBrush="{DynamicResource SeparatorBrush}" BorderThickness="1" Padding="2">
+                                        <ScrollViewer CanContentScroll="True" Style="{DynamicResource {ComponentResourceKey TypeInTargetAssembly={x:Type FrameworkElement}, ResourceId=MenuScrollViewer}}">
+                                            <ItemsPresenter x:Name="ItemsPresenter" Grid.IsSharedSizeScope="True" KeyboardNavigation.DirectionalNavigation="Cycle" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
                                         </ScrollViewer>
                                     </Border>
                                 </Popup>
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
-                            <Trigger Property="Role" Value="TopLevelHeader">
-                                <Setter Property="Padding" Value="2,0,2,0"/>
-                                <Setter TargetName="SubMenuArrow" Property="Visibility" Value="Collapsed"/>
-                                <Setter TargetName="PART_Popup" Property="Placement" Value="Bottom"/>
-                            </Trigger>
-                            <Trigger Property="Role" Value="TopLevelItem">
-                                <Setter Property="Padding" Value="2,0,2,0"/>
-                                <Setter TargetName="SubMenuArrow" Property="Visibility" Value="Collapsed"/>
-                            </Trigger>
-                            <Trigger Property="Role" Value="SubmenuHeader">
-                                <Setter TargetName="SubMenuArrow" Property="Visibility" Value="Visible"/>
-                            </Trigger>
-                            <Trigger Property="IsHighlighted" Value="True">
-                                <Setter TargetName="Border" Property="Background" Value="{DynamicResource ButtonHoverBrush}"/>
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Foreground" Value="{DynamicResource TextDimBrush}"/>
-                            </Trigger>
+                            <Trigger Property="Role" Value="TopLevelHeader"><Setter Property="Padding" Value="2,0,2,0"/><Setter TargetName="SubMenuArrow" Property="Visibility" Value="Collapsed"/><Setter TargetName="PART_Popup" Property="Placement" Value="Bottom"/></Trigger>
+                            <Trigger Property="Role" Value="TopLevelItem"><Setter Property="Padding" Value="2,0,2,0"/><Setter TargetName="SubMenuArrow" Property="Visibility" Value="Collapsed"/></Trigger>
+                            <Trigger Property="Role" Value="SubmenuHeader"><Setter TargetName="SubMenuArrow" Property="Visibility" Value="Visible"/></Trigger>
+                            <Trigger Property="IsHighlighted" Value="True"><Setter TargetName="Border" Property="Background" Value="{DynamicResource ButtonHoverBrush}"/></Trigger>
+                            <Trigger Property="IsEnabled" Value="False"><Setter Property="Foreground" Value="{DynamicResource TextDimBrush}"/></Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style TargetType="Separator">
-            <Setter Property="Background" Value="{DynamicResource SeparatorBrush}"/>
-        </Style>
+        <Style TargetType="Separator"><Setter Property="Background" Value="{DynamicResource SeparatorBrush}"/></Style>
         <Style TargetType="Button" x:Key="ImageButtonStyle">
-            <Setter Property="Margin" Value="0"/>
-            <Setter Property="Padding" Value="2"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Grid Background="Transparent">
-                            <Border x:Name="HoverBorder" Background="Transparent" BorderThickness="0" CornerRadius="4"
-                                    HorizontalAlignment="Center" VerticalAlignment="Center"
-                                    Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                  Margin="{TemplateBinding Padding}"/>
-                            </Border>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="HoverBorder" Property="Background" Value="#20000000"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="HoverBorder" Property="Background" Value="#40000000"/>
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Opacity" Value="0.4"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
+            <Setter Property="Margin" Value="0"/><Setter Property="Padding" Value="2"/><Setter Property="Cursor" Value="Hand"/><Setter Property="Background" Value="Transparent"/><Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button"><Grid Background="Transparent"><Border x:Name="HoverBorder" Background="Transparent" BorderThickness="0" CornerRadius="4" HorizontalAlignment="Center" VerticalAlignment="Center" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/></Border></Grid><ControlTemplate.Triggers><Trigger Property="IsMouseOver" Value="True"><Setter TargetName="HoverBorder" Property="Background" Value="#20000000"/></Trigger><Trigger Property="IsPressed" Value="True"><Setter TargetName="HoverBorder" Property="Background" Value="#40000000"/></Trigger><Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.4"/></Trigger></ControlTemplate.Triggers></ControlTemplate></Setter.Value></Setter>
         </Style>
     </Window.Resources>
 
     <Grid x:Name="LayoutRoot">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*" MinHeight="140"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*" MinHeight="140"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
 
-        <!-- MENU -->
-        <Menu x:Name="MainMenu" Grid.Row="0" Background="{DynamicResource MenuBackgroundBrush}" Foreground="{DynamicResource MenuTextBrush}" FontSize="16"
-              HorizontalAlignment="Left" Padding="0" Margin="6,0,0,0">
-            <Menu.Resources>
-                <Style TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
-                    <Setter Property="Margin" Value="-4,0,-4,0"/>
-                </Style>
-            </Menu.Resources>
-            <Menu.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal"/>
-                </ItemsPanelTemplate>
-            </Menu.ItemsPanel>
-            <MenuItem Header="File" FontSize="16">
-                <MenuItem Header="Load" Click="BtnLoad_Click" FontSize="16" InputGestureText="Ctrl+O"/>
+        <Menu x:Name="MainMenu" Grid.Row="0" Background="{DynamicResource MenuBackgroundBrush}" Foreground="{DynamicResource MenuTextBrush}" FontSize="16" HorizontalAlignment="Left" Padding="0" Margin="6,0,0,0">
+            <Menu.Resources><Style TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}"><Setter Property="Margin" Value="-4,0,-4,0"/></Style></Menu.Resources>
+            <Menu.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal"/></ItemsPanelTemplate></Menu.ItemsPanel>
+            <MenuItem Header="File" FontSize="16" x:Name="MnuFile">
+                <MenuItem x:Name="MnuFileLoad" Header="Load" Click="BtnLoad_Click" FontSize="16" InputGestureText="Ctrl+O"/>
                 <Separator/>
-                <MenuItem Header="Exit" Click="BtnExit_Click" FontSize="16" InputGestureText="Alt+F4"/>
+                <MenuItem x:Name="MnuFileExit" Header="Exit" Click="BtnExit_Click" FontSize="16" InputGestureText="Alt+F4"/>
             </MenuItem>
-            <MenuItem Header="Split interval" FontSize="16" x:Name="MnuSplitInterval">
-                <MenuItem Header="100 ms" Click="MnuSilence_Click" Tag="100" FontSize="16"/>
-                <MenuItem Header="200 ms" Click="MnuSilence_Click" Tag="200" FontSize="16"/>
-                <MenuItem Header="300 ms" Click="MnuSilence_Click" Tag="300" FontSize="16" IsChecked="True"/>
-                <MenuItem Header="500 ms" Click="MnuSilence_Click" Tag="500" FontSize="16"/>
-                <MenuItem Header="800 ms" Click="MnuSilence_Click" Tag="800" FontSize="16"/>
+            <MenuItem Header="Segment duration" FontSize="16" x:Name="MnuSplitInterval">
+                <MenuItem Header="2 sec" Click="MnuSegmentDuration_Click" Tag="2" FontSize="16"/>
+                <MenuItem Header="5 sec" Click="MnuSegmentDuration_Click" Tag="5" FontSize="16" IsChecked="True"/>
+                <MenuItem Header="10 sec" Click="MnuSegmentDuration_Click" Tag="10" FontSize="16"/>
+                <MenuItem Header="20 sec" Click="MnuSegmentDuration_Click" Tag="20" FontSize="16"/>
                 <Separator/>
-                <MenuItem Header="Custom..." Click="MnuSilenceCustom_Click" FontSize="16"/>
+                <MenuItem x:Name="MnuSplitCustom" Header="Custom..." Click="MnuSegmentDurationCustom_Click" FontSize="16"/>
             </MenuItem>
-            <MenuItem Header="Theme" FontSize="16">
+            <MenuItem Header="Theme" FontSize="16" x:Name="MnuTheme">
                 <MenuItem x:Name="MnuThemeLight" Header="Light" Click="MnuThemeLight_Click" FontSize="16"/>
                 <MenuItem x:Name="MnuThemeDark" Header="Dark" Click="MnuThemeDark_Click" FontSize="16"/>
             </MenuItem>
-            <MenuItem Header="Transcription" FontSize="16">
-                <MenuItem Header="Load from cache" Click="BtnTranscribeCache_Click" FontSize="16" InputGestureText="Ctrl+L"/>
-                <MenuItem Header="Request from API" Click="BtnTranscribeApi_Click" FontSize="16" InputGestureText="Ctrl+T"/>
+            <MenuItem Header="Transcription" FontSize="16" x:Name="MnuTranscription">
+                <MenuItem x:Name="MnuTranscriptionCache" Header="Load from cache" Click="BtnTranscribeCache_Click" FontSize="16" InputGestureText="Ctrl+L"/>
+                <MenuItem x:Name="MnuTranscriptionApi" Header="Request from API" Click="BtnTranscribeApi_Click" FontSize="16" InputGestureText="Ctrl+T"/>
             </MenuItem>
-            <MenuItem Header="Settings" FontSize="16">
-                <MenuItem Header="API keys..." Click="ButtonSettings_Click" FontSize="16"/>
+            <MenuItem Header="Settings" FontSize="16" x:Name="MnuSettings">
+                <MenuItem x:Name="MnuSettingsApiKeys" Header="API keys..." Click="ButtonSettings_Click" FontSize="16"/>
+                <MenuItem x:Name="MnuSettingsTranslation" Header="Translation..." Click="ButtonTranslationSettings_Click" FontSize="16"/>
+                <MenuItem x:Name="MnuSettingsGeneral" Header="General..." Click="ButtonGeneralSettings_Click" FontSize="16"/>
             </MenuItem>
-            <MenuItem Header="Language" FontSize="16">
+            <MenuItem Header="Language" FontSize="16" x:Name="MnuLang">
                 <MenuItem x:Name="MnuLangEn" Header="English" Click="MnuLangEn_Click" FontSize="16"/>
                 <MenuItem x:Name="MnuLangRu" Header="Русский" Click="MnuLangRu_Click" FontSize="16"/>
             </MenuItem>
-            <MenuItem Header="Help" FontSize="16">
-                <MenuItem Header="User Guide" Click="BtnManual_Click" FontSize="16"/>
+            <MenuItem Header="Help" FontSize="16" x:Name="MnuHelp">
+                <MenuItem x:Name="MnuHelpGuide" Header="User Guide" Click="BtnManual_Click" FontSize="16"/>
                 <Separator/>
-                <MenuItem Header="About..." Click="BtnAbout_Click" FontSize="16"/>
+                <MenuItem x:Name="MnuHelpAbout" Header="About..." Click="BtnAbout_Click" FontSize="16"/>
             </MenuItem>
         </Menu>
 
-        <!-- WAVEFORM -->
-        <local:WaveformGraph Grid.Row="1" x:Name="WaveformGraph" Height="110" Margin="10,4"
-                             SegmentSelected="WaveformGraph_SegmentSelected" />
+        <local:WaveformGraph Grid.Row="1" x:Name="WaveformGraph" Height="110" Margin="10,4" SegmentSelected="WaveformGraph_SegmentSelected"/>
 
-        <!-- SLIDER -->
         <Grid Grid.Row="2" Margin="10,4,10,0">
             <Grid.ColumnDefinitions><ColumnDefinition Width="60"/><ColumnDefinition Width="*"/><ColumnDefinition Width="60"/></Grid.ColumnDefinitions>
             <TextBlock x:Name="LabelPosition" Grid.Column="0" Text="00:00" VerticalAlignment="Center" Foreground="{DynamicResource TextDimBrush}" FontSize="13"/>
@@ -250,26 +146,9 @@
             <TextBlock x:Name="LabelDuration" Grid.Column="2" Text="00:00" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="{DynamicResource TextDimBrush}" FontSize="13"/>
         </Grid>
 
-        <!-- BUTTONS + COLLAPSE TOGGLE -->
         <Grid Grid.Row="3" Margin="10,6,10,4">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <!-- Collapse toggle: left edge, bottom-aligned -->
-            <Button x:Name="BtnCollapseTranscription" Width="28" Height="28"
-                    Padding="0" Margin="0"
-                    HorizontalAlignment="Left" VerticalAlignment="Bottom"
-                    Click="BtnCollapseTranscription_Click"
-                    Background="{DynamicResource ButtonBgBrush}"
-                    BorderBrush="{DynamicResource ButtonBorderBrush}"
-                    Foreground="{DynamicResource TextBrush}"
-                    FontSize="14" Cursor="Hand"
-                    ToolTip="Show/Hide transcription">▲</Button>
-
-            <!-- Buttons: CENTERED — 4th button (PlayGo) is center of grid -->
+            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+            <Button x:Name="BtnCollapseTranscription" Width="28" Height="28" Padding="0" Margin="0" HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="BtnCollapseTranscription_Click" Background="{DynamicResource ButtonBgBrush}" BorderBrush="{DynamicResource ButtonBorderBrush}" Foreground="{DynamicResource TextBrush}" FontSize="14" Cursor="Hand" ToolTip="Show/Hide transcription">▲</Button>
             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button x:Name="ButtonFirst" Style="{StaticResource ImageButtonStyle}" Click="ButtonFirst_Click" IsEnabled="False" ToolTip="First segment (Home)"><Image x:Name="ImgFirst" Source="Icons/first.png" Stretch="Uniform"/></Button>
                 <Button x:Name="ButtonPrevSegment" Style="{StaticResource ImageButtonStyle}" Click="ButtonPrevSegment_Click" IsEnabled="False" ToolTip="Previous / Rewind (Left)"><Image x:Name="ImgPrev" Source="Icons/pre_play.png" Stretch="Uniform"/></Button>
@@ -279,20 +158,14 @@
                 <Button x:Name="ButtonNextSegment" Style="{StaticResource ImageButtonStyle}" Click="ButtonNextSegment_Click" IsEnabled="False" ToolTip="Next / Forward (Right)"><Image x:Name="ImgNext" Source="Icons/next_play.png" Stretch="Uniform"/></Button>
                 <Button x:Name="ButtonLast" Style="{StaticResource ImageButtonStyle}" Click="ButtonLast_Click" IsEnabled="False" ToolTip="Last segment (End)"><Image x:Name="ImgLast" Source="Icons/last.png" Stretch="Uniform"/></Button>
             </StackPanel>
-
-            <!-- Volume: right side -->
-            <local:VolumeWidget Grid.Column="2" x:Name="VolumeControl" Width="160" Height="44"
-                                HorizontalAlignment="Center" VerticalAlignment="Center"
-                                VolumeChanged="VolumeControl_VolumeChanged"/>
+            <local:VolumeWidget Grid.Column="2" x:Name="VolumeControl" Width="160" Height="44" HorizontalAlignment="Center" VerticalAlignment="Center" VolumeChanged="VolumeControl_VolumeChanged"/>
         </Grid>
 
-        <!-- TRANSCRIPTION TEXT -->
         <Border Grid.Row="4" Margin="10,6" BorderBrush="{DynamicResource SeparatorBrush}" BorderThickness="1" CornerRadius="4" MinHeight="80">
             <Grid>
                 <ScrollViewer x:Name="TextScrollViewer" VerticalScrollBarVisibility="Auto">
-                    <RichTextBox x:Name="TextTranscription" IsReadOnly="True" BorderThickness="0" FontSize="20" Padding="8" Foreground="{DynamicResource TextBrush}" Background="Transparent" VerticalScrollBarVisibility="Disabled"
-                                 SelectionChanged="TextTranscription_SelectionChanged">
-                        <FlowDocument><Paragraph x:Name="TranscriptionParagraph"><Run Text="Select an audio file to begin." Foreground="{DynamicResource TextDimBrush}"/></Paragraph></FlowDocument>
+                    <RichTextBox x:Name="TextTranscription" IsReadOnly="True" BorderThickness="0" FontSize="20" Padding="4" Foreground="{DynamicResource TextBrush}" Background="Transparent" VerticalScrollBarVisibility="Auto" SelectionChanged="TextTranscription_SelectionChanged">
+                        <FlowDocument PagePadding="0"><Paragraph x:Name="TranscriptionParagraph" Margin="0"><Run Text="Select an audio file to begin." Foreground="{DynamicResource TextDimBrush}"/></Paragraph></FlowDocument>
                     </RichTextBox>
                 </ScrollViewer>
                 <Border x:Name="TranscribeOverlay" Visibility="Collapsed" Background="#80000000" CornerRadius="4">
@@ -304,31 +177,15 @@
             </Grid>
         </Border>
 
-        <!-- TRANSLATION PANEL -->
-        <Border Grid.Row="5" x:Name="TranslationPanel" Visibility="Collapsed"
-                Margin="10,4,10,16" Padding="8,6,8,12" CornerRadius="4"
-                BorderBrush="{DynamicResource SeparatorBrush}" BorderThickness="1"
-                Background="{DynamicResource PanelBackgroundBrush}">
+        <Border Grid.Row="5" x:Name="TranslationPanel" Visibility="Collapsed" Margin="10,4,10,16" Padding="8,6,8,12" CornerRadius="4" BorderBrush="{DynamicResource SeparatorBrush}" BorderThickness="1" Background="{DynamicResource PanelBackgroundBrush}">
             <Grid x:Name="TranslationInnerGrid">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" x:Name="TxtTranslationOriginal" FontSize="11"
-                           Foreground="{DynamicResource TextDimBrush}" TextWrapping="Wrap" Margin="0,0,0,4"/>
-                <TextBlock Grid.Row="1" x:Name="TxtTranslationResult" FontSize="14" FontWeight="Bold"
-                           Foreground="{DynamicResource TextBrush}" TextWrapping="Wrap"/>
-                <Button Grid.Row="2" x:Name="BtnAddToAnki" Content="Add to Anki" Padding="10,4" Margin="0,8,0,0"
-                        HorizontalAlignment="Right" Click="BtnAddToAnki_Click"
-                        Background="#FFC107" Foreground="#222" FontWeight="Bold"
-                        ToolTip="Create Anki flashcards from the selected word/phrase"/>
+                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" x:Name="TxtTranslationOriginal" FontSize="11" Foreground="{DynamicResource TextDimBrush}" TextWrapping="Wrap" Margin="0,0,0,4"/>
+                <TextBlock Grid.Row="1" x:Name="TxtTranslationResult" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource TextBrush}" TextWrapping="Wrap"/>
+                <Button Grid.Row="2" x:Name="BtnAddToAnki" Content="Add to Anki" Padding="10,4" Margin="0,8,0,0" HorizontalAlignment="Right" Click="BtnAddToAnki_Click" Background="#FFC107" Foreground="#222" FontWeight="Bold" ToolTip="Create Anki flashcards from the selected word/phrase"/>
             </Grid>
         </Border>
 
-        <!-- STATUS -->
-        <StatusBar Grid.Row="6" Background="{DynamicResource StatusBarBrush}">
-            <StatusBarItem><TextBlock x:Name="TxtStatus" Text="Ready" Foreground="{DynamicResource TextDimBrush}" FontSize="13"/></StatusBarItem>
-        </StatusBar>
+        <StatusBar Grid.Row="6" Background="{DynamicResource StatusBarBrush}"><StatusBarItem><TextBlock x:Name="TxtStatus" Text="Ready" Foreground="{DynamicResource TextDimBrush}" FontSize="13"/></StatusBarItem></StatusBar>
     </Grid>
 </Window>

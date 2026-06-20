@@ -9,8 +9,11 @@ namespace RepeatSegment.App;
 
 public partial class ManualWindow : Window
 {
+    private readonly MainWindow _mw;
+
     public ManualWindow(MainWindow mainWindow)
     {
+        _mw = mainWindow;
         Owner = mainWindow;
         WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
@@ -26,6 +29,19 @@ public partial class ManualWindow : Window
         Title = Strings.Get("manual.title");
         BuildGuide();
     }
+
+    private void Window_Loaded(object sender, RoutedEventArgs e)
+    {
+        if (_mw.IsDarkTheme)
+        {
+            var hwnd = new System.Windows.Interop.WindowInteropHelper(this).EnsureHandle();
+            int useDark = 1;
+            DwmSetWindowAttribute(hwnd, 20, ref useDark, sizeof(int));
+        }
+    }
+
+    [System.Runtime.InteropServices.DllImport("dwmapi.dll", PreserveSig = true)]
+    private static extern int DwmSetWindowAttribute(System.IntPtr hwnd, int attr, ref int attrValue, int attrSize);
 
     private void BuildGuide()
     {

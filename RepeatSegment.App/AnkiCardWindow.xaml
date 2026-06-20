@@ -24,7 +24,7 @@
             <RowDefinition Height="Auto"/>   <!-- 3: RU -->
             <RowDefinition Height="Auto"/>   <!-- 4: Context -->
             <RowDefinition Height="Auto"/>   <!-- 5: Sentence -->
-            <RowDefinition Height="28"/>      <!-- 6: TTS/Rec (fixed, no stretch) -->
+            <RowDefinition Height="Auto"/>   <!-- 6: TTS/Record selection -->
             <RowDefinition Height="*" MinHeight="160"/> <!-- 7: Image search -->
             <RowDefinition Height="Auto"/>   <!-- 8: Status -->
             <RowDefinition Height="Auto"/>   <!-- 9: Buttons -->
@@ -74,13 +74,34 @@
             <TextBox Grid.Column="1" x:Name="TxtSentenceAudio" Padding="4,2" IsReadOnly="True" Background="#F5F5F5" FontSize="11" Height="24" VerticalAlignment="Center"/>
             <Button Grid.Column="2" x:Name="BtnPreviewSentence" Content="▶ Play" Padding="6,2" Margin="4,0,0,0" Click="BtnPreviewSentence_Click" Background="{DynamicResource ButtonBgBrush}" MinWidth="60" FontSize="11"/>
         </Grid>
-        <!-- Audio: TTS + Record in one row -->
-        <Grid Grid.Row="6" Margin="0,0,0,4">
-            <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="TTS/Rec:" VerticalAlignment="Center" Foreground="{DynamicResource TextBrush}" FontSize="11"/>
-            <TextBox Grid.Column="1" x:Name="TxtTtsAudio" Padding="4,0" IsReadOnly="True" Background="#F5F5F5" FontSize="11" Height="22" VerticalAlignment="Center"/>
-            <Button Grid.Column="2" x:Name="BtnPreviewTts" Content="▶ TTS" Padding="4,0" Margin="4,0,0,0" Click="BtnPreviewTts_Click" Background="{DynamicResource ButtonBgBrush}" MinWidth="55" FontSize="11" Height="22"/>
-            <Button Grid.Column="3" x:Name="BtnRecordAudio" Content="🎤 Rec" Padding="4,0" Margin="4,0,0,0" Click="BtnRecordAudio_Click" Background="{DynamicResource ButtonBgBrush}" MinWidth="55" FontSize="11" Height="22" ToolTip="Record from microphone"/>
+        <!-- TTS provider selection -->
+        <Grid Grid.Row="6" Margin="0,2,0,2">
+            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+            <!-- Google (default) -->
+            <Grid Grid.Row="0" Margin="0,0,0,2">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="24"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <RadioButton Grid.Column="0" x:Name="RbGoogle" VerticalAlignment="Center" GroupName="TtsProvider" Checked="RbGoogle_Checked" IsChecked="True"/>
+                <TextBlock Grid.Column="1" Text="Google:" VerticalAlignment="Center" Foreground="{DynamicResource TextBrush}" FontSize="11" Margin="4,0,8,0"/>
+                <TextBox Grid.Column="2" x:Name="TxtGoogleAudio" Padding="4,0" IsReadOnly="True" Background="#F5F5F5" FontSize="11" Height="22" VerticalAlignment="Center"/>
+                <Button Grid.Column="3" x:Name="BtnPreviewGoogle" Content="▶ Preview" Padding="4,0" Margin="4,0,0,0" Click="BtnPreviewGoogle_Click" Background="{DynamicResource ButtonBgBrush}" MinWidth="60" FontSize="11" Height="22"/>
+            </Grid>
+            <!-- Deepgram -->
+            <Grid Grid.Row="1" Margin="0,0,0,2">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="24"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <RadioButton Grid.Column="0" x:Name="RbDeepgram" VerticalAlignment="Center" GroupName="TtsProvider" Checked="RbDeepgram_Checked"/>
+                <TextBlock Grid.Column="1" Text="Deepgram:" VerticalAlignment="Center" Foreground="{DynamicResource TextBrush}" FontSize="11" Margin="4,0,8,0"/>
+                <TextBox Grid.Column="2" x:Name="TxtDeepgramAudio" Padding="4,0" IsReadOnly="True" Background="#F5F5F5" FontSize="11" Height="22" VerticalAlignment="Center"/>
+                <Button Grid.Column="3" x:Name="BtnPreviewDeepgram" Content="▶ Preview" Padding="4,0" Margin="4,0,0,0" Click="BtnPreviewDeepgram_Click" Background="{DynamicResource ButtonBgBrush}" MinWidth="60" FontSize="11" Height="22"/>
+            </Grid>
+            <!-- Record (radio button + Rec + Play) -->
+            <Grid Grid.Row="2" Margin="0,0,0,2">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="24"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <RadioButton Grid.Column="0" x:Name="RbRecord" VerticalAlignment="Center" GroupName="TtsProvider" Checked="RbRecord_Checked"/>
+                <TextBlock Grid.Column="1" Text="Record:" VerticalAlignment="Center" Foreground="{DynamicResource TextBrush}" FontSize="11" Margin="4,0,8,0"/>
+                <TextBox Grid.Column="2" x:Name="TxtRecAudio" Padding="4,0" IsReadOnly="True" Background="#F5F5F5" FontSize="11" Height="22" VerticalAlignment="Center" Text="(click 🎤 Rec to record microphone)"/>
+                <Button Grid.Column="3" x:Name="BtnRecordAudio" Content="🎤 Rec" Padding="4,0" Margin="4,0,0,0" Click="BtnRecordAudio_Click" Background="{DynamicResource ButtonBgBrush}" MinWidth="55" FontSize="11" Height="22" ToolTip="Record from microphone"/>
+                <Button Grid.Column="4" x:Name="BtnPlayRecord" Content="▶ Play" Padding="4,0" Margin="4,0,0,0" Click="BtnPlayRecord_Click" Background="{DynamicResource ButtonBgBrush}" MinWidth="55" FontSize="11" Height="22" ToolTip="Play recorded audio"/>
+            </Grid>
         </Grid>
 
         <!-- Image search -->

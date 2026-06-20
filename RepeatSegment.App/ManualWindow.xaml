@@ -6,6 +6,7 @@
         MinWidth="460" MinHeight="480"
         ResizeMode="CanResizeWithGrip"
         WindowStartupLocation="CenterOwner"
+        Loaded="Window_Loaded"
         FontFamily="Segoe UI"
         FontSize="12pt">
     <Grid Margin="16">

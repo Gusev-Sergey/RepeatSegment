@@ -402,6 +402,10 @@ public class AudioEngine : IDisposable
     }
 
     /// <summary>Save a snippet as MP3 for Anki cards (WAV is not well supported).</summary>
+    /// <summary>MP3 bitrate for sentence snippets, set by caller. Default 128 kbps.</summary>
+    public int Mp3BitrateKbps { get; set; } = 128;
+
+    /// <summary>Save a snippet as MP3 for Anki cards (WAV is not well supported).</summary>
     public string SaveSnippetMp3(double t1, double t2)
     {
         if (Samples == null)
@@ -439,7 +443,7 @@ public class AudioEngine : IDisposable
             shorts[i] = (short)Math.Max(-32768, Math.Min(32767, chunkSamples[i] * 32767));
 
         using var ms = new MemoryStream();
-        using var mp3Writer = new NAudio.Lame.LameMP3FileWriter(ms, new WaveFormat(SampleRate, 16, 1), 128);
+        using var mp3Writer = new NAudio.Lame.LameMP3FileWriter(ms, new WaveFormat(SampleRate, 16, 1), Mp3BitrateKbps);
         var shortBytes = new byte[length * 2];
         Buffer.BlockCopy(shorts, 0, shortBytes, 0, shortBytes.Length);
         mp3Writer.Write(shortBytes, 0, shortBytes.Length);

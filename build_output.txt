@@ -1,0 +1,14 @@
+  Определение проектов для восстановления...
+  Все проекты обновлены для восстановления.
+c:\ProjectsCSharp\RepeatSegment\RepeatSegment.App\MainWindow.xaml.cs(216,20): warning CS0649: Полю "MainWindow._originalHeight" нигде не присваивается значение, поэтому оно всегда будет иметь значение по умолчанию 0. [c:\ProjectsCSharp\RepeatSegment\RepeatSegment.App\RepeatSegment.App_imredd0i_wpftmp.csproj]
+c:\ProjectsCSharp\RepeatSegment\RepeatSegment.App\MainWindow.xaml.cs(216,20): warning CS0649: Полю "MainWindow._originalHeight" нигде не присваивается значение, поэтому оно всегда будет иметь значение по умолчанию 0. [c:\ProjectsCSharp\RepeatSegment\RepeatSegment.App\RepeatSegment.App.csproj]
+  RepeatSegment.App -> c:\ProjectsCSharp\RepeatSegment\RepeatSegment.App\bin\Debug\net8.0-windows\RepeatSegment.App.dll
+
+Сборка успешно завершена.
+
+c:\ProjectsCSharp\RepeatSegment\RepeatSegment.App\MainWindow.xaml.cs(216,20): warning CS0649: Полю "MainWindow._originalHeight" нигде не присваивается значение, поэтому оно всегда будет иметь значение по умолчанию 0. [c:\ProjectsCSharp\RepeatSegment\RepeatSegment.App\RepeatSegment.App_imredd0i_wpftmp.csproj]
+c:\ProjectsCSharp\RepeatSegment\RepeatSegment.App\MainWindow.xaml.cs(216,20): warning CS0649: Полю "MainWindow._originalHeight" нигде не присваивается значение, поэтому оно всегда будет иметь значение по умолчанию 0. [c:\ProjectsCSharp\RepeatSegment\RepeatSegment.App\RepeatSegment.App.csproj]
+    Предупреждений: 2
+    Ошибок: 0
+
+Прошло времени 00:00:19.30

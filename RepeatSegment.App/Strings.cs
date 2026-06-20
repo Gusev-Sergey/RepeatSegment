@@ -17,7 +17,7 @@ public static class Strings
         ["mw.menu.file"] = "File",
         ["mw.menu.file.load"] = "Load",
         ["mw.menu.file.exit"] = "Exit",
-        ["mw.menu.split"] = "Split interval",
+        ["mw.menu.split"] = "Segment duration",
         ["mw.menu.split.custom"] = "Custom...",
         ["mw.menu.theme"] = "Theme",
         ["mw.menu.theme.light"] = "Light",
@@ -30,6 +30,8 @@ public static class Strings
         ["mw.menu.transcription.api"] = "Request from API",
         ["mw.menu.settings"] = "Settings",
         ["mw.menu.settings.apikeys"] = "API keys...",
+        ["mw.menu.settings.translation"] = "Translation...",
+        ["mw.menu.settings.general"] = "General...",
         ["mw.menu.help"] = "Help",
         ["mw.menu.help.guide"] = "User Guide",
         ["mw.menu.help.about"] = "About...",
@@ -143,6 +145,13 @@ public static class Strings
         ["sw.translation_yandex"] = "Yandex.Translate (requires API key + Folder ID)",
         ["sw.translation_yandex_key"] = "API key:",
         ["sw.translation_yandex_folder"] = "Folder ID:",
+        ["sw.title_api"] = "API Keys",
+        ["sw.title_translation"] = "Translation Settings",
+        ["sw.title_general"] = "General Settings",
+        ["sw.transcription_lang"] = "Transcription language:",
+        ["sw.mp3_bitrate"] = "Sentence MP3 bitrate:",
+        ["sw.mp3_64"] = "64 kbps (smaller file)",
+        ["sw.mp3_128"] = "128 kbps (better quality)",
         ["sw.general_header"] = "───── General ─────",
         ["sw.chunk_minutes"] = "Chunk minutes:",
         ["sw.highlight_latency"] = "Highlight latency (s):",
@@ -167,7 +176,7 @@ public static class Strings
         ["mw.menu.file"] = "Файл",
         ["mw.menu.file.load"] = "Загрузить",
         ["mw.menu.file.exit"] = "Выход",
-        ["mw.menu.split"] = "Интервал тишины",
+        ["mw.menu.split"] = "Длительность сегмента",
         ["mw.menu.split.custom"] = "Свой...",
         ["mw.menu.theme"] = "Тема",
         ["mw.menu.theme.light"] = "Светлая",
@@ -180,6 +189,8 @@ public static class Strings
         ["mw.menu.transcription.api"] = "Запросить через API",
         ["mw.menu.settings"] = "Настройки",
         ["mw.menu.settings.apikeys"] = "API ключи...",
+        ["mw.menu.settings.translation"] = "Перевод...",
+        ["mw.menu.settings.general"] = "Основные...",
         ["mw.menu.help"] = "Справка",
         ["mw.menu.help.guide"] = "Руководство",
         ["mw.menu.help.about"] = "О программе...",
@@ -279,6 +290,13 @@ public static class Strings
 
         // ── SettingsWindow ──
         ["sw.title"] = "Настройки транскрипции",
+        ["sw.title_api"] = "API Ключи",
+        ["sw.title_translation"] = "Настройки перевода",
+        ["sw.title_general"] = "Основные настройки",
+        ["sw.transcription_lang"] = "Язык транскрипции:",
+        ["sw.mp3_bitrate"] = "Битрейт MP3 предложений:",
+        ["sw.mp3_64"] = "64 кбит/с (меньше размер)",
+        ["sw.mp3_128"] = "128 кбит/с (лучше качество)",
         ["sw.providers"] = "Активные провайдеры (галочка = пробовать по порядку)",
         ["sw.assemblyai"] = "AssemblyAI (требуется VPN из России)",
         ["sw.deepgram"] = "Deepgram",
@@ -293,6 +311,13 @@ public static class Strings
         ["sw.translation_yandex"] = "Yandex.Translate (требуется API ключ + Folder ID)",
         ["sw.translation_yandex_key"] = "API ключ:",
         ["sw.translation_yandex_folder"] = "Folder ID:",
+        ["sw.title_api"] = "API Ключи",
+        ["sw.title_translation"] = "Настройки перевода",
+        ["sw.title_general"] = "Основные настройки",
+        ["sw.transcription_lang"] = "Язык транскрипции:",
+        ["sw.mp3_bitrate"] = "Битрейт MP3 предложений:",
+        ["sw.mp3_64"] = "64 кбит/с (меньше размер)",
+        ["sw.mp3_128"] = "128 кбит/с (лучше качество)",
         ["sw.general_header"] = "───── Общие ─────",
         ["sw.chunk_minutes"] = "Минут в чанке:",
         ["sw.highlight_latency"] = "Задержка подсветки (с):",
@@ -344,7 +369,7 @@ public static class Strings
         (_, 2) => CurrentLang == "ru" ? "2. Управление воспроизведением" : "2. Playback Controls",
         (_, 3) => CurrentLang == "ru" ? "3. Транскрипция" : "3. Transcription",
         (_, 4) => CurrentLang == "ru" ? "4. Перевод" : "4. Translation",
-        (_, 5) => CurrentLang == "ru" ? "5. Интервал тишины" : "5. Silence Interval",
+        (_, 5) => CurrentLang == "ru" ? "5. Настройка сегментов" : "5. Segment Duration",
         (_, 6) => CurrentLang == "ru" ? "6. Экспорт в Anki" : "6. Anki Export",
         (_, 7) => CurrentLang == "ru" ? "7. TTS и аудио предложений" : "7. TTS & Sentence Audio",
         (_, 8) => CurrentLang == "ru" ? "8. Поиск картинок" : "8. Image Search",
@@ -370,8 +395,8 @@ public static class Strings
                 ? "Выделите слово или фразу в тексте — она будет автоматически переведена. Результат появляется в нижней панели.\nПо умолчанию используется Google Translate (бесплатно). При наличии ключа Яндекс можно переключиться на Yandex.Translate в Настройках.\nНажмите «В Anki» чтобы создать карточки из выделенного текста."
                 : "Select a word or phrase in the text — it will be automatically translated. The result appears in the bottom panel.\nBy default, Google Translate is used (free). If you have a Yandex API key, you can switch to Yandex.Translate in Settings.\nClick «Add to Anki» to create flashcards from the selected text.",
             5 => ru
-                ? "Меню 'Интервал тишины' позволяет выбрать длину аудиофрагмента: 100, 200, 300, 500, 800 мс или Свой... (50–5000 мс). Чем меньше значение — тем короче сегменты."
-                : "The 'Split interval' menu allows selecting audio fragment length: 100, 200, 300, 500, 800 ms or Custom... (50–5000 ms). The smaller the value, the shorter the segments.",
+               ? "Меню 'Длительность сегмента' (2, 5, 10, 20 с или Своя... от 1 до 300 c). Аудио нарезается на отрезки выбранной длины. Границы сдвигаются к ближайшей тишине (паузе). Так сегменты не обрывают слова на полуслове. Чем больше длительность — тем крупнее сегменты."
+               : "The 'Segment duration' menu (2, 5, 10, 20 sec or Custom... from 1 to 300 sec). Audio is cut into segments of the chosen duration. Boundaries snap to the nearest silence (pause). This way segments don't cut words mid-speech. Longer duration = larger segments.",
             6 => ru
                 ? "Нажмите «В Anki» после перевода слова/фразы, чтобы открыть окно создания карточки.\n• Выберите или создайте колоду\n• Проверьте английское слово, транскрипцию, русский перевод\n• Контекст — предложение из книги (можно редактировать)\n• Sentence — извлечь аудио целого предложения из книги\n• TTS — скачать точное произнесение слова через Deepgram/Google\n• Картинка — поиск изображений в Яндексе\n• Запись — записать свой голос с микрофона\nНажмите «Создать карточки» — создаются две карточки: en→ru и ru→en. Каждая содержит две кнопки аудио: 🔊 Word (TTS) и 📖 Sentence."
                 : "Click «Add to Anki» after translating a word/phrase to open the card creation window.\n• Select or create a deck\n• Check the English word, transcription, Russian translation\n• Context — the sentence from the book (editable)\n• Sentence — extract the full sentence audio from the book\n• TTS — download precise word pronunciation from Deepgram/Google\n• Picture — search for images in Yandex\n• Record — record your own voice via microphone\nClick «Create Cards» — two cards are generated: en→ru and ru→en. Each contains two audio buttons: 🔊 Word (TTS) and 📖 Sentence.",
@@ -424,8 +449,8 @@ Select a word or phrase in the text — it will be automatically translated. The
 By default, Google Translate is used (free). If you have a Yandex API key, you can switch to Yandex.Translate in Settings.
 Click ""Add to Anki"" to create flashcards from the selected text.
 
-5. Silence Interval
-The 'Split interval' menu allows selecting audio fragment length: 100, 200, 300, 500, 800 ms or Custom... (50–5000 ms). The smaller the value, the shorter the segments.
+5. Segment Duration
+The 'Segment duration' menu (2, 5, 10, 20 sec or Custom... from 1 to 300 sec). Audio is cut into segments of the chosen duration. Boundaries snap to the nearest silence (pause). This way segments don't cut words mid-speech. Longer duration = larger segments.
 
 6. Anki Export
 Click ""Add to Anki"" after translating a word/phrase to open the card creation window.
@@ -449,13 +474,10 @@ The card window has a built-in WebView2 browser that searches Yandex Images by t
 Click on any image → ✓ Use to save it to the card.
 
 9. Settings
-File → Settings → API keys... allows you to:
-• Select active transcription providers (Deepgram, AssemblyAI)
-• Enter API keys for Deepgram and AssemblyAI
-• Select translation provider (Google Translate or Yandex.Translate)
-• Enter Yandex.Translate API key and Folder ID
-• Set chunk size for API transcription (minutes)
-• Set highlight latency for word tracking
+File → Settings menu provides three items:
+• API keys... — providers and API keys (AssemblyAI, Deepgram)
+• Translation... — translation provider (Google or Yandex) and API key
+• General... — transcription language, sentence MP3 bitrate (64/128 kbps), chunk minutes, highlight latency
 
 10. Theme & Language
 Menu Theme → Light / Dark — switch between themes.
@@ -501,8 +523,8 @@ Stop — остановить (Esc)
 По умолчанию используется Google Translate (бесплатно). При наличии ключа Яндекс можно переключиться на Yandex.Translate в Настройках.
 Нажмите ""В Anki"" чтобы создать карточки из выделенного текста.
 
-5. Интервал тишины
-Меню 'Интервал тишины' позволяет выбрать длину аудиофрагмента: 100, 200, 300, 500, 800 мс или Свой... (50–5000 мс). Чем меньше значение — тем короче сегменты.
+5. Настройка сегментов
+Меню 'Длительность сегмента' (2, 5, 10, 20 с или Своя... от 1 до 300 c). Аудио нарезается на отрезки выбранной длины. Границы сдвигаются к ближайшей тишине (паузе). Так сегменты не обрывают слова на полуслове. Чем больше длительность — тем крупнее сегменты.
 
 6. Экспорт в Anki
 Нажмите ""В Anki"" после перевода слова/фразы, чтобы открыть окно создания карточки.
@@ -526,13 +548,10 @@ TTS (озвучка) скачивает произнесение слова/фр
 Нажмите на любую картинку → ✓ Взять чтобы сохранить её в карточку.
 
 9. Настройки
-Файл → Настройки → API ключи... позволяет:
-• Выбрать активных провайдеров транскрипции (Deepgram, AssemblyAI)
-• Ввести API-ключи для Deepgram и AssemblyAI
-• Выбрать провайдера перевода (Google Translate или Yandex.Translate)
-• Ввести API-ключ и Folder ID для Yandex.Translate
-• Настроить размер чанка для API транскрипции (минут)
-• Настроить задержку подсветки слов
+Меню Файл → Настройки содержит три пункта:
+• API ключи... — провайдеры и API-ключи (AssemblyAI, Deepgram)
+• Перевод... — выбор переводчика (Google или Яндекс) и API-ключ
+• Основные... — язык транскрипции, битрейт MP3 предложений (64/128 кбит/с), минут в чанке, задержка подсветки
 
 10. Тема и язык
 Меню Тема → Светлая / Тёмная — переключение темы оформления.

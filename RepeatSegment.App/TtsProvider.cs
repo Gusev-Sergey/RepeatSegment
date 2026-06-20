@@ -29,7 +29,7 @@ public class TtsProvider
     }
 
     /// <summary>
-    /// Download TTS MP3 for an English word/phrase.
+    /// Download TTS MP3 for an English word/phrase (auto: Deepgram → Google fallback).
     /// Returns file path to cached MP3, or null on failure.
     /// </summary>
     public async Task<string?> DownloadTtsMp3(string text)
@@ -45,7 +45,6 @@ public class TtsProvider
 
         byte[]? mp3 = null;
 
-        // Primary: Deepgram TTS (if key available)
         if (!string.IsNullOrEmpty(_deepgramApiKey))
         {
             mp3 = await DownloadDeepgramTts(text);
@@ -56,7 +55,6 @@ public class TtsProvider
             }
         }
 
-        // Fallback: Google TTS
         mp3 = await DownloadGoogleTts(text);
         if (mp3 != null && mp3.Length > 100)
         {
@@ -64,6 +62,57 @@ public class TtsProvider
             return cachePath;
         }
 
+        return null;
+    }
+
+    /// <summary>Whether Deepgram TTS is available (API key configured).</summary>
+    public bool HasDeepgram => !string.IsNullOrEmpty(_deepgramApiKey);
+
+    /// <summary>
+    /// Download TTS from Deepgram Aura specifically.
+    /// Returns file path to cached MP3, or null on failure.
+    /// </summary>
+    public async Task<string?> DownloadDeepgramTtsToFile(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text) || text.Length < 2 || string.IsNullOrEmpty(_deepgramApiKey))
+            return null;
+
+        string cacheKey = "dg_" + Md5Hash(text.Trim().ToLowerInvariant());
+        string cachePath = Path.Combine(_cacheDir, cacheKey + ".mp3");
+
+        if (File.Exists(cachePath) && new FileInfo(cachePath).Length > 100)
+            return cachePath;
+
+        byte[]? mp3 = await DownloadDeepgramTts(text);
+        if (mp3 != null && mp3.Length > 100)
+        {
+            File.WriteAllBytes(cachePath, mp3);
+            return cachePath;
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Download TTS from Google Translate specifically.
+    /// Returns file path to cached MP3, or null on failure.
+    /// </summary>
+    public async Task<string?> DownloadGoogleTtsToFile(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text) || text.Length < 2)
+            return null;
+
+        string cacheKey = "gg_" + Md5Hash(text.Trim().ToLowerInvariant());
+        string cachePath = Path.Combine(_cacheDir, cacheKey + ".mp3");
+
+        if (File.Exists(cachePath) && new FileInfo(cachePath).Length > 100)
+            return cachePath;
+
+        byte[]? mp3 = await DownloadGoogleTts(text);
+        if (mp3 != null && mp3.Length > 100)
+        {
+            File.WriteAllBytes(cachePath, mp3);
+            return cachePath;
+        }
         return null;
     }
 

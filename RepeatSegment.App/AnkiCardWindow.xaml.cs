@@ -20,13 +20,15 @@ public partial class AnkiCardWindow : Window
     private readonly string _selectedWord;
     private readonly double _wordStart;
     private readonly double _wordEnd;
-    private string? _savedAudioPath;       // legacy/recorded WAV
-    private string? _savedMp3Path;         // legacy/recorded MP3
-    private string? _savedSentenceMp3Path;  // sentence from book
-    private string? _ttsMp3Path;           // TTS from Google
+    private string? _savedAudioPath;           // legacy/recorded WAV
+    private string? _savedMp3Path;             // legacy/recorded MP3
+    private string? _savedSentenceMp3Path;      // sentence from book
+    private string? _deepgramMp3Path;          // TTS from Deepgram
+    private string? _googleMp3Path;            // TTS from Google
     private string? _savedImagePath;
     private string? _matchedWord;
     private double _sentenceStart, _sentenceEnd;
+    private string _selectedTtsProvider = "google"; // "google", "deepgram", or "record"
 
     public AnkiCardWindow(string selectedWord, string context, double wordStart, double wordEnd,
                           AudioEngine? audio, TranscriptionProvider? transcription, TranslationProvider? translation,
@@ -48,12 +50,24 @@ public partial class AnkiCardWindow : Window
         TxtContext.Text = context;
         TxtSearchQuery.Text = matchedWord ?? selectedWord;
         TxtSentenceAudio.Text = "(click Play to extract sentence)";
-        TxtTtsAudio.Text = _ttsProvider != null ? "(click Play to download TTS)" : "(TTS unavailable)";
+
+        // Google is default; Deepgram enabled only if API key exists
+        bool hasDeepgram = _ttsProvider?.HasDeepgram ?? false;
+        if (!hasDeepgram)
+        {
+            RbDeepgram.IsEnabled = false;
+            RbDeepgram.Content = " Deepgram (no key)";
+        }
+        TxtDeepgramAudio.Text = hasDeepgram ? "(click Preview to download)" : "(unavailable)";
+        TxtGoogleAudio.Text = "(click Preview to download)";
+
+        // Maximize to fill available desktop space (taskbar respected)
+        WindowState = WindowState.Maximized;
 
         _ = LookupIpaAsync();
         LoadDecks();
-        InitializeWebViewAsync();
         Closed += OnClosed;
+        _ = InitializeWebViewThenSearchAsync();
     }
 
     private async void OnClosed(object? sender, EventArgs e)
@@ -124,18 +138,25 @@ public partial class AnkiCardWindow : Window
         Dispatcher.Invoke(() => TxtTranscription.Text = result);
     }
 
-    private async void InitializeWebViewAsync()
+    private async Task InitializeWebViewThenSearchAsync()
     {
         try
         {
             await ImageBrowser.EnsureCoreWebView2Async(null);
             ImageBrowser.DefaultBackgroundColor = System.Drawing.Color.White;
-            // Inject image click tracker once, after every page load
             ImageBrowser.CoreWebView2.DOMContentLoaded += (_, _) =>
             {
                 ImageBrowser.CoreWebView2.ExecuteScriptAsync(
                     "if(!window.___rsTrack){window.___rsTrack=1;document.addEventListener('click',function(e){var i=e.target.closest('img');if(i&&i.src)window.__img=i.src;});}");
             };
+            // Auto-search images for the selected word on open
+            string query = TxtSearchQuery.Text.Trim();
+            if (!string.IsNullOrWhiteSpace(query))
+            {
+                string searchUrl = $"https://yandex.ru/images/search?text={Uri.EscapeDataString(query)}";
+                ImageBrowser.CoreWebView2.Navigate(searchUrl);
+                TxtStatus.Text = "Click desired image, then ✓ Use";
+            }
         }
         catch { TxtStatus.Text = "WebView2 init failed."; }
     }
@@ -188,31 +209,88 @@ public partial class AnkiCardWindow : Window
         catch (Exception ex) { TxtStatus.Text = $"Sentence: {ex.Message}"; }
     }
 
-    private void BtnPreviewTts_Click(object s, RoutedEventArgs e)
+    // ---- TTS provider selection ----
+
+    private void RbDeepgram_Checked(object s, RoutedEventArgs e) => _selectedTtsProvider = "deepgram";
+    private void RbGoogle_Checked(object s, RoutedEventArgs e) => _selectedTtsProvider = "google";
+    private void RbRecord_Checked(object s, RoutedEventArgs e) => _selectedTtsProvider = "record";
+
+    private void BtnPreviewDeepgram_Click(object s, RoutedEventArgs e)
     {
-        _ = DownloadAndPlayTtsAsync();
+        _ = DownloadAndPlayDeepgramAsync();
     }
 
-    private async Task DownloadAndPlayTtsAsync()
+    private void BtnPreviewGoogle_Click(object s, RoutedEventArgs e)
+    {
+        _ = DownloadAndPlayGoogleAsync();
+    }
+
+    private async Task DownloadAndPlayDeepgramAsync()
+    {
+        try
+        {
+            if (_ttsProvider == null || !_ttsProvider.HasDeepgram)
+            { TxtStatus.Text = "Deepgram TTS not available (no API key)"; return; }
+            TxtStatus.Text = "Downloading Deepgram TTS...";
+            string? ttsPath = await _ttsProvider.DownloadDeepgramTtsToFile(_selectedWord);
+            if (ttsPath == null) { TxtStatus.Text = "Deepgram TTS download failed"; return; }
+            _deepgramMp3Path = ttsPath;
+            TxtDeepgramAudio.Text = $"Deepgram: {_selectedWord}";
+            PlayMp3(ttsPath);
+            TxtStatus.Text = "Deepgram TTS ready ✓";
+        }
+        catch (Exception ex) { TxtStatus.Text = $"Deepgram: {ex.Message}"; }
+    }
+
+    private async Task DownloadAndPlayGoogleAsync()
     {
         try
         {
             if (_ttsProvider == null) { TxtStatus.Text = "TTS not available"; return; }
-            TxtStatus.Text = "Downloading TTS...";
-            string? ttsPath = await _ttsProvider.DownloadTtsMp3(_selectedWord);
-            if (ttsPath == null) { TxtStatus.Text = "TTS download failed"; return; }
-            _ttsMp3Path = ttsPath;
-            TxtTtsAudio.Text = $"TTS: {_selectedWord}";
-            // SoundPlayer doesn't support MP3 — use NAudio
-            using var reader = new NAudio.Wave.Mp3FileReader(ttsPath);
-            using var waveOut = new NAudio.Wave.WaveOutEvent();
-            waveOut.Init(reader);
-            waveOut.Play();
-            while (waveOut.PlaybackState == NAudio.Wave.PlaybackState.Playing)
-                await Task.Delay(100);
-            TxtStatus.Text = "TTS ready ✓";
+            TxtStatus.Text = "Downloading Google TTS...";
+            string? ttsPath = await _ttsProvider.DownloadGoogleTtsToFile(_selectedWord);
+            if (ttsPath == null) { TxtStatus.Text = "Google TTS download failed"; return; }
+            _googleMp3Path = ttsPath;
+            TxtGoogleAudio.Text = $"Google: {_selectedWord}";
+            PlayMp3(ttsPath);
+            TxtStatus.Text = "Google TTS ready ✓";
         }
-        catch (Exception ex) { TxtStatus.Text = $"TTS: {ex.Message}"; }
+        catch (Exception ex) { TxtStatus.Text = $"Google: {ex.Message}"; }
+    }
+
+    private static void PlayMp3(string mp3Path)
+    {
+        using var reader = new NAudio.Wave.Mp3FileReader(mp3Path);
+        using var waveOut = new NAudio.Wave.WaveOutEvent();
+        waveOut.Init(reader);
+        waveOut.Play();
+        while (waveOut.PlaybackState == NAudio.Wave.PlaybackState.Playing)
+            System.Threading.Thread.Sleep(100);
+    }
+
+    private void BtnPlayRecord_Click(object s, RoutedEventArgs e)
+    {
+        string? path = _savedMp3Path ?? _savedAudioPath;
+        if (string.IsNullOrEmpty(path) || !File.Exists(path))
+        {
+            TxtStatus.Text = "No recording to play";
+            return;
+        }
+        try
+        {
+            if (Path.GetExtension(path).ToLowerInvariant() == ".mp3")
+                PlayMp3(path);
+            else
+            {
+                using var reader = new NAudio.Wave.WaveFileReader(path);
+                using var waveOut = new NAudio.Wave.WaveOutEvent();
+                waveOut.Init(reader); waveOut.Play();
+                while (waveOut.PlaybackState == NAudio.Wave.PlaybackState.Playing)
+                    System.Threading.Thread.Sleep(100);
+            }
+            TxtStatus.Text = "Playback finished";
+        }
+        catch (Exception ex) { TxtStatus.Text = $"Play: {ex.Message}"; }
     }
 
     /// <summary>
@@ -385,20 +463,36 @@ public partial class AnkiCardWindow : Window
                 try { sentenceAudId = mgr.AddMedia(tmpAud); } finally { try { File.Delete(tmpAud); } catch { } }
             }
 
-            // TTS audio (from Deepgram/Google) — auto-download if not yet cached
-            if (string.IsNullOrEmpty(_ttsMp3Path) || !File.Exists(_ttsMp3Path))
+            // TTS audio — use selected provider (radio button: Google/Deepgram/Record)
+            string? chosenTtsPath = null;
+            if (_selectedTtsProvider == "record")
             {
-                if (_ttsProvider != null)
+                chosenTtsPath = EnsureMp3Path();
+            }
+            else
+            {
+                chosenTtsPath = _selectedTtsProvider == "deepgram" ? _deepgramMp3Path : _googleMp3Path;
+                if (string.IsNullOrEmpty(chosenTtsPath) || !File.Exists(chosenTtsPath))
                 {
-                    TxtStatus.Text = "Downloading TTS...";
-                    try { _ttsMp3Path = await _ttsProvider.DownloadTtsMp3(_selectedWord); }
-                    catch { _ttsMp3Path = null; }
+                    if (_ttsProvider != null)
+                    {
+                        TxtStatus.Text = $"Downloading {_selectedTtsProvider} TTS...";
+                        try
+                        {
+                            chosenTtsPath = _selectedTtsProvider == "deepgram"
+                                ? await _ttsProvider.DownloadDeepgramTtsToFile(_selectedWord)
+                                : await _ttsProvider.DownloadGoogleTtsToFile(_selectedWord);
+                            if (_selectedTtsProvider == "deepgram") _deepgramMp3Path = chosenTtsPath;
+                            else _googleMp3Path = chosenTtsPath;
+                        }
+                        catch { chosenTtsPath = null; }
+                    }
                 }
             }
-            if (!string.IsNullOrEmpty(_ttsMp3Path) && File.Exists(_ttsMp3Path))
+            if (!string.IsNullOrEmpty(chosenTtsPath) && File.Exists(chosenTtsPath))
             {
                 string tmpTts = Path.Combine(Path.GetTempPath(), $"anki_tts_{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}.mp3");
-                File.Copy(_ttsMp3Path, tmpTts, overwrite: true);
+                File.Copy(chosenTtsPath, tmpTts, overwrite: true);
                 try { ttsAudId = mgr.AddMedia(tmpTts); } finally { try { File.Delete(tmpTts); } catch { } }
             }
 
@@ -484,12 +578,12 @@ public partial class AnkiCardWindow : Window
             {
                 _recorderWriter?.Dispose(); _recorderWriter = null;
                 _recorder?.Dispose(); _recorder = null;
-                Dispatcher.Invoke(() => { BtnRecordAudio.Content = "🎤 Rec"; ConvertRecordedToMp3(); TxtTtsAudio.Text = "Recorded: " + (_savedAudioPath ?? ""); });
+                Dispatcher.Invoke(() => { BtnRecordAudio.Content = "🎤 Rec"; ConvertRecordedToMp3(); TxtRecAudio.Text = "Recorded: " + (_savedAudioPath ?? ""); });
             };
 
             _recorder.StartRecording();
             BtnRecordAudio.Content = "Stop";
-            TxtTtsAudio.Text = "Recording...";
+            TxtRecAudio.Text = "Recording...";
             TxtStatus.Text = "Recording... press Stop when done";
 
             await Task.Delay(15000);

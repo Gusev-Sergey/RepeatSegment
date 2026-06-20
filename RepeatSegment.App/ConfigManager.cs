@@ -18,8 +18,9 @@ public class ConfigManager
     public string FileName { get; set; } = "";
     public double Position { get; set; }
     public int Counter { get; set; }
-    public int MinSilenceLenMs { get; set; } = 400;
+    public double SegmentDurationSec { get; set; } = 5.0;
     public string Language { get; set; } = ""; // "en" or "ru" — empty = first run
+    public string Theme { get; set; } = "light"; // "light" or "dark"
 
     // ---- Transcription section ----
     public List<string> ProvidersEnabled { get; set; } = new() { "yandex" };
@@ -39,6 +40,7 @@ public class ConfigManager
     public string TranscriptionLanguage { get; set; } = "en";
     public int ChunkMinutes { get; set; } = 10;
     public double PlaybackLatency { get; set; } = 0.32;
+    public int Mp3BitrateKbps { get; set; } = 128;
 
     // Deprecated
     public string Provider { get; set; } = "";
@@ -75,9 +77,11 @@ public class ConfigManager
                 FileName = GetValue(settings, "file", "");
                 Position = GetDouble(settings, "position", 0.0);
                 Counter = GetInt(settings, "counter", 0);
-                MinSilenceLenMs = GetInt(settings, "split_interval", 400);
+                SegmentDurationSec = GetDouble(settings, "segment_duration_sec", 5.0);
                 Language = GetValue(settings, "language", "").ToLowerInvariant();
                 if (Language != "en" && Language != "ru") Language = "";
+                Theme = GetValue(settings, "theme", "light").ToLowerInvariant();
+                if (Theme != "dark") Theme = "light";
 
                 Log.Info($"[INFO] Config loaded: file={FileName}, position={Position:F1}, counter={Counter}");
             }
@@ -129,6 +133,7 @@ public class ConfigManager
                     TranslationProviderPreference = "google";
                 ChunkMinutes = GetInt(trans, "chunk_minutes", 10);
                 PlaybackLatency = GetDouble(trans, "playback_latency", 0.32);
+                Mp3BitrateKbps = GetInt(trans, "mp3_bitrate", 128);
 
                 Log.Info($"[INFO] Transcription config: providers={string.Join(",", ProvidersEnabled)}, chunk_minutes={ChunkMinutes}");
             }
@@ -171,8 +176,9 @@ public class ConfigManager
                 $"file = {fileName}",
                 $"position = {position}",
                 $"counter = {counter}",
-                $"split_interval = {MinSilenceLenMs}",
+                $"segment_duration_sec = {SegmentDurationSec:F1}",
                 $"language = {Language}",
+                $"theme = {Theme}",
                 "",
                 "[Transcription]",
                 $"providers_enabled = {string.Join(",", ProvidersEnabled)}",
@@ -192,6 +198,7 @@ public class ConfigManager
                 $"transcription_language = {TranscriptionLanguage}",
                 $"chunk_minutes = {ChunkMinutes}",
                 $"playback_latency = {PlaybackLatency}",
+                $"mp3_bitrate = {Mp3BitrateKbps}",
                 ""
             };
 
