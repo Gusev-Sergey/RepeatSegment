@@ -144,7 +144,7 @@ public class TtsProvider
                 byte[] audio = await resp.Content.ReadAsByteArrayAsync();
                 if (audio.Length > 100) return audio;
             }
-            catch { /* retry */ }
+            catch (Exception ex) { Log.Warn($"[WARN] Deepgram TTS attempt {attempt+1} failed: {ex.Message}"); }
         }
         return null;
     }
@@ -162,7 +162,7 @@ public class TtsProvider
                 var resp = await _http.GetByteArrayAsync(url);
                 if (resp.Length > 100) return resp;
             }
-            catch { }
+            catch (Exception ex) { Log.Warn($"[WARN] Google TTS attempt {attempt+1} failed: {ex.Message}"); }
         }
         return null;
     }

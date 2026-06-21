@@ -111,7 +111,7 @@ public class TranslationProvider
                     }
                 }
             }
-            catch { /* retry */ }
+            catch (Exception ex) { Log.Warn($"[WARN] Google Translate failed: {ex.Message}"); }
         }
         return null;
     }
@@ -149,7 +149,7 @@ public class TranslationProvider
                     return translated;
             }
         }
-        catch { }
+        catch (Exception ex) { Log.Warn($"[WARN] Yandex Translate failed: {ex.Message}"); }
         return null;
     }
 }
