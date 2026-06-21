@@ -44,6 +44,7 @@ public partial class TranslationSettingsWindow : Window
     {
         Title = Strings.Get("sw.title_translation");
         LblTranslationHeader.Text = Strings.Get("sw.translation_header");
+        LblTranslationInfo.Text = Strings.Get("sw.translation_info");
         LblGoogle.Content = Strings.Get("sw.translation_google");
         LblYandex.Content = Strings.Get("sw.translation_yandex");
         LblYandexKey.Text = Strings.Get("sw.translation_yandex_key");

@@ -14,7 +14,6 @@
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4022.49" />
     <PackageReference Include="NAudio" Version="2.2.1" />
     <PackageReference Include="NAudio.Lame" Version="2.1.0" />
-    <PackageReference Include="OxyPlot.Wpf" Version="2.2.0" />
     <PackageReference Include="SkiaSharp.Views.WPF" Version="2.88.7" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
   </ItemGroup>

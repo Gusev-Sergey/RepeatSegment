@@ -82,7 +82,7 @@ public partial class ManualWindow : Window
             LoadIcon("play.png"), " Play/Pause (Space)", " | ",
             LoadIcon("next_play.png"), " Next (Right)", " | ",
             LoadIcon("last.png"), " Last");
-        AddPara("Stop (Esc) — Volume slider to the right.");
+        AddPara(Strings.GetGuideContent(2));
 
         // 3-11
         for (int i = 3; i <= 11; i++)

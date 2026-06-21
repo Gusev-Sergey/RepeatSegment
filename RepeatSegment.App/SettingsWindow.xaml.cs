@@ -44,6 +44,7 @@ public partial class SettingsWindow : Window
     private void ApplyStrings()
     {
         Title = Strings.Get("sw.title_api");
+        LblApiInfo.Text = Strings.Get("sw.apikeys_info");
         GrpProviders.Header = Strings.Get("sw.providers");
         LblAssemblyAi.Content = Strings.Get("sw.assemblyai");
         LblDeepgram.Content = Strings.Get("sw.deepgram");

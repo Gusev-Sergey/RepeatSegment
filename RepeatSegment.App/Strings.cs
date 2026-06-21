@@ -133,6 +133,7 @@ public static class Strings
 
         // ── SettingsWindow ──
         ["sw.title"] = "Transcription Settings",
+        ["sw.apikeys_info"] = "API keys are used to access transcription services (converting audio to text). Please visit the service website, register and obtain an API key, then enter it in the corresponding field below to enable the transcription feature.",
         ["sw.providers"] = "Active providers (checked = try in order)",
         ["sw.assemblyai"] = "AssemblyAI (VPN required from Russia)",
         ["sw.deepgram"] = "Deepgram",
@@ -143,6 +144,7 @@ public static class Strings
         ["sw.deepgram_header"] = "───── Deepgram ─────",
         ["sw.deepgram_key"] = "API key:",
         ["sw.translation_header"] = "───── Translation ─────",
+        ["sw.translation_info"] = "Choose a service for translation. When you select transcribed text (a word or phrase), a pane with the translation will open below the text.",
         ["sw.translation_google"] = "Google Translate (translate.googleapis.com — free, no key needed)",
         ["sw.translation_yandex"] = "Yandex.Translate (requires API key + Folder ID)",
         ["sw.translation_yandex_key"] = "API key:",
@@ -294,6 +296,7 @@ public static class Strings
 
         // ── SettingsWindow ──
         ["sw.title"] = "Настройки транскрипции",
+        ["sw.apikeys_info"] = "API ключи используются для доступа к сервисам транскрибации (перевода аудио в текст). Пожалуйста, зайдите на страницу сервиса, пройдите регистрацию и получите API ключ, а затем введите его в соответствующее поле ниже для работы функции транскрибирования.",
         ["sw.title_api"] = "API Ключи",
         ["sw.title_translation"] = "Настройки перевода",
         ["sw.title_general"] = "Основные настройки",
@@ -311,17 +314,11 @@ public static class Strings
         ["sw.deepgram_header"] = "───── Deepgram ─────",
         ["sw.deepgram_key"] = "API ключ:",
         ["sw.translation_header"] = "───── Перевод ─────",
+        ["sw.translation_info"] = "Выбор сервиса для получения перевода. Если выделить транскрибированный текст (слово или фразу), то откроется дополнительное окно с переводом.",
         ["sw.translation_google"] = "Google Translate (translate.googleapis.com — бесплатно, без ключа)",
         ["sw.translation_yandex"] = "Yandex.Translate (требуется API ключ + Folder ID)",
         ["sw.translation_yandex_key"] = "API ключ:",
         ["sw.translation_yandex_folder"] = "Folder ID:",
-        ["sw.title_api"] = "API Ключи",
-        ["sw.title_translation"] = "Настройки перевода",
-        ["sw.title_general"] = "Основные настройки",
-        ["sw.transcription_lang"] = "Язык транскрипции:",
-        ["sw.mp3_bitrate"] = "Битрейт MP3 предложений:",
-        ["sw.mp3_64"] = "64 кбит/с (меньше размер)",
-        ["sw.mp3_128"] = "128 кбит/с (лучше качество)",
         ["sw.general_header"] = "───── Общие ─────",
         ["sw.chunk_minutes"] = "Минут в чанке:",
         ["sw.highlight_latency"] = "Задержка подсветки (с):",
@@ -392,6 +389,9 @@ public static class Strings
             1 => ru
                 ? "Файл → Загрузить (Ctrl+O) — выберите MP3 или WAV файл. Программа автоматически найдёт паузы между фразами и разобьёт аудио на сегменты."
                 : "File → Load (Ctrl+O) — select an MP3 or WAV file. The program automatically finds pauses between phrases and splits the audio into segments.",
+            2 => ru
+                ? "Кнопки: Назад, Играть/Пауза, Вперёд, Повторить, Играть и дальше, К началу, К концу. Слайдер — позиция в сегменте. Громкость — справа. Кнопка «Скорость» (1×) слева от навигации — выбор от 0,4× до 1,5× с шагом 0,1. Тембр голоса сохраняется (как на YouTube)."
+                : "Buttons: Back, Play/Pause, Forward, Repeat, Play and Go, First, Last. Slider — segment position. Volume — right side. Speed button (1×) left of navigation — choose 0.4×–1.5× in 0.1 steps. Voice pitch preserved (like YouTube).",
             3 => ru
                 ? "Перед первым использованием откройте Настройки → API ключи и введите API-ключ хотя бы одного провайдера (Deepgram или AssemblyAI).\nЗапросить через API (Ctrl+T) — отправить аудио на расшифровку. Результат кэшируется.\nЗагрузить из кэша (Ctrl+L) — загрузить ранее полученную транскрипцию.\nВо время воспроизведения произносимое слово подсвечивается жёлтым. Текст автоматически прокручивается.\nВнимание: AssemblyAI заблокирован на территории РФ — требуется VPN."
                 : "Before first use, open Settings → API keys and enter the API key of at least one provider (Deepgram or AssemblyAI).\nRequest from API (Ctrl+T) — send audio for transcription. The result is cached.\nLoad from cache (Ctrl+L) — load previously obtained transcription.\nDuring playback, the spoken word is highlighted in yellow. Text auto-scrolls.\nNote: AssemblyAI is blocked in Russia — VPN required.",
@@ -411,8 +411,8 @@ public static class Strings
                 ? "В окне карточки встроен браузер WebView2, который ищет картинки в Яндекс.Картинках по выбранному слову. Нажмите на любую картинку → ✓ Взять чтобы сохранить её в карточку."
                 : "The card window has a built-in WebView2 browser that searches Yandex Images by the selected word. Click on any image → ✓ Use to save it to the card.",
             9 => ru
-                ? "Файл → Настройки → API ключи... позволяет:\n• Выбрать активных провайдеров транскрипции (Deepgram, AssemblyAI)\n• Ввести API-ключи для Deepgram и AssemblyAI\n• Выбрать язык транскрипции\n• Выбрать провайдера перевода (Google Translate или Yandex.Translate)\n• Настроить размер чанка для API транскрипции (минут)\n• Настроить задержку подсветки слов"
-                : "File → Settings → API keys... allows you to:\n• Select active transcription providers (Deepgram, AssemblyAI)\n• Enter API keys for Deepgram and AssemblyAI\n• Select transcription language\n• Select translation provider (Google Translate or Yandex.Translate)\n• Set chunk size for API transcription (minutes)\n• Set highlight latency for word tracking",
+                ? "Настройки разделены на три окна:\n• API ключи — провайдеры и API-ключи (Deepgram, AssemblyAI)\n• Перевод — выбор сервиса перевода (Google или Yandex) с API-ключом\n• Основные — язык транскрипции, битрейт MP3 (64/128 кбит/с), минут в чанке, задержка подсветки"
+                : "Settings are split into three windows:\n• API Keys — providers and API keys (Deepgram, AssemblyAI)\n• Translation — translation service (Google or Yandex) and API key\n• General — transcription language, MP3 bitrate (64/128 kbps), chunk minutes, highlight latency",
             10 => ru
                 ? "Меню Тема → Светлая / Тёмная — переключение темы оформления. Меню Язык → English / Русский — переключение языка интерфейса. Выбор сохраняется."
                 : "Menu Theme → Light / Dark — switch between themes. Menu Language → English / Русский — switch interface language. The choice is saved.",

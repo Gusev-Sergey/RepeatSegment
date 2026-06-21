@@ -189,7 +189,7 @@ public class TranscriptionProvider
             string audioName = Path.GetFileNameWithoutExtension(_ae.FilePath);
             string filePath = Path.Combine(cacheDir, $"{audioName}_chunk{ci:D4}_{provider}_{_cfg.TranscriptionLanguage}.json");
             string json = JsonSerializer.Serialize(data);
-            File.WriteAllText(filePath, json);
+            File.WriteAllText(filePath, json, System.Text.Encoding.UTF8);
         }
         catch { }
     }
