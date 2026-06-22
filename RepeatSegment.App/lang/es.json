@@ -60,7 +60,7 @@
   "manual.close": "Cerrar",
   "manual.guide": "",
   "manual.title": "RepeatSegment — Guía de Usuario",
-  "mw.dlg.about": "RepeatSegment — Aprender inglés con audiolibros\n\nVersión 1.0, 2026\nC# WPF (.NET 8)\nOriginalmente en Python\nGitHub: github.com/Gusev-Sergey/RepeatSegment",
+  "mw.dlg.about": "RepeatSegment — Repetidor inteligente de segmentos de audio:\ndivisión automática por pausas · transcripción · traducción integrada · exportación a Anki con imágenes y audio\n\nVersión 1.0, 2026\nC# WPF (.NET 8)\nDesarrollado con IA: VS Code + Zoo Code + DeepSeek API\nDesarrollador: AstrorumArbor\nContacto: astrorum_arbor@outlook.com",
   "mw.dlg.about_title": "Acerca de RepeatSegment",
   "mw.dlg.custom_silence": "Ingrese duración del silencio (ms):",
   "mw.dlg.custom_title": "Personalizado",

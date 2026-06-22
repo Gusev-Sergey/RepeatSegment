@@ -60,7 +60,7 @@
   "manual.close": "Close",
   "manual.guide": "",
   "manual.title": "RepeatSegment — User Guide",
-  "mw.dlg.about": "RepeatSegment — Study English with Audio Books\n\nVersion 1.0, 2026\nC# WPF (.NET 8)\nOriginally developed in Python\nGitHub: github.com/Gusev-Sergey/RepeatSegment",
+  "mw.dlg.about": "RepeatSegment — Smart audio segment repeater:\nauto-split by pauses · transcribe · translate in-place · export to Anki with images & audio\n\nVersion 1.0, 2026\nC# WPF (.NET 8)\nDeveloped with AI: VS Code + Zoo Code + DeepSeek API\nDeveloper: AstrorumArbor\nContact: astrorum_arbor@outlook.com",
   "mw.dlg.about_title": "About RepeatSegment",
   "mw.dlg.custom_silence": "Enter silence length (ms):",
   "mw.dlg.custom_title": "Custom",
