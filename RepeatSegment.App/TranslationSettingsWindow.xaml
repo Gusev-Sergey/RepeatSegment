@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Translation Settings" x:Name="MainGrid"
         Loaded="Window_Loaded"
-        Width="480" Height="340" MinWidth="380" MinHeight="260"
+        Width="480" Height="340" MinWidth="380" MinHeight="260" SizeToContent="Manual"
         WindowStartupLocation="CenterOwner" ResizeMode="CanResizeWithGrip"
         FontFamily="Segoe UI" FontSize="11pt">
     <Window.Resources>
