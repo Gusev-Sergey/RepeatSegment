@@ -12,10 +12,10 @@
 | Задача | Описание | Статус |
 |--------|----------|--------|
 | 1. Privacy Policy | Добавить URL политики конфиденциальности (docs/index.html, EN+RU) | ✅ |
-| 2. App capabilities | Проверить, что приложение не запрашивает лишних разрешений (интернет — да, микрофон — да) | ❌ |
-| 3. Сборка Release x64 | `dotnet publish -c Release --self-contained -r win-x64` | ❌ |
-| 4. Версионирование | Сейчас `1.1.0.0` в WiX, в csproj нет версии | ❌ |
-| 5. Иконки | Нужны: 44×44, 50×50, 150×150, 310×150 (StoreTile), 310×310 | ❌ |
+| 2. App capabilities | internetClient + runFullTrust в Package.appxmanifest | ✅ |
+| 3. Сборка Release x64 | `dotnet publish -c Release --self-contained -r win-x64` → Publish/Release/ | ✅ |
+| 4. Версионирование | v1.0.0.0 в csproj (AssemblyVersion, FileVersion, Version) | ✅ |
+| 5. Иконки | 6 PNG: 44×44, 50×50, 71×71, 150×150, 310×150, 310×310 | ✅ |
 
 ### Этап 2: MSIX-пакет (замена WiX)
 
