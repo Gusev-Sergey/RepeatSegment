@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RepeatSegment — Privacy Policy / Политика конфиденциальности</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f2f5;color:#222;line-height:1.7;padding:2em 1em}
+  .container{max-width:800px;margin:0 auto;background:#fff;border-radius:8px;padding:2.5em;box-shadow:0 1px 6px rgba(0,0,0,.08)}
+  h1{font-size:1.8em;margin-bottom:.3em;color:#1a1a2e}
+  h2{font-size:1.2em;margin:1.6em 0 .5em;color:#333;border-bottom:1px solid #e0e0e0;padding-bottom:.3em}
+  p,li{font-size:1em;margin-bottom:.6em}
+  ul{padding-left:1.5em;margin-bottom:.8em}
+  .lang-switch{display:flex;gap:8px;margin-bottom:1.5em}
+  .lang-switch button{padding:6px 18px;border:1px solid #ccc;border-radius:4px;cursor:pointer;background:#fff;font-size:.95em}
+  .lang-switch button.active{background:#3366CC;color:#fff;border-color:#3366CC}
+  .ru{display:none}
+  .update{font-size:.85em;color:#888;margin-top:2em}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="lang-switch">
+  <button id="btnEn" class="active" onclick="switchLang('en')">English</button>
+  <button id="btnRu" onclick="switchLang('ru')">Русский</button>
+</div>
+
+<!-- ==================== ENGLISH ==================== -->
+<div id="en">
+
+<h1>Privacy Policy</h1>
+<p><strong>Effective Date:</strong> June 22, 2026</p>
+<p><strong>Last Updated:</strong> June 22, 2026</p>
+
+<p>This Privacy Policy applies to the <strong>RepeatSegment</strong> desktop application ("Application", "App") developed by Sergey Gusev ("Developer", "we", "us"). This document explains what data the Application accesses, how it is used, and what third-party services are involved.</p>
+
+<h2>1. Data We Access</h2>
+<p>The Application processes the following types of data <strong>locally on your device</strong>:</p>
+<ul>
+  <li><strong>Audio files</strong> (.mp3, .wav) — selected by the user for playback, segmentation, and transcription.</li>
+  <li><strong>Microphone input</strong> — recorded audio within the Anki Card window for creating custom pronunciations. Recording only happens when the user explicitly presses the "🎤 Rec" button.</li>
+  <li><strong>Text selected by the user</strong> — words or phrases highlighted in the transcription panel for translation lookup.</li>
+</ul>
+
+<h2>2. Data Sent to Third-Party Services</h2>
+<p>At the user's explicit request (button press), the Application sends data to the following external APIs:</p>
+<ul>
+  <li><strong>Deepgram</strong> (deepgram.com) — audio chunks for speech-to-text transcription. Privacy: <a href="https://deepgram.com/privacy">deepgram.com/privacy</a></li>
+  <li><strong>AssemblyAI</strong> (assemblyai.com) — audio chunks for speech-to-text transcription. Privacy: <a href="https://www.assemblyai.com/legal/privacy-policy">assemblyai.com/legal/privacy-policy</a></li>
+  <li><strong>Yandex Translate</strong> (translate.api.cloud.yandex.net) — selected text for English→Russian translation. Privacy: <a href="https://yandex.ru/legal/confidential">yandex.ru/legal/confidential</a></li>
+  <li><strong>Google Translate</strong> (translate.googleapis.com) — selected text for English→Russian translation (fallback). Privacy: <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
+  <li><strong>Deepgram TTS</strong> (api.deepgram.com) — single words for text-to-speech synthesis. Privacy: <a href="https://deepgram.com/privacy">deepgram.com/privacy</a></li>
+  <li><strong>Google TTS</strong> (translate.google.com) — single words for text-to-speech synthesis. Privacy: <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
+  <li><strong>Google Images</strong> (google.com) — search queries for image lookup. Privacy: <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
+  <li><strong>Yandex Images</strong> (yandex.ru) — search queries for image lookup (alternative). Privacy: <a href="https://yandex.ru/legal/confidential">yandex.ru/legal/confidential</a></li>
+  <li><strong>Dictionary API</strong> (api.dictionaryapi.dev) — single words for IPA transcription lookup. No privacy policy; free service.</li>
+  <li><strong>Wiktionary</strong> (en.wiktionary.org) — single words for IPA transcription fallback. Privacy: <a href="https://foundation.wikimedia.org/wiki/Policy:Privacy_policy">wikimediafoundation.org/privacy</a></li>
+</ul>
+<p>All API keys required for these services are stored <strong>locally in a configuration file</strong> on the user's device and are never transmitted to the Developer.</p>
+
+<h2>3. Data We Do NOT Collect</h2>
+<ul>
+  <li>We do <strong>not</strong> collect, store, or transmit any personal identification information (name, email, IP address, location).</li>
+  <li>We do <strong>not</strong> use analytics, telemetry, crash reporting, or tracking of any kind.</li>
+  <li>We do <strong>not</strong> display advertisements.</li>
+  <li>We do <strong>not</strong> upload your audio files, transcripts, or translations to any server controlled by the Developer.</li>
+  <li>All configuration, cached transcripts, Anki deck data, and downloaded images are stored <strong>exclusively</strong> in the local AppData folder (<code>%APPDATA%\RepeatSegment</code>).</li>
+</ul>
+
+<h2>4. Permissions</h2>
+<p>The Application requires the following Windows capabilities:</p>
+<ul>
+  <li><strong>Internet (Client)</strong> — to communicate with third-party APIs listed in Section 2.</li>
+  <li><strong>Microphone</strong> — for audio recording in the Anki Card window. Recording is initiated only by explicit user action.</li>
+</ul>
+
+<h2>5. Children's Privacy</h2>
+<p>The Application is not directed at children under 13. We do not knowingly collect data from children.</p>
+
+<h2>6. Changes to This Policy</h2>
+<p>We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated effective date.</p>
+
+<h2>7. Contact</h2>
+<p>If you have questions about this Privacy Policy, you can contact us via the GitHub repository: <a href="https://github.com/Gusev-Sergey/RepeatSegment">github.com/Gusev-Sergey/RepeatSegment</a></p>
+
+</div>
+
+<!-- ==================== RUSSIAN ==================== -->
+<div id="ru" class="ru">
+
+<h1>Политика конфиденциальности</h1>
+<p><strong>Дата вступления в силу:</strong> 22 июня 2026 г.</p>
+<p><strong>Последнее обновление:</strong> 22 июня 2026 г.</p>
+
+<p>Настоящая Политика конфиденциальности относится к десктопному приложению <strong>RepeatSegment</strong> («Приложение»), разработанному Сергеем Гусевым («Разработчик», «мы»). Этот документ объясняет, к каким данным Приложение получает доступ, как они используются и какие сторонние сервисы задействованы.</p>
+
+<h2>1. Данные, к которым мы получаем доступ</h2>
+<p>Приложение обрабатывает следующие типы данных <strong>локально на вашем устройстве</strong>:</p>
+<ul>
+  <li><strong>Аудиофайлы</strong> (.mp3, .wav) — выбираются пользователем для воспроизведения, сегментации и транскрибации.</li>
+  <li><strong>Ввод с микрофона</strong> — запись аудио в окне Anki Card для создания пользовательских произношений. Запись происходит только при явном нажатии кнопки «🎤 Rec».</li>
+  <li><strong>Текст, выделенный пользователем</strong> — слова или фразы, выделенные в панели транскрипции для перевода.</li>
+</ul>
+
+<h2>2. Данные, отправляемые сторонним сервисам</h2>
+<p>По явному запросу пользователя (нажатие кнопки) Приложение отправляет данные следующим внешним API:</p>
+<ul>
+  <li><strong>Deepgram</strong> (deepgram.com) — аудио-фрагменты для распознавания речи. Конфиденциальность: <a href="https://deepgram.com/privacy">deepgram.com/privacy</a></li>
+  <li><strong>AssemblyAI</strong> (assemblyai.com) — аудио-фрагменты для распознавания речи. Конфиденциальность: <a href="https://www.assemblyai.com/legal/privacy-policy">assemblyai.com/legal/privacy-policy</a></li>
+  <li><strong>Yandex Translate</strong> (translate.api.cloud.yandex.net) — выделенный текст для перевода EN→RU. Конфиденциальность: <a href="https://yandex.ru/legal/confidential">yandex.ru/legal/confidential</a></li>
+  <li><strong>Google Translate</strong> (translate.googleapis.com) — выделенный текст для перевода EN→RU (запасной). Конфиденциальность: <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
+  <li><strong>Deepgram TTS</strong> (api.deepgram.com) — отдельные слова для синтеза речи. Конфиденциальность: <a href="https://deepgram.com/privacy">deepgram.com/privacy</a></li>
+  <li><strong>Google TTS</strong> (translate.google.com) — отдельные слова для синтеза речи. Конфиденциальность: <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
+  <li><strong>Google Images</strong> (google.com) — поисковые запросы для подбора картинок. Конфиденциальность: <a href="https://policies.google.com/privacy">policies.google.com/privacy</a></li>
+  <li><strong>Yandex Images</strong> (yandex.ru) — поисковые запросы для подбора картинок (альтернатива). Конфиденциальность: <a href="https://yandex.ru/legal/confidential">yandex.ru/legal/confidential</a></li>
+  <li><strong>Dictionary API</strong> (api.dictionaryapi.dev) — отдельные слова для получения IPA-транскрипции. Бесплатный сервис без политики конфиденциальности.</li>
+  <li><strong>Wiktionary</strong> (en.wiktionary.org) — отдельные слова для IPA-транскрипции (запасной). Конфиденциальность: <a href="https://foundation.wikimedia.org/wiki/Policy:Privacy_policy">wikimediafoundation.org/privacy</a></li>
+</ul>
+<p>Все API-ключи, необходимые для этих сервисов, хранятся <strong>локально в конфигурационном файле</strong> на устройстве пользователя и никогда не передаются Разработчику.</p>
+
+<h2>3. Данные, которые мы НЕ собираем</h2>
+<ul>
+  <li>Мы <strong>не</strong> собираем, не храним и не передаём никакую личную информацию (имя, email, IP-адрес, местоположение).</li>
+  <li>Мы <strong>не</strong> используем аналитику, телеметрию, отчёты об ошибках или какое-либо отслеживание.</li>
+  <li>Мы <strong>не</strong> показываем рекламу.</li>
+  <li>Мы <strong>не</strong> загружаем ваши аудиофайлы, транскрипты или переводы на серверы, контролируемые Разработчиком.</li>
+  <li>Все настройки, кэшированные транскрипты, данные колод Anki и загруженные изображения хранятся <strong>исключительно</strong> в локальной папке AppData (<code>%APPDATA%\RepeatSegment</code>).</li>
+</ul>
+
+<h2>4. Разрешения</h2>
+<p>Приложению требуются следующие разрешения Windows:</p>
+<ul>
+  <li><strong>Интернет (Клиент)</strong> — для связи со сторонними API, перечисленными в разделе 2.</li>
+  <li><strong>Микрофон</strong> — для записи аудио в окне Anki Card. Запись инициируется только явным действием пользователя.</li>
+</ul>
+
+<h2>5. Конфиденциальность детей</h2>
+<p>Приложение не предназначено для детей младше 13 лет. Мы сознательно не собираем данные детей.</p>
+
+<h2>6. Изменения в политике</h2>
+<p>Мы можем время от времени обновлять эту Политику конфиденциальности. Изменения будут опубликованы на этой странице с обновлённой датой.</p>
+
+<h2>7. Контакты</h2>
+<p>Если у вас есть вопросы по этой Политике конфиденциальности, вы можете связаться с нами через репозиторий GitHub: <a href="https://github.com/Gusev-Sergey/RepeatSegment">github.com/Gusev-Sergey/RepeatSegment</a></p>
+
+</div>
+
+<div class="update">© 2026 Sergey Gusev. RepeatSegment.</div>
+
+</div>
+
+<script>
+function switchLang(lang) {
+  document.getElementById('en').style.display = lang === 'en' ? '' : 'none';
+  document.getElementById('ru').style.display = lang === 'ru' ? '' : 'none';
+  document.getElementById('btnEn').classList.toggle('active', lang === 'en');
+  document.getElementById('btnRu').classList.toggle('active', lang === 'ru');
+}
+</script>
+</body>
+</html>
