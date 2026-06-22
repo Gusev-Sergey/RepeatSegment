@@ -1,0 +1,6 @@
+C:\ProjectsCSharp\RepeatSegment\Setup\bin\Release\RepeatSegment-Installer.msi
+C:\ProjectsCSharp\RepeatSegment\Setup\bin\Release\RepeatSegment-Installer.wixpdb
+C:\ProjectsCSharp\RepeatSegment\Setup\obj2\Setup.wixproj.CoreCompileInputs.cache
+C:\ProjectsCSharp\RepeatSegment\Setup\obj2\RepeatSegment-Installer.msi
+C:\ProjectsCSharp\RepeatSegment\Setup\obj2\RepeatSegment-Installer.wixpdb
+C:\ProjectsCSharp\RepeatSegment\Setup\obj2\Setup.wixproj.BindTracking-neutral.txt

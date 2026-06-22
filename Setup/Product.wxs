@@ -9,11 +9,10 @@
     <Media Id="1" Cabinet="RepeatSegment.cab" EmbedCab="yes" />
 
     <Feature Id="Main" Title="RepeatSegment" Level="1">
-      <ComponentRef Id="ExeComponent" />
-      <ComponentRef Id="ShortcutComponent" />
-      <ComponentRef Id="IconIcoComponent" />
+      <ComponentGroupRef Id="AppComponents" />
+      <ComponentGroupRef Id="LangComponents" />
       <ComponentRef Id="ConfigTemplateComponent" />
-      <ComponentGroupRef Id="PublishComponents" />
+      <ComponentRef Id="ShortcutComponent" />
     </Feature>
 
     <UI Id="MyWixUI">
@@ -28,33 +27,83 @@
 
   <Fragment>
     <StandardDirectory Id="ProgramFiles6432Folder">
-      <Directory Id="INSTALLFOLDER" Name="RepeatSegment">
-        <Directory Id="IconsDir" Name="Icons" />
-        <Directory Id="LangDir" Name="lang" />
-      </Directory>
+      <Directory Id="INSTALLFOLDER" Name="RepeatSegment" />
     </StandardDirectory>
     <StandardDirectory Id="ProgramMenuFolder">
       <Directory Id="StartMenuDir" Name="RepeatSegment" />
     </StandardDirectory>
   </Fragment>
 
+  <!-- All files from dotnet publish (framework-dependent) -->
   <Fragment>
-    <!-- Main exe -->
-    <Component Id="ExeComponent" Directory="INSTALLFOLDER" Guid="*">
-      <File Id="AppExe" Source="..\Publish\Release\RepeatSegment.App.exe" KeyPath="yes" />
-    </Component>
+    <ComponentGroup Id="AppComponents" Directory="INSTALLFOLDER">
+      <Component Guid="*"><File Source="..\Publish\Release\RepeatSegment.App.dll" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\RepeatSegment.App.exe" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\RepeatSegment.App.runtimeconfig.json" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\RepeatSegment.App.deps.json" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\e_sqlite3.dll" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\libmp3lame.32.dll" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\libmp3lame.64.dll" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\libSkiaSharp.dll" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\Microsoft.Data.Sqlite.dll" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\Microsoft.Web.WebView2.Core.dll" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\Microsoft.Web.WebView2.WinForms.dll" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\Microsoft.Web.WebView2.Wpf.dll" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\NAudio.Asio.dll" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\NAudio.Core.dll" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\NAudio.dll" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\NAudio.Lame.dll" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\NAudio.Midi.dll" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\NAudio.Wasapi.dll" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\NAudio.WinForms.dll" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\NAudio.WinMM.dll" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\SkiaSharp.dll" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\SkiaSharp.Views.Desktop.Common.dll" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\SkiaSharp.Views.WPF.dll" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\SQLitePCLRaw.batteries_v2.dll" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\SQLitePCLRaw.core.dll" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\SQLitePCLRaw.provider.e_sqlite3.dll" KeyPath="yes" /></Component>
+      <!-- Icons -->
+      <Component Guid="*"><File Source="..\Publish\Release\Icons\app.ico" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\Icons\first.png" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\Icons\last.png" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\Icons\next_play.png" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\Icons\play.png" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\Icons\play_go.png" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\Icons\pre_play.png" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\Icons\repeat.png" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\Icons\stop_play.png" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\Icons\LargeTile.png" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\Icons\SmallTile.png" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\Icons\Square150x150Logo.png" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\Icons\Square44x44Logo.png" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\Icons\StoreLogo.png" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\Publish\Release\Icons\Wide310x150Logo.png" KeyPath="yes" /></Component>
+      <!-- Runtime native -->
+      <Component Guid="*"><File Source="..\Publish\Release\runtimes\win-x64\native\WebView2Loader.dll" KeyPath="yes" /></Component>
+    </ComponentGroup>
+  </Fragment>
 
-    <!-- config.template.ini (no API keys) -->
+  <!-- Language JSON files -->
+  <Fragment>
+    <ComponentGroup Id="LangComponents" Directory="INSTALLFOLDER">
+      <Component Guid="*"><File Source="..\RepeatSegment.App\lang\en.json" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\RepeatSegment.App\lang\ru.json" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\RepeatSegment.App\lang\de.json" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\RepeatSegment.App\lang\fr.json" KeyPath="yes" /></Component>
+      <Component Guid="*"><File Source="..\RepeatSegment.App\lang\es.json" KeyPath="yes" /></Component>
+    </ComponentGroup>
+  </Fragment>
+
+  <!-- config.template.ini -->
+  <Fragment>
     <Component Id="ConfigTemplateComponent" Directory="INSTALLFOLDER" Guid="*">
       <File Id="ConfigTemplate" Source="..\RepeatSegment.App\config.template.ini" Name="config.template.ini" KeyPath="yes" />
     </Component>
+  </Fragment>
 
-    <!-- app.ico -->
-    <Component Id="IconIcoComponent" Directory="IconsDir" Guid="*">
-      <File Id="AppIco" Source="..\RepeatSegment.App\Icons\app.ico" KeyPath="yes" />
-    </Component>
-
-    <!-- Start Menu + Desktop shortcuts -->
+  <!-- Start Menu + Desktop shortcuts -->
+  <Fragment>
     <Component Id="ShortcutComponent" Directory="StartMenuDir" Guid="*">
       <RegistryValue Root="HKCU" Key="Software\RepeatSegment" Name="installed" Value="1" Type="integer" KeyPath="yes" />
       <Shortcut Id="StartMenuShortcut" Name="RepeatSegment" Target="[INSTALLFOLDER]RepeatSegment.App.exe"
@@ -64,38 +113,6 @@
                 WorkingDirectory="INSTALLFOLDER" Icon="AppIcon" Advertise="no" />
       <RemoveFolder Id="RemoveStartMenu" Directory="StartMenuDir" On="uninstall" />
     </Component>
-  </Fragment>
-
-  <!-- Icons -->
-  <Fragment>
-    <ComponentGroup Id="PublishComponents" Directory="IconsDir">
-      <Component Id="IconFirst" Guid="*"><File Source="..\Publish\Release\Icons\first.png" KeyPath="yes" /></Component>
-      <Component Id="IconLast" Guid="*"><File Source="..\Publish\Release\Icons\last.png" KeyPath="yes" /></Component>
-      <Component Id="IconNextPlay" Guid="*"><File Source="..\Publish\Release\Icons\next_play.png" KeyPath="yes" /></Component>
-      <Component Id="IconPlay" Guid="*"><File Source="..\Publish\Release\Icons\play.png" KeyPath="yes" /></Component>
-      <Component Id="IconPlayGo" Guid="*"><File Source="..\Publish\Release\Icons\play_go.png" KeyPath="yes" /></Component>
-      <Component Id="IconPrePlay" Guid="*"><File Source="..\Publish\Release\Icons\pre_play.png" KeyPath="yes" /></Component>
-      <Component Id="IconRepeat" Guid="*"><File Source="..\Publish\Release\Icons\repeat.png" KeyPath="yes" /></Component>
-      <Component Id="IconStopPlay" Guid="*"><File Source="..\Publish\Release\Icons\stop_play.png" KeyPath="yes" /></Component>
-      <!-- MS Store icons -->
-      <Component Id="IconLargeTile" Guid="*"><File Source="..\Publish\Release\Icons\LargeTile.png" KeyPath="yes" /></Component>
-      <Component Id="IconSmallTile" Guid="*"><File Source="..\Publish\Release\Icons\SmallTile.png" KeyPath="yes" /></Component>
-      <Component Id="IconSquare150" Guid="*"><File Source="..\Publish\Release\Icons\Square150x150Logo.png" KeyPath="yes" /></Component>
-      <Component Id="IconSquare44" Guid="*"><File Source="..\Publish\Release\Icons\Square44x44Logo.png" KeyPath="yes" /></Component>
-      <Component Id="IconStoreLogo" Guid="*"><File Source="..\Publish\Release\Icons\StoreLogo.png" KeyPath="yes" /></Component>
-      <Component Id="IconWide310" Guid="*"><File Source="..\Publish\Release\Icons\Wide310x150Logo.png" KeyPath="yes" /></Component>
-    </ComponentGroup>
-  </Fragment>
-
-  <!-- Language files -->
-  <Fragment>
-    <ComponentGroup Id="LangComponents" Directory="LangDir">
-      <Component Id="LangEn" Guid="*"><File Source="..\Publish\Release\lang\en.json" KeyPath="yes" /></Component>
-      <Component Id="LangRu" Guid="*"><File Source="..\Publish\Release\lang\ru.json" KeyPath="yes" /></Component>
-      <Component Id="LangDe" Guid="*"><File Source="..\Publish\Release\lang\de.json" KeyPath="yes" /></Component>
-      <Component Id="LangFr" Guid="*"><File Source="..\Publish\Release\lang\fr.json" KeyPath="yes" /></Component>
-      <Component Id="LangEs" Guid="*"><File Source="..\Publish\Release\lang\es.json" KeyPath="yes" /></Component>
-    </ComponentGroup>
   </Fragment>
 
 </Wix>
