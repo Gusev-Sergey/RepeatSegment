@@ -64,8 +64,11 @@ public partial class AnkiCardWindow : Window
         TxtDeepgramAudio.Text = hasDeepgram ? "(click Preview to download)" : "(unavailable)";
         TxtGoogleAudio.Text = "(click Preview to download)";
 
-        // Maximize to fill available desktop space (taskbar respected)
-        WindowState = WindowState.Maximized;
+        // Adapt to screen resolution
+        double sw = SystemParameters.WorkArea.Width, sh = SystemParameters.WorkArea.Height;
+        Width = sw * 0.80; Height = sh * 0.85;
+        MinWidth = Math.Max(500, sw * 0.45); MinHeight = Math.Max(480, sh * 0.40);
+        WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
         _ = LookupIpaAsync();
         LoadDecks();

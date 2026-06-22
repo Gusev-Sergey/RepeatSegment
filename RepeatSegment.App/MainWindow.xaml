@@ -178,7 +178,7 @@
             </Grid>
         </Border>
 
-        <Border Grid.Row="5" x:Name="TranslationPanel" Visibility="Collapsed" Margin="10,4,10,16" Padding="8,6,8,12" CornerRadius="4" BorderBrush="{DynamicResource SeparatorBrush}" BorderThickness="1" Background="{DynamicResource PanelBackgroundBrush}" MaxHeight="160">
+        <Border Grid.Row="5" x:Name="TranslationPanel" Visibility="Collapsed" Margin="10,4,10,16" Padding="8,6,8,12" CornerRadius="4" BorderBrush="{DynamicResource SeparatorBrush}" BorderThickness="1" Background="{DynamicResource PanelBackgroundBrush}" MaxHeight="200">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <Grid x:Name="TranslationInnerGrid">
                     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>

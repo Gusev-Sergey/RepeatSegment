@@ -49,3 +49,16 @@
 - Внедряй зависимости через конструктор.
 - Тесты — xUnit или NUnit (следуй проекту).
 - Команды: `dotnet build`, `dotnet test`, `dotnet run`.
+
+## Adaptive Sizing (Screen-relative dimensions)
+- **Все размеры окон и элементов должны быть относительными** и привязаны к `SystemParameters.WorkArea.Width/Height`.
+- Жёсткие пиксельные значения (например, `+100`, `MinHeight=500`, `MaxHeight=160`) недопустимы.
+- Используй формулу: `Math.Max(минимальный_порог, WorkArea.Height * доля)`.
+- **Доли экрана**:
+  - MainWindow: ширина 0.85, высота 0.48, MinWidth 0.45
+  - GrowWindowForTranslation: прирост `Math.Max(80, WorkArea.Height * 0.12)` от базы
+  - AnkiCardWindow: ширина 0.80, высота 0.85
+  - TranslationPanel MaxHeight: `200` (XAML), программно ограничивается GrowWindowForTranslation
+  - Кнопки: `Math.Max(48, WorkArea.Width * 0.06)`, иконки: `bs * 0.85`
+  - WaveformGraph: `Math.Max(60, WorkArea.Height * 0.10)`
+  - VolumeWidget: `Math.Max(140, Math.Min(WorkArea.Width * 0.28, 650))`
