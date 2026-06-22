@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="General Settings" x:Name="MainGrid"
-        Width="440" Height="480" MinWidth="380" MinHeight="420"
+        Width="460" Height="520" MinWidth="400" MinHeight="480"
         WindowStartupLocation="CenterOwner" ResizeMode="CanResizeWithGrip"
         FontFamily="Segoe UI" FontSize="11pt"
         Loaded="Window_Loaded">
@@ -49,7 +49,8 @@
                 <!-- General section -->
                 <GroupBox x:Name="GrpGeneral" Margin="0,0,0,12">
                     <StackPanel Margin="4">
-                        <Grid Margin="0,4,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><TextBlock x:Name="LblTranscriptionLang" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,8,0"/><ComboBox Grid.Column="1" x:Name="CmbTranscriptionLang" Margin="0,0,0,4"/></Grid>
+                        <Grid Margin="0,4,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><TextBlock x:Name="LblUiLang" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,8,0"/><ComboBox Grid.Column="1" x:Name="CmbUiLang" Margin="0,0,0,4"/></Grid>
+                        <Grid Margin="0,8,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><TextBlock x:Name="LblTranscriptionLang" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,8,0"/><ComboBox Grid.Column="1" x:Name="CmbTranscriptionLang" Margin="0,0,0,4"/></Grid>
                         <Grid Margin="0,8,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><TextBlock x:Name="LblChunkMinutes" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,8,0"/><TextBox Grid.Column="1" x:Name="TxtChunkMinutes" Text="10"/></Grid>
                         <Grid Margin="0,8,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><TextBlock x:Name="LblHighlightLatency" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,8,0"/><TextBox Grid.Column="1" x:Name="TxtPlaybackLatency" Text="0.32"/></Grid>
                     </StackPanel>

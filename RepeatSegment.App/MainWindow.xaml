@@ -158,10 +158,6 @@
                 <MenuItem x:Name="MnuSettingsTranslation" Header="Translation..." Click="ButtonTranslationSettings_Click" FontSize="16"/>
                 <MenuItem x:Name="MnuSettingsGeneral" Header="General..." Click="ButtonGeneralSettings_Click" FontSize="16"/>
             </MenuItem>
-            <MenuItem Header="Language" FontSize="16" x:Name="MnuLang">
-                <MenuItem x:Name="MnuLangEn" Header="English" Click="MnuLangEn_Click" FontSize="16"/>
-                <MenuItem x:Name="MnuLangRu" Header="Русский" Click="MnuLangRu_Click" FontSize="16"/>
-            </MenuItem>
             <MenuItem Header="Help" FontSize="16" x:Name="MnuHelp">
                 <MenuItem x:Name="MnuHelpGuide" Header="User Guide" Click="BtnManual_Click" FontSize="16"/>
                 <Separator/>

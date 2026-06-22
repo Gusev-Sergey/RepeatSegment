@@ -45,6 +45,7 @@ public partial class GeneralSettingsWindow : Window
         Title = Strings.Get("sw.title_general");
         GrpGeneral.Header = Strings.Get("sw.general_header");
         GrpAnki.Header = Strings.Get("sw.anki_header");
+        LblUiLang.Text = Strings.Get("sw.ui_lang");
         LblTranscriptionLang.Text = Strings.Get("sw.transcription_lang");
         LblMp3Bitrate.Text = Strings.Get("sw.mp3_bitrate");
         LblImageProvider.Text = Strings.Get("sw.image_provider");
@@ -56,6 +57,12 @@ public partial class GeneralSettingsWindow : Window
 
     private void LoadSettings()
     {
+        // UI language
+        var uiLangs = new[] { ("en","English"),("ru","Русский"),("de","Deutsch"),("fr","Français"),("es","Español") };
+        CmbUiLang.Items.Clear();
+        foreach (var (code, name) in uiLangs) { var item = new System.Windows.Controls.ComboBoxItem { Content = name, Tag = code }; CmbUiLang.Items.Add(item); if (code == _cfg.Language) item.IsSelected = true; }
+        if (CmbUiLang.SelectedIndex < 0 && CmbUiLang.Items.Count > 0) CmbUiLang.SelectedIndex = 0;
+
         var transLangs = new[] { ("en","English"),("es","Español — Spanish"),("fr","Français — French"),("de","Deutsch — German"),("it","Italiano — Italian"),("pt","Português — Portuguese"),("ru","Русский — Russian"),("ja","日本語 — Japanese"),("ko","한국어 — Korean"),("zh","中文 — Chinese"),("hi","हिन्दी — Hindi") };
         CmbTranscriptionLang.Items.Clear();
         foreach (var (code, name) in transLangs) { var item = new System.Windows.Controls.ComboBoxItem { Content = name, Tag = code }; CmbTranscriptionLang.Items.Add(item); if (code == _cfg.TranscriptionLanguage) item.IsSelected = true; }
@@ -81,6 +88,8 @@ public partial class GeneralSettingsWindow : Window
 
     private void BtnOk_Click(object sender, RoutedEventArgs e)
     {
+        string uiLang = (CmbUiLang.SelectedItem as System.Windows.Controls.ComboBoxItem)?.Tag as string ?? "en";
+        if (_cfg.Language != uiLang) { _cfg.Language = uiLang; Strings.SetLanguage(uiLang); _mw.ApplyAllStrings(); }
         _cfg.TranscriptionLanguage = (CmbTranscriptionLang.SelectedItem as System.Windows.Controls.ComboBoxItem)?.Tag as string ?? "en";
         if (int.TryParse((CmbMp3Bitrate.SelectedItem as System.Windows.Controls.ComboBoxItem)?.Tag as string ?? "128", out int br)) _cfg.Mp3BitrateKbps = br;
         _cfg.ImageSearchProvider = (CmbImageProvider.SelectedItem as System.Windows.Controls.ComboBoxItem)?.Tag as string ?? "google";
