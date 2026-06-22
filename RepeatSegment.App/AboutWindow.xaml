@@ -2,7 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="About RepeatSegment"
-        Width="440" Height="320" MinWidth="360" MinHeight="280"
+        Width="500" Height="360" MinWidth="420" MinHeight="320"
+        SizeToContent="WidthAndHeight"
         ResizeMode="CanResize"
         WindowStartupLocation="CenterOwner"
         FontFamily="Segoe UI" FontSize="12pt"
@@ -13,23 +14,18 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" FontSize="22" FontWeight="Bold" Margin="0,0,0,12"
+        <TextBlock Grid.Row="0" FontSize="22" FontWeight="Bold" Margin="0,0,0,10"
                    Foreground="{DynamicResource TextBrush}">RepeatSegment</TextBlock>
-        <StackPanel Grid.Row="1" Margin="0,0,0,8">
-            <TextBlock FontSize="14" Foreground="{DynamicResource TextDimBrush}" TextWrapping="Wrap" Margin="0,0,0,6"
-                       Text="Study English with Audio Books"/>
-            <TextBlock FontSize="13" Foreground="{DynamicResource TextBrush}" Margin="0,4,0,0"
-                       x:Name="TxtVersion"/>
-            <TextBlock FontSize="13" Foreground="{DynamicResource TextBrush}" Margin="0,2,0,0"
-                       x:Name="TxtTech"/>
-            <TextBlock FontSize="13" Foreground="{DynamicResource TextBrush}" Margin="0,8,0,0">
-                <Hyperlink NavigateUri="https://github.com/Gusev-Sergey/RepeatSegment" RequestNavigate="Hyperlink_RequestNavigate">
-                    github.com/Gusev-Sergey/RepeatSegment
-                </Hyperlink>
-            </TextBlock>
-        </StackPanel>
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <TextBlock FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextBrush}"
+                           TextWrapping="Wrap" Margin="0,0,0,6" x:Name="TxtTagline"/>
+                <TextBlock FontSize="13" Foreground="{DynamicResource TextDimBrush}"
+                           TextWrapping="Wrap" x:Name="TxtVersion"/>
+            </StackPanel>
+        </ScrollViewer>
         <Button Grid.Row="2" x:Name="BtnClose" Content="OK" Width="80" Height="30"
-                Margin="0,8,0,0" HorizontalAlignment="Right"
+                Margin="0,12,0,0" HorizontalAlignment="Right"
                 Click="BtnClose_Click" IsDefault="True"/>
     </Grid>
 </Window>
