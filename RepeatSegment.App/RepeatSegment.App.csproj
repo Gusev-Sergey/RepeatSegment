@@ -7,6 +7,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Icons\app.ico</ApplicationIcon>
+    <Version>1.0.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Authors>Sergey Gusev</Authors>
+    <Product>RepeatSegment</Product>
+    <Description>Audio segment repeater for language learning with Anki integration</Description>
+    <Copyright>© 2026 Sergey Gusev</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
