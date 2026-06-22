@@ -89,13 +89,29 @@ public partial class GeneralSettingsWindow : Window
     private void BtnOk_Click(object sender, RoutedEventArgs e)
     {
         string uiLang = (CmbUiLang.SelectedItem as System.Windows.Controls.ComboBoxItem)?.Tag as string ?? "en";
-        if (_cfg.Language != uiLang) { _cfg.Language = uiLang; Strings.SetLanguage(uiLang); _mw.ApplyAllStrings(); }
+        bool langChanged = _cfg.Language != uiLang;
+        if (langChanged) { _cfg.Language = uiLang; Strings.SetLanguage(uiLang); }
         _cfg.TranscriptionLanguage = (CmbTranscriptionLang.SelectedItem as System.Windows.Controls.ComboBoxItem)?.Tag as string ?? "en";
         if (int.TryParse((CmbMp3Bitrate.SelectedItem as System.Windows.Controls.ComboBoxItem)?.Tag as string ?? "128", out int br)) _cfg.Mp3BitrateKbps = br;
         _cfg.ImageSearchProvider = (CmbImageProvider.SelectedItem as System.Windows.Controls.ComboBoxItem)?.Tag as string ?? "google";
         if (int.TryParse(TxtChunkMinutes.Text.Trim(), out int cm)) _cfg.ChunkMinutes = cm;
         if (float.TryParse(TxtPlaybackLatency.Text.Trim(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float pl)) _cfg.PlaybackLatency = pl;
+        _cfg.Save(_cfg.Path, _cfg.FileName, 0, 0);
+        if (langChanged) RestartApp();
         DialogResult = true; Close();
+    }
+    private static void RestartApp()
+    {
+        var exe = Environment.ProcessPath ?? "";
+        if (!string.IsNullOrEmpty(exe) && System.IO.File.Exists(exe))
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = exe,
+                UseShellExecute = true
+            });
+            Environment.Exit(0);
+        }
     }
     private void BtnCancel_Click(object sender, RoutedEventArgs e) { DialogResult = false; Close(); }
 }
