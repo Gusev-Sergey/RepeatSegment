@@ -1,8 +1,8 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
      xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
 
-  <Package Name="RepeatSegment" Manufacturer="RepeatSegment"
-           Version="1.1.0.0" UpgradeCode="A1B2C3D4-E5F6-7890-ABCD-EF1234567890"
+  <Package Name="RepeatSegment" Manufacturer="AstrorumArbor"
+           Version="1.0.0.0" UpgradeCode="A1B2C3D4-E5F6-7890-ABCD-EF1234567890"
            Scope="perMachine" Compressed="yes">
     <MajorUpgrade Schedule="afterInstallInitialize"
                   DowngradeErrorMessage="A newer version is already installed." />
@@ -12,6 +12,7 @@
       <ComponentRef Id="ExeComponent" />
       <ComponentRef Id="ShortcutComponent" />
       <ComponentRef Id="IconIcoComponent" />
+      <ComponentRef Id="ConfigTemplateComponent" />
       <ComponentGroupRef Id="PublishComponents" />
     </Feature>
 
@@ -20,8 +21,8 @@
     </UI>
 
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
-    <Property Id="ARPCONTACT" Value="RepeatSegment Support" />
-    <Property Id="ARPCOMMENTS" Value="Version 1.1, 2026. Python ported to C# via AI (VS Code + Zoo Code + DeepSeek API)" />
+    <Property Id="ARPCONTACT" Value="astrorum_arbor@outlook.com" />
+    <Property Id="ARPCOMMENTS" Value="Smart audio segment repeater: auto-split by pauses · transcribe · translate in-place · export to Anki. Developed with AI: VS Code + Zoo Code + DeepSeek API." />
     <Icon Id="AppIcon" SourceFile="..\RepeatSegment.App\Icons\app.ico" />
   </Package>
 
@@ -29,6 +30,7 @@
     <StandardDirectory Id="ProgramFiles6432Folder">
       <Directory Id="INSTALLFOLDER" Name="RepeatSegment">
         <Directory Id="IconsDir" Name="Icons" />
+        <Directory Id="LangDir" Name="lang" />
       </Directory>
     </StandardDirectory>
     <StandardDirectory Id="ProgramMenuFolder">
@@ -37,14 +39,22 @@
   </Fragment>
 
   <Fragment>
+    <!-- Main exe -->
     <Component Id="ExeComponent" Directory="INSTALLFOLDER" Guid="*">
-      <File Id="AppExe" Source="..\Publish\RepeatSegment.App.exe" KeyPath="yes" />
+      <File Id="AppExe" Source="..\Publish\Release\RepeatSegment.App.exe" KeyPath="yes" />
     </Component>
 
+    <!-- config.template.ini (no API keys) -->
+    <Component Id="ConfigTemplateComponent" Directory="INSTALLFOLDER" Guid="*">
+      <File Id="ConfigTemplate" Source="..\RepeatSegment.App\config.template.ini" Name="config.template.ini" KeyPath="yes" />
+    </Component>
+
+    <!-- app.ico -->
     <Component Id="IconIcoComponent" Directory="IconsDir" Guid="*">
       <File Id="AppIco" Source="..\RepeatSegment.App\Icons\app.ico" KeyPath="yes" />
     </Component>
 
+    <!-- Start Menu + Desktop shortcuts -->
     <Component Id="ShortcutComponent" Directory="StartMenuDir" Guid="*">
       <RegistryValue Root="HKCU" Key="Software\RepeatSegment" Name="installed" Value="1" Type="integer" KeyPath="yes" />
       <Shortcut Id="StartMenuShortcut" Name="RepeatSegment" Target="[INSTALLFOLDER]RepeatSegment.App.exe"
@@ -56,17 +66,35 @@
     </Component>
   </Fragment>
 
+  <!-- Icons -->
   <Fragment>
     <ComponentGroup Id="PublishComponents" Directory="IconsDir">
-      <Component Id="IconBtnPlay" Guid="*"><File Source="..\Publish\Icons\btn_play.png" KeyPath="yes" /></Component>
-      <Component Id="IconFirst" Guid="*"><File Source="..\Publish\Icons\first.png" KeyPath="yes" /></Component>
-      <Component Id="IconLast" Guid="*"><File Source="..\Publish\Icons\last.png" KeyPath="yes" /></Component>
-      <Component Id="IconNextPlay" Guid="*"><File Source="..\Publish\Icons\next_play.png" KeyPath="yes" /></Component>
-      <Component Id="IconPlay" Guid="*"><File Source="..\Publish\Icons\play.png" KeyPath="yes" /></Component>
-      <Component Id="IconPlayGo" Guid="*"><File Source="..\Publish\Icons\play_go.png" KeyPath="yes" /></Component>
-      <Component Id="IconPrePlay" Guid="*"><File Source="..\Publish\Icons\pre_play.png" KeyPath="yes" /></Component>
-      <Component Id="IconRepeat" Guid="*"><File Source="..\Publish\Icons\repeat.png" KeyPath="yes" /></Component>
-      <Component Id="IconStopPlay" Guid="*"><File Source="..\Publish\Icons\stop_play.png" KeyPath="yes" /></Component>
+      <Component Id="IconFirst" Guid="*"><File Source="..\Publish\Release\Icons\first.png" KeyPath="yes" /></Component>
+      <Component Id="IconLast" Guid="*"><File Source="..\Publish\Release\Icons\last.png" KeyPath="yes" /></Component>
+      <Component Id="IconNextPlay" Guid="*"><File Source="..\Publish\Release\Icons\next_play.png" KeyPath="yes" /></Component>
+      <Component Id="IconPlay" Guid="*"><File Source="..\Publish\Release\Icons\play.png" KeyPath="yes" /></Component>
+      <Component Id="IconPlayGo" Guid="*"><File Source="..\Publish\Release\Icons\play_go.png" KeyPath="yes" /></Component>
+      <Component Id="IconPrePlay" Guid="*"><File Source="..\Publish\Release\Icons\pre_play.png" KeyPath="yes" /></Component>
+      <Component Id="IconRepeat" Guid="*"><File Source="..\Publish\Release\Icons\repeat.png" KeyPath="yes" /></Component>
+      <Component Id="IconStopPlay" Guid="*"><File Source="..\Publish\Release\Icons\stop_play.png" KeyPath="yes" /></Component>
+      <!-- MS Store icons -->
+      <Component Id="IconLargeTile" Guid="*"><File Source="..\Publish\Release\Icons\LargeTile.png" KeyPath="yes" /></Component>
+      <Component Id="IconSmallTile" Guid="*"><File Source="..\Publish\Release\Icons\SmallTile.png" KeyPath="yes" /></Component>
+      <Component Id="IconSquare150" Guid="*"><File Source="..\Publish\Release\Icons\Square150x150Logo.png" KeyPath="yes" /></Component>
+      <Component Id="IconSquare44" Guid="*"><File Source="..\Publish\Release\Icons\Square44x44Logo.png" KeyPath="yes" /></Component>
+      <Component Id="IconStoreLogo" Guid="*"><File Source="..\Publish\Release\Icons\StoreLogo.png" KeyPath="yes" /></Component>
+      <Component Id="IconWide310" Guid="*"><File Source="..\Publish\Release\Icons\Wide310x150Logo.png" KeyPath="yes" /></Component>
+    </ComponentGroup>
+  </Fragment>
+
+  <!-- Language files -->
+  <Fragment>
+    <ComponentGroup Id="LangComponents" Directory="LangDir">
+      <Component Id="LangEn" Guid="*"><File Source="..\Publish\Release\lang\en.json" KeyPath="yes" /></Component>
+      <Component Id="LangRu" Guid="*"><File Source="..\Publish\Release\lang\ru.json" KeyPath="yes" /></Component>
+      <Component Id="LangDe" Guid="*"><File Source="..\Publish\Release\lang\de.json" KeyPath="yes" /></Component>
+      <Component Id="LangFr" Guid="*"><File Source="..\Publish\Release\lang\fr.json" KeyPath="yes" /></Component>
+      <Component Id="LangEs" Guid="*"><File Source="..\Publish\Release\lang\es.json" KeyPath="yes" /></Component>
     </ComponentGroup>
   </Fragment>
 
