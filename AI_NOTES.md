@@ -212,3 +212,54 @@ private void GrowWindowForTranslation() {
 - `BorderThickness="0,1,0,0"` — тонкая разделительная линия сверху
 - `TextTrimming="CharacterEllipsis"` — длинный текст обрезается с многоточием
 - `VerticalAlignment="Center"` — текст всегда по центру
+
+## WiX Installer — сборка дистрибутива (не для Store)
+
+### Проблема
+`dotnet publish -r win-x64` по умолчанию включает `--self-contained` (870+ МБ). Для распространения вне Store нужен framework-dependent режим.
+
+### Решение (v093)
+1. **В csproj**: `<SelfContained>false</SelfContained>` — критично! Без этого флаг `-r win-x64` всегда включает self-contained, даже с `--self-contained false`.
+2. **Публикация**: `dotnet publish -c Release -r win-x64 -o Publish/Release`
+3. **WiX Product.wxs**: перечислять ВСЕ файлы явно (`<Component><File Source="..."/></Component>`). WiX v4 `Files Include` с wildcard нестабилен — может не подхватить или дать дубликаты.
+4. **Языковые файлы**: брать из исходной папки `lang/` (не из `Publish/Release/lang/` — там их нет).
+5. **config.template.ini**: копировать отдельным компонентом (не через wildcard).
+6. **Размер**: ~6.5 МБ против 876 МБ с self-contained.
+
+### Ключевые находки
+- `-r win-x64` = self-contained по умолчанию, нужно `-p:SelfContained=false` или `<SelfContained>false</SelfContained>` в csproj
+- WPF не поддерживает trimming — `PublishTrimmed=true` даёт ошибку
+- WiX v4 `Files Include="**\*"` работает нестабильно — лучше явно перечислить файлы
+- Очистка `bin/` и `obj/` перед пересборкой WiX предотвращает залипание старых `.msi`
+- `#` в пути WiX (из `obj\#RepeatSegment.cab`) — норма, символ для временных файлов
+
+## I18n: вынос строк в JSON-файлы
+
+### Решение (v085-v087)
+1. **Внешние файлы**: [`lang/en.json`](RepeatSegment.App/lang/en.json), `ru.json`, `de.json`, `fr.json`, `es.json`
+2. **Загрузка**: `Strings.cs` → `JsonSerializer.Deserialize<Dictionary<string,string>>()`
+3. **Fallback**: отсутствующие ключи берутся из `en.json`
+4. **Автопоиск**: папка `lang/` ищется относительно exe, затем cwd, затем project source
+5. **csproj**: `<Content Include="lang\**"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>`
+6. **Смена языка**: через GeneralSettingsWindow → автоперезапуск приложения (`RestartApp()`)
+
+### Ключевые находки
+- User Guide (GetGuideContent) жёстко зашит в код — слишком большой для JSON
+- При смене языка нужен перезапуск: `Process.Start(exe) + Environment.Exit(0)`
+- `SortedDictionary` в JSON сохраняет порядок ключей для читаемости
+
+## About Window — адаптация под все языки
+
+### Решение (v088-v089)
+1. **Текст**: одна длинная строка `mw.dlg.about` с `\n` в JSON
+2. **XAML**: `ScrollViewer` + `TextWrapping="Wrap"` — текст переносится, не вылезает
+3. **Размер**: `SizeToContent="WidthAndHeight"` → заменён на `Manual` + `MaxWidth` (иначе однострочный текст растягивал окно)
+4. **Адаптивность**: `Width = Math.Min(sw * 0.38, 500)` в code-behind
+
+## Theme Switch — перестроение параграфа транскрипции
+
+### Проблема
+При смене темы `ApplyTheme()` обновлял `Resources["TextBrush"]`, но `Run`-элементы уже ссылались на старую кисть.
+
+### Решение (v090)
+В `ApplyTheme()`: `if (_wordRuns != null) { BuildWordsParagraph(); _lastHlIdx = -1; }` — пересоздать параграф с новым цветом.
