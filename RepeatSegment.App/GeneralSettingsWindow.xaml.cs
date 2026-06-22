@@ -43,8 +43,11 @@ public partial class GeneralSettingsWindow : Window
     private void ApplyStrings()
     {
         Title = Strings.Get("sw.title_general");
+        GrpGeneral.Header = Strings.Get("sw.general_header");
+        GrpAnki.Header = Strings.Get("sw.anki_header");
         LblTranscriptionLang.Text = Strings.Get("sw.transcription_lang");
         LblMp3Bitrate.Text = Strings.Get("sw.mp3_bitrate");
+        LblImageProvider.Text = Strings.Get("sw.image_provider");
         LblChunkMinutes.Text = Strings.Get("sw.chunk_minutes");
         LblHighlightLatency.Text = Strings.Get("sw.highlight_latency");
         BtnOk.Content = Strings.Get("sw.ok");
@@ -57,11 +60,21 @@ public partial class GeneralSettingsWindow : Window
         CmbTranscriptionLang.Items.Clear();
         foreach (var (code, name) in transLangs) { var item = new System.Windows.Controls.ComboBoxItem { Content = name, Tag = code }; CmbTranscriptionLang.Items.Add(item); if (code == _cfg.TranscriptionLanguage) item.IsSelected = true; }
         if (CmbTranscriptionLang.SelectedIndex < 0 && CmbTranscriptionLang.Items.Count > 0) CmbTranscriptionLang.SelectedIndex = 0;
+
+        // MP3 bitrate
         CmbMp3Bitrate.Items.Clear();
         CmbMp3Bitrate.Items.Add(new System.Windows.Controls.ComboBoxItem { Content = Strings.Get("sw.mp3_64"), Tag = "64" });
         CmbMp3Bitrate.Items.Add(new System.Windows.Controls.ComboBoxItem { Content = Strings.Get("sw.mp3_128"), Tag = "128" });
         foreach (System.Windows.Controls.ComboBoxItem item in CmbMp3Bitrate.Items) if ((string)item.Tag == _cfg.Mp3BitrateKbps.ToString()) { item.IsSelected = true; break; }
         if (CmbMp3Bitrate.SelectedIndex < 0) CmbMp3Bitrate.SelectedIndex = 1;
+
+        // Image search provider
+        CmbImageProvider.Items.Clear();
+        CmbImageProvider.Items.Add(new System.Windows.Controls.ComboBoxItem { Content = "Google", Tag = "google" });
+        CmbImageProvider.Items.Add(new System.Windows.Controls.ComboBoxItem { Content = "Yandex", Tag = "yandex" });
+        foreach (System.Windows.Controls.ComboBoxItem item in CmbImageProvider.Items) if ((string)item.Tag == _cfg.ImageSearchProvider) { item.IsSelected = true; break; }
+        if (CmbImageProvider.SelectedIndex < 0) CmbImageProvider.SelectedIndex = 0;
+
         TxtChunkMinutes.Text = _cfg.ChunkMinutes.ToString();
         TxtPlaybackLatency.Text = _cfg.PlaybackLatency.ToString("F2");
     }
@@ -70,6 +83,7 @@ public partial class GeneralSettingsWindow : Window
     {
         _cfg.TranscriptionLanguage = (CmbTranscriptionLang.SelectedItem as System.Windows.Controls.ComboBoxItem)?.Tag as string ?? "en";
         if (int.TryParse((CmbMp3Bitrate.SelectedItem as System.Windows.Controls.ComboBoxItem)?.Tag as string ?? "128", out int br)) _cfg.Mp3BitrateKbps = br;
+        _cfg.ImageSearchProvider = (CmbImageProvider.SelectedItem as System.Windows.Controls.ComboBoxItem)?.Tag as string ?? "google";
         if (int.TryParse(TxtChunkMinutes.Text.Trim(), out int cm)) _cfg.ChunkMinutes = cm;
         if (float.TryParse(TxtPlaybackLatency.Text.Trim(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float pl)) _cfg.PlaybackLatency = pl;
         DialogResult = true; Close();

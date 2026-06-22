@@ -41,6 +41,7 @@ public class ConfigManager
     public int ChunkMinutes { get; set; } = 10;
     public double PlaybackLatency { get; set; } = 0.32;
     public int Mp3BitrateKbps { get; set; } = 128;
+    public string ImageSearchProvider { get; set; } = "google";
 
     // Deprecated
     public string Provider { get; set; } = "";
@@ -60,68 +61,38 @@ public class ConfigManager
     {
         if (!File.Exists(ConfigPath))
         {
-            Log.Info("[INFO] config.ini not found — using defaults");
-            return false;
+            Log.Info("[INFO] No config.ini found, using defaults");
+            return true;
         }
 
         try
         {
-            // Read INI file manually (ConfigurationManager doesn't easily support
-            // custom paths for .NET Core — we parse manually)
             var ini = ParseIniFile(ConfigPath);
-
-            // Settings section
             if (ini.TryGetValue("Settings", out var settings))
             {
                 Path = GetValue(settings, "path", SourcePath);
                 FileName = GetValue(settings, "file", "");
-                Position = GetDouble(settings, "position", 0.0);
+                Position = GetDouble(settings, "position", 0);
                 Counter = GetInt(settings, "counter", 0);
                 SegmentDurationSec = GetDouble(settings, "segment_duration_sec", 5.0);
-                Language = GetValue(settings, "language", "").ToLowerInvariant();
-                if (Language != "en" && Language != "ru") Language = "";
+                Language = GetValue(settings, "language", "");
                 Theme = GetValue(settings, "theme", "light").ToLowerInvariant();
-                if (Theme != "dark") Theme = "light";
-
+                if (Theme != "light" && Theme != "dark") Theme = "light";
                 Log.Info($"[INFO] Config loaded: file={FileName}, position={Position:F1}, counter={Counter}");
             }
-            else
-            {
-                Log.Info("[WARN] [Settings] section not found in config.ini");
-            }
 
-            // Transcription section
             if (ini.TryGetValue("Transcription", out var trans))
             {
-                var rawProviders = GetValue(trans, "providers_enabled", "yandex");
-                ProvidersEnabled = rawProviders
-                    .Split(',')
-                    .Select(p => p.Trim())
-                    .Where(p => !string.IsNullOrEmpty(p))
-                    .ToList();
-
-                // Backward compatibility
-                if (ProvidersEnabled.Count == 0)
-                {
-                    var oldProvider = GetValue(trans, "provider", "");
-                    if (oldProvider == "auto")
-                        ProvidersEnabled = new List<string> { "vkcloud", "yandex" };
-                    else if (oldProvider is "vkcloud" or "yandex")
-                        ProvidersEnabled = new List<string> { oldProvider };
-                }
-
-                Provider = GetValue(trans, "provider", "");
+                var prov = GetValue(trans, "providers_enabled", "deepgram");
+                ProvidersEnabled = prov.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).Select(p => p.ToLowerInvariant()).ToList();
+                if (ProvidersEnabled.Count == 0) ProvidersEnabled = new() { "deepgram" };
                 VkCloudToken = GetValue(trans, "vkcloud_token", "");
                 YandexApiKey = GetValue(trans, "yandex_api_key", "");
                 YandexFolderId = GetValue(trans, "yandex_folder_id", "");
                 SaluteClientId = GetValue(trans, "salute_client_id", "");
                 SaluteClientSecret = GetValue(trans, "salute_client_secret", "");
-                SaluteScope = string.IsNullOrEmpty(GetValue(trans, "salute_scope", "SALUTE_SPEECH_PERS"))
-                    ? "SALUTE_SPEECH_PERS"
-                    : GetValue(trans, "salute_scope", "SALUTE_SPEECH_PERS");
-                SaluteLang = string.IsNullOrEmpty(GetValue(trans, "salute_lang", "ru-RU"))
-                    ? "ru-RU"
-                    : GetValue(trans, "salute_lang", "ru-RU");
+                SaluteScope = GetValue(trans, "salute_scope", "SALUTE_SPEECH_PERS");
+                SaluteLang = GetValue(trans, "salute_lang", "ru-RU");
                 SaluteProfileId = GetValue(trans, "salute_profile_id", "");
                 AssemblyAiApiKey = GetValue(trans, "assemblyai_api_key", "");
                 DeepgramApiKey = GetValue(trans, "deepgram_api_key", "");
@@ -134,6 +105,9 @@ public class ConfigManager
                 ChunkMinutes = GetInt(trans, "chunk_minutes", 10);
                 PlaybackLatency = GetDouble(trans, "playback_latency", 0.32);
                 Mp3BitrateKbps = GetInt(trans, "mp3_bitrate", 128);
+                ImageSearchProvider = GetValue(trans, "image_search_provider", "google").ToLowerInvariant();
+                if (ImageSearchProvider != "google" && ImageSearchProvider != "yandex")
+                    ImageSearchProvider = "google";
 
                 Log.Info($"[INFO] Transcription config: providers={string.Join(",", ProvidersEnabled)}, chunk_minutes={ChunkMinutes}");
             }
@@ -157,14 +131,11 @@ public class ConfigManager
         }
         catch (Exception ex)
         {
-            Log.Info($"[ERROR] Error reading config.ini: {ex.Message}");
+            Log.Error($"[ERROR] Failed to load config: {ex.Message}");
             return false;
         }
     }
 
-    /// <summary>
-    /// Save current state to config.ini, including API keys edited in SettingsWindow.
-    /// </summary>
     public void Save(string path, string fileName, double position, int counter)
     {
         try
@@ -199,6 +170,7 @@ public class ConfigManager
                 $"chunk_minutes = {ChunkMinutes}",
                 $"playback_latency = {PlaybackLatency}",
                 $"mp3_bitrate = {Mp3BitrateKbps}",
+                $"image_search_provider = {ImageSearchProvider}",
                 ""
             };
 
@@ -215,90 +187,68 @@ public class ConfigManager
     // Helpers
     // ---------------------------------------------------------------
 
-    /// <summary>Parse a simple INI file into a dictionary of sections.</summary>
     private static Dictionary<string, Dictionary<string, string>> ParseIniFile(string filePath)
     {
-        var result = new Dictionary<string, Dictionary<string, string>>();
+        var result = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
         string? currentSection = null;
-
-        foreach (var line in File.ReadAllLines(filePath, System.Text.Encoding.UTF8))
+        foreach (var rawLine in File.ReadAllLines(filePath, System.Text.Encoding.UTF8))
         {
-            var trimmed = line.Trim();
-            if (string.IsNullOrEmpty(trimmed) || trimmed.StartsWith('#') || trimmed.StartsWith(';'))
+            var line = rawLine.Trim();
+            if (string.IsNullOrEmpty(line) || line.StartsWith(';') || line.StartsWith('#'))
                 continue;
-
-            if (trimmed.StartsWith('[') && trimmed.EndsWith(']'))
+            if (line.StartsWith('[') && line.EndsWith(']'))
             {
-                currentSection = trimmed[1..^1];
+                currentSection = line[1..^1].Trim();
                 if (!result.ContainsKey(currentSection))
-                    result[currentSection] = new Dictionary<string, string>();
+                    result[currentSection] = new(StringComparer.OrdinalIgnoreCase);
                 continue;
             }
-
-            var eqIdx = trimmed.IndexOf('=');
-            if (eqIdx < 0 || currentSection == null)
-                continue;
-
-            var key = trimmed[..eqIdx].Trim();
-            var val = trimmed[(eqIdx + 1)..].Trim();
-            result[currentSection][key] = val;
+            int eq = line.IndexOf('=');
+            if (eq < 0 || currentSection == null) continue;
+            string key = line[..eq].Trim();
+            string value = line[(eq + 1)..].Trim();
+            result[currentSection][key] = value;
         }
-
         return result;
     }
 
-    /// <summary>Load .env file into a dictionary (no python-dotnet dependency).</summary>
     private static Dictionary<string, string> LoadEnvFile(string envPath)
     {
         var result = new Dictionary<string, string>();
-        if (!File.Exists(envPath))
-            return result;
-
+        if (!File.Exists(envPath)) return result;
         try
         {
             foreach (var line in File.ReadAllLines(envPath, System.Text.Encoding.UTF8))
             {
                 var trimmed = line.Trim();
-                if (string.IsNullOrEmpty(trimmed) || trimmed.StartsWith('#') || !trimmed.Contains('='))
-                    continue;
-
-                var eqIdx = trimmed.IndexOf('=');
-                var key = trimmed[..eqIdx].Trim();
-                var val = trimmed[(eqIdx + 1)..].Trim().Trim('"').Trim('\'');
-
-                if (!string.IsNullOrEmpty(key))
-                    result[key] = val;
+                if (string.IsNullOrEmpty(trimmed) || trimmed.StartsWith('#')) continue;
+                int eq = trimmed.IndexOf('=');
+                if (eq < 0) continue;
+                string key = trimmed[..eq].Trim();
+                string value = trimmed[(eq + 1)..].Trim();
+                if (value.StartsWith('"') && value.EndsWith('"'))
+                    value = value[1..^1];
+                result[key] = value;
             }
-
-            if (result.Count > 0)
-                Log.Info($"[INFO] Loaded {result.Count} variables from {envPath}");
         }
-        catch (Exception ex)
-        {
-            Log.Info($"[WARN] Error loading .env: {ex.Message}");
-        }
-
+        catch (Exception ex) { Log.Warn($"[WARN] Failed to read .env: {ex.Message}"); }
         return result;
     }
 
     private static string GetValue(Dictionary<string, string> section, string key, string defaultValue)
     {
-        return section.TryGetValue(key, out var val) ? val : defaultValue;
+        return section.TryGetValue(key, out var v) ? v : defaultValue;
     }
 
     private static int GetInt(Dictionary<string, string> section, string key, int defaultValue)
     {
-        if (section.TryGetValue(key, out var val) && int.TryParse(val, out var result))
-            return result;
+        if (section.TryGetValue(key, out var v) && int.TryParse(v, out var r)) return r;
         return defaultValue;
     }
 
     private static double GetDouble(Dictionary<string, string> section, string key, double defaultValue)
     {
-        if (section.TryGetValue(key, out var val) &&
-            double.TryParse(val, System.Globalization.NumberStyles.Float,
-                           System.Globalization.CultureInfo.InvariantCulture, out var result))
-            return result;
+        if (section.TryGetValue(key, out var v) && double.TryParse(v, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var r)) return r;
         return defaultValue;
     }
 }

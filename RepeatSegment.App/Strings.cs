@@ -74,6 +74,9 @@ public static class Strings
         ["mw.open_file"] = "Select audio file",
         ["mw.speed"] = "Speed",
         ["mw.speed.tip"] = "Playback speed",
+        ["mw.menu.imagesearch"] = "Image search",
+        ["mw.menu.imagesearch.google"] = "Google",
+        ["mw.menu.imagesearch.yandex"] = "Yandex",
 
         // ── AnkiCardWindow ──
         ["acw.title"] = "Anki Card",
@@ -157,6 +160,8 @@ public static class Strings
         ["sw.mp3_64"] = "64 kbps (smaller file)",
         ["sw.mp3_128"] = "128 kbps (better quality)",
         ["sw.general_header"] = "───── General ─────",
+        ["sw.anki_header"] = "───── Anki ─────",
+        ["sw.image_provider"] = "Image search provider:",
         ["sw.chunk_minutes"] = "Chunk minutes:",
         ["sw.highlight_latency"] = "Highlight latency (s):",
         ["sw.ok"] = "OK",
@@ -237,6 +242,9 @@ public static class Strings
         ["mw.open_file"] = "Выберите аудиофайл",
         ["mw.speed"] = "Скорость",
         ["mw.speed.tip"] = "Скорость воспроизведения",
+        ["mw.menu.imagesearch"] = "Поиск картинок",
+        ["mw.menu.imagesearch.google"] = "Google",
+        ["mw.menu.imagesearch.yandex"] = "Яндекс",
 
         // ── AnkiCardWindow ──
         ["acw.title"] = "Карточка Anki",
@@ -320,6 +328,8 @@ public static class Strings
         ["sw.translation_yandex_key"] = "API ключ:",
         ["sw.translation_yandex_folder"] = "Folder ID:",
         ["sw.general_header"] = "───── Общие ─────",
+        ["sw.anki_header"] = "───── Anki ─────",
+        ["sw.image_provider"] = "Поиск картинок:",
         ["sw.chunk_minutes"] = "Минут в чанке:",
         ["sw.highlight_latency"] = "Задержка подсветки (с):",
         ["sw.ok"] = "OK",

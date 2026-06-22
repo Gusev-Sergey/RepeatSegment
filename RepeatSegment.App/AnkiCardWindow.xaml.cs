@@ -29,11 +29,13 @@ public partial class AnkiCardWindow : Window
     private string? _matchedWord;
     private double _sentenceStart, _sentenceEnd;
     private string _selectedTtsProvider = "google"; // "google", "deepgram", or "record"
+    private string _imageSearchProvider = "google";
 
     public AnkiCardWindow(string selectedWord, string context, double wordStart, double wordEnd,
                           AudioEngine? audio, TranscriptionProvider? transcription, TranslationProvider? translation,
                           string? ruTranslation, string? matchedWord,
-                          List<WordTiming>? wordTimings = null, TtsProvider? ttsProvider = null)
+                          List<WordTiming>? wordTimings = null, TtsProvider? ttsProvider = null,
+                          string imageSearchProvider = "google")
     {
         InitializeComponent();
         _selectedWord = selectedWord;
@@ -42,6 +44,7 @@ public partial class AnkiCardWindow : Window
         _audio = audio;
         _translationProvider = translation;
         _ttsProvider = ttsProvider;
+        _imageSearchProvider = imageSearchProvider;
         _wordTimings = wordTimings ?? new List<WordTiming>();
         _matchedWord = matchedWord;
 
@@ -144,16 +147,72 @@ public partial class AnkiCardWindow : Window
         {
             await ImageBrowser.EnsureCoreWebView2Async(null);
             ImageBrowser.DefaultBackgroundColor = System.Drawing.Color.White;
+
+            // Anti-bot measures for Google Images
+            if (_imageSearchProvider == "google")
+            {
+                try
+                {
+                    var cookieMgr = ImageBrowser.CoreWebView2.CookieManager;
+                    cookieMgr.AddOrUpdateCookie(cookieMgr.CreateCookie("CONSENT", "YES+cb", ".google.com", "/"));
+                    cookieMgr.AddOrUpdateCookie(cookieMgr.CreateCookie("NID", "511", ".google.com", "/"));
+                }
+                catch { /* best-effort */ }
+            }
+
             ImageBrowser.CoreWebView2.DOMContentLoaded += (_, _) =>
             {
+                // Anti-bot: hide webdriver flag
                 ImageBrowser.CoreWebView2.ExecuteScriptAsync(
-                    "if(!window.___rsTrack){window.___rsTrack=1;document.addEventListener('click',function(e){var i=e.target.closest('img');if(i&&i.src)window.__img=i.src;});}");
+                    "Object.defineProperty(navigator,'webdriver',{get:()=>false});" +
+                    "window.chrome={runtime:{}};");
+
+                string isGoogle = _imageSearchProvider == "google" ? "true" : "false";
+                ImageBrowser.CoreWebView2.ExecuteScriptAsync(
+                    "if(!window.___rsTrack){window.___rsTrack=1;" +
+                    "var isG=" + isGoogle + ";" +
+                    "if(isG){" +
+                    "  document.addEventListener('click',function(e){" +
+                    "    var el=e.target;" +
+                    "    while(el&&el!==document.body){" +
+                    "      if(el.tagName==='A'&&el.href&&el.href.indexOf('/imgres?')>=0){" +
+                    "        var m=el.href.match(/[?&]imgurl=([^&]+)/i);" +
+                    "        if(m){window.__img=decodeURIComponent(m[1]);return;}" +
+                    "      }" +
+                    "      if(el.hasAttribute&&el.hasAttribute('data-ou')){" +
+                    "        window.__img=el.getAttribute('data-ou');return;" +
+                    "      }" +
+                    "      el=el.parentElement;" +
+                    "    }" +
+                    "  },true);" +
+                    "  window.__findBestImg=function(){" +
+                    "    var imgs=document.querySelectorAll('img[src^=\"http\"],img[src^=\"/\"],img[src^=\"data\"]');" +
+                    "    var best=null,bestW=0;" +
+                    "    for(var i=0;i<imgs.length;i++){" +
+                    "      var s=imgs[i].src||imgs[i].getAttribute('data-src')||'';" +
+                    "      if(!s||s.indexOf('data:')===0||s.indexOf('gstatic')>=0||s.indexOf('encrypted')>=0||s.indexOf('/favicon')>=0)continue;" +
+                    "      if(s.indexOf('/')===0)s=location.origin+s;" +
+                    "      var w=imgs[i].naturalWidth||imgs[i].width||imgs[i].clientWidth||0;" +
+                    "      if(w>bestW&&w>150){bestW=w;best=s;}" +
+                    "    }" +
+                    "    return best||window.__img||'';" +
+                    "  };" +
+                    "}else{" +
+                    "  document.addEventListener('click',function(e){" +
+                    "    function ok(s){return s&&typeof s==='string'&&s.startsWith('http')&&s.indexOf('data:')===-1;}" +
+                    "    function f(el){if(!el)return null;var s=el.src||el.getAttribute('data-src')||el.getAttribute('src');if(ok(s))return s;var im=el.tagName==='PICTURE'?el.querySelector('img'):null;if(im){s=im.src||im.getAttribute('data-src')||im.getAttribute('src');if(ok(s))return s;}if(el.querySelector){var q=el.querySelector('img');if(q){s=q.src||q.getAttribute('data-src')||q.getAttribute('src');if(ok(s))return s;}}return null;}" +
+                    "    var els=document.elementsFromPoint(e.clientX,e.clientY);" +
+                    "    for(var j=0;j<els.length;j++){var s=f(els[j]);if(s){window.__img=s;e.preventDefault();e.stopPropagation();return;}var p=els[j].parentElement;while(p){s=f(p);if(s){window.__img=s;e.preventDefault();e.stopPropagation();return;}p=p.parentElement;}}" +
+                    "  },true);" +
+                    "};}");
             };
             // Auto-search images for the selected word on open
             string query = TxtSearchQuery.Text.Trim();
             if (!string.IsNullOrWhiteSpace(query))
             {
-                string searchUrl = $"https://yandex.ru/images/search?text={Uri.EscapeDataString(query)}";
+                string searchUrl = _imageSearchProvider == "google"
+                    ? $"https://www.google.com/search?tbm=isch&q={Uri.EscapeDataString(query)}"
+                    : $"https://yandex.ru/images/search?text={Uri.EscapeDataString(query)}";
                 ImageBrowser.CoreWebView2.Navigate(searchUrl);
                 TxtStatus.Text = "Click desired image, then ✓ Use";
             }
@@ -348,7 +407,9 @@ public partial class AnkiCardWindow : Window
     {
         string query = TxtSearchQuery.Text.Trim();
         if (string.IsNullOrWhiteSpace(query)) return;
-        string searchUrl = $"https://yandex.ru/images/search?text={Uri.EscapeDataString(query)}";
+        string searchUrl = _imageSearchProvider == "google"
+            ? $"https://www.google.com/search?tbm=isch&q={Uri.EscapeDataString(query)}"
+            : $"https://yandex.ru/images/search?text={Uri.EscapeDataString(query)}";
         if (ImageBrowser.CoreWebView2 != null)
         {
             PicturePreview.Visibility = Visibility.Collapsed;
@@ -375,18 +436,43 @@ public partial class AnkiCardWindow : Window
     {
         try
         {
-            string url = await ImageBrowser.CoreWebView2.ExecuteScriptAsync("window.__img || ''");
+            string script = _imageSearchProvider == "google"
+                ? "(window.__findBestImg&&window.__findBestImg())||window.__img||''"
+                : "window.__img || ''";
+            string url = await ImageBrowser.CoreWebView2.ExecuteScriptAsync(script);
             url = url.Trim('"');
             if (string.IsNullOrWhiteSpace(url) || url == "null" || url.Length < 10)
             {
-                TxtStatus.Text = "Click on an image first, then ✓ Use";
+                TxtStatus.Text = _imageSearchProvider == "google"
+                    ? "Click on an image to open preview, then ✓ Use"
+                    : "Click on an image first, then ✓ Use";
                 return;
             }
 
             TxtStatus.Text = "Downloading...";
-            using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(15) };
-            http.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36");
-            byte[] data = await http.GetByteArrayAsync(url);
+
+            byte[] data;
+            try
+            {
+                string esc = url.Replace("\\", "\\\\").Replace("'", "\\'");
+                string js = "(async()=>{try{var r=await fetch('"+esc+"',{mode:'cors',credentials:'include'});if(!r.ok)return'ERR:'+r.status;var b=await r.blob();return await new Promise(rs=>{var fr=new FileReader();fr.onloadend=()=>rs(fr.result);fr.readAsDataURL(b);});}catch(e){return'ERR:'+e.message;}})()";
+                string r = await ImageBrowser.CoreWebView2.ExecuteScriptAsync(js);
+                r = r.Trim('"');
+                if (r.StartsWith("data:"))
+                {
+                    int idx = r.IndexOf(','); data = idx > 0 ? Convert.FromBase64String(r[(idx + 1)..]) : throw new Exception("bad data");
+                }
+                else throw new Exception(r.StartsWith("ERR:") ? r[4..] : "fetch failed");
+            }
+            catch
+            {
+                using var h = new HttpClientHandler { AutomaticDecompression = System.Net.DecompressionMethods.All };
+                using var c = new HttpClient(h) { Timeout = TimeSpan.FromSeconds(12) };
+                c.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/125.0.0.0 Safari/537.36");
+                c.DefaultRequestHeaders.Referrer = new Uri(_imageSearchProvider == "google" ? "https://www.google.com/" : "https://yandex.ru/");
+                using var tok = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+                data = await c.GetByteArrayAsync(url, tok.Token);
+            }
 
             using var bmp = SKBitmap.Decode(data);
             if (bmp != null)
@@ -396,18 +482,17 @@ public partial class AnkiCardWindow : Window
                 {
                     float scale = Math.Min((float)maxDim / w, (float)maxDim / h);
                     w = (int)(w * scale); h = (int)(h * scale);
-                    using var resized = bmp.Resize(new SKImageInfo(w, h), SKFilterQuality.Medium);
-                    using var image = SKImage.FromBitmap(resized);
-                    using var data2 = image.Encode(SKEncodedImageFormat.Jpeg, 75);
-                    data = data2.ToArray();
+                    using var rs = bmp.Resize(new SKImageInfo(w, h), SKFilterQuality.Medium);
+                    using var img = SKImage.FromBitmap(rs);
+                    using var d2 = img.Encode(SKEncodedImageFormat.Jpeg, 75);
+                    data = d2.ToArray();
                 }
-                else if (w * h > 100_000) // > 100k pixels → recompress
+                else if (w * h > 100_000)
                 {
-                    using var image = SKImage.FromBitmap(bmp);
-                    using var data2 = image.Encode(SKEncodedImageFormat.Jpeg, 75);
-                    data = data2.ToArray();
+                    using var img = SKImage.FromBitmap(bmp);
+                    using var d2 = img.Encode(SKEncodedImageFormat.Jpeg, 75);
+                    data = d2.ToArray();
                 }
-                // else: small image — keep as-is (no need to recompress)
             }
 
             string mediaDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "RepeatSegment", "decks", "media");

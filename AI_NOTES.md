@@ -142,3 +142,73 @@ byte[] result = ms.ToArray();
 - Позиция волны должна умножаться на `_playbackSpeed` для синхронизации с растянутым аудио.
 - `_playStartTime` ставить ПОСЛЕ SOLA-обработки, иначе скачок позиции.
 - Диапазон: 0.4× – 1.5×, шаг 0.1. Высокие скорости звучат отлично, низкие — приемлемо.
+
+## Google Images — извлечение URL картинок через WebView2
+
+### Проблема
+Google Images использует сложный DOM (Shadow DOM, lazy-loading, `encrypted-tbn` URL) и боковую панель с AJAX-загрузкой полноразмерного изображения. Прямые HTTP-запросы к Google Images из HttpClient получают 429 (Too Many Requests) или таймаут.
+
+### Решение (v074-v076)
+1. **Извлечение URL**: обработчик клика в capture-фазе ищет `<a href="/imgres?imgurl=НАСТОЯЩИЙ_URL">` — извлекает `imgurl` параметр через `decodeURIComponent`. Альтернативно проверяет `data-ou` атрибут.
+2. **Загрузка**: основной метод — JavaScript `fetch(url, {credentials:'include'})` внутри WebView2 (использует cookie-сессию браузера, не блокируется Google). Fallback — HttpClient с полными браузерными заголовками (User-Agent Chrome 125, Sec-Fetch-*).
+3. **Анти-бот меры**: `navigator.webdriver=false`, `window.chrome={runtime:{}}`, CONSENT/NID cookies через `CoreWebView2.CookieManager`.
+4. **Таймаут**: основной метод — не ограничен (WebView2), fallback — 10-12 секунд.
+5. **Авто-декомпрессия**: `HttpClientHandler { AutomaticDecompression = All }`.
+
+### Ключевые находки
+- `document.elementsFromPoint()` — единственный API, пробивающий Shadow DOM Google (`.closest()` не работает)
+- Google НЕ хранит полноразмерное изображение в `src` тега `<img>` — URL в `href` родительского `<a>` или в `data-ou`
+- `encrypted-tbn` URL — зашифрованные миниатюры, HTTP-запрос к ним возвращает 429
+- `MutationObserver` и `setInterval` ненадёжны — боковая панель Google грузится асинхронно с непредсказуемым timing'ом
+- **Лучший подход**: клик проходит естественно → боковая панель открывается → "Use" сканирует DOM через `querySelectorAll('img[src^="http"]')` с фильтром `naturalWidth > 150`
+
+## StatusBar и GrowWindowForTranslation — эпопея с высотой окна
+
+### Проблема
+При открытии панели перевода (`TranslationPanel`) StatusBar уходил за нижнюю границу окна. Множество подходов не работали из-за циклической зависимости: `*`-ряд (транскрипция) сжимается при появлении панели перевода, а `ActualHeight` не отражает желаемую высоту.
+
+### Что НЕ сработало (v062-v078, 15+ итераций):
+- `Height = _baseWindowHeight` — окно прыгало
+- `TranslatePoint` относительно окна — неправильная система координат (включает заголовок)
+- `TranslatePoint` относительно `LayoutRoot` — координаты зависят от текущего размера окна
+- `Measure` с бесконечной высотой — `*`-ряд сообщал бесконечную желаемую высоту → окно вырастало до 92% экрана
+- Фиксация `*`-ряда перед `Measure` — сложно и ненадёжно
+- `SizeToContent = Height` — `*`-ряд растягивался на весь экран
+- `GrowWindowForTranslation = ActualHeight + N` — кумулятивный рост при повторных выделениях
+
+### Финальное решение (v081):
+```csharp
+private double _baseWindowH;
+private void GrowWindowForTranslation() {
+    if (_baseWindowH <= 0) _baseWindowH = ActualHeight;  // фиксируем базу ОДИН раз
+    double maxH = SystemParameters.WorkArea.Height * 0.85;
+    double newH = _baseWindowH + 100;  // всегда +100px от исходной высоты
+    if (newH > maxH) newH = maxH;
+    if (newH > ActualHeight) Height = newH;
+}
+```
+
+### Ключевые находки:
+- Нельзя использовать `ActualHeight` для расчёта прироста — он уже изменён предыдущим вызовом
+- `_baseWindowH` запоминается один раз при ПЕРВОМ вызове, все последующие вызовы используют ту же базу
+- Статусбар: заменён со `<StatusBar>` (сложный встроенный шаблон WPF) на простой `<Border>` + `<TextBlock>`
+- Строка панели перевода `TxtTranslationProvider` показывает информацию о провайдере (вместо StatusBar)
+- `MaxHeight=160` на панели перевода + `ScrollViewer` предотвращает чрезмерное расширение
+
+## WPF StatusBar — внутренние отступы
+
+### Проблема
+`<StatusBar>` в WPF имеет встроенный сложный шаблон с `StatusBarItem`, который добавляет неубираемые внутренние `Padding`/`Margin`. Даже с `Margin="0" Padding="0"` остаётся ~6px мёртвого пространства.
+
+### Решение (v073)
+Заменить `<StatusBar>` на `<Border>` + `<TextBlock>`:
+```xml
+<Border x:Name="MainStatusBar" Background="..." MinHeight="20" Padding="4,2,4,2"
+        BorderBrush="..." BorderThickness="0,1,0,0">
+    <TextBlock x:Name="TxtStatus" FontSize="12" TextTrimming="CharacterEllipsis"
+               VerticalAlignment="Center"/>
+</Border>
+```
+- `BorderThickness="0,1,0,0"` — тонкая разделительная линия сверху
+- `TextTrimming="CharacterEllipsis"` — длинный текст обрезается с многоточием
+- `VerticalAlignment="Center"` — текст всегда по центру

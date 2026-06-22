@@ -178,15 +178,20 @@
             </Grid>
         </Border>
 
-        <Border Grid.Row="5" x:Name="TranslationPanel" Visibility="Collapsed" Margin="10,4,10,16" Padding="8,6,8,12" CornerRadius="4" BorderBrush="{DynamicResource SeparatorBrush}" BorderThickness="1" Background="{DynamicResource PanelBackgroundBrush}">
-            <Grid x:Name="TranslationInnerGrid">
-                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" x:Name="TxtTranslationOriginal" FontSize="11" Foreground="{DynamicResource TextDimBrush}" TextWrapping="Wrap" Margin="0,0,0,4"/>
-                <TextBlock Grid.Row="1" x:Name="TxtTranslationResult" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource TextBrush}" TextWrapping="Wrap"/>
-                <Button Grid.Row="2" x:Name="BtnAddToAnki" Content="Add to Anki" Padding="10,4" Margin="0,8,0,0" HorizontalAlignment="Right" Click="BtnAddToAnki_Click" Background="#FFC107" Foreground="#222" FontWeight="Bold" ToolTip="Create Anki flashcards from the selected word/phrase"/>
-            </Grid>
+        <Border Grid.Row="5" x:Name="TranslationPanel" Visibility="Collapsed" Margin="10,4,10,16" Padding="8,6,8,12" CornerRadius="4" BorderBrush="{DynamicResource SeparatorBrush}" BorderThickness="1" Background="{DynamicResource PanelBackgroundBrush}" MaxHeight="160">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <Grid x:Name="TranslationInnerGrid">
+                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" x:Name="TxtTranslationProvider" FontSize="11" Foreground="{DynamicResource TextDimBrush}" TextWrapping="Wrap" Margin="0,0,0,2"/>
+                    <TextBlock Grid.Row="1" x:Name="TxtTranslationOriginal" FontSize="11" Foreground="{DynamicResource TextDimBrush}" TextWrapping="Wrap" Margin="0,2,0,4"/>
+                    <TextBlock Grid.Row="2" x:Name="TxtTranslationResult" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource TextBrush}" TextWrapping="Wrap"/>
+                    <Button Grid.Row="3" x:Name="BtnAddToAnki" Content="Add to Anki" Padding="10,4" Margin="0,8,0,0" HorizontalAlignment="Right" Click="BtnAddToAnki_Click" Background="#FFC107" Foreground="#222" FontWeight="Bold" ToolTip="Create Anki flashcards from the selected word/phrase"/>
+                </Grid>
+            </ScrollViewer>
         </Border>
 
-        <StatusBar Grid.Row="6" Background="{DynamicResource StatusBarBrush}"><StatusBarItem><TextBlock x:Name="TxtStatus" Text="Ready" Foreground="{DynamicResource TextDimBrush}" FontSize="13"/></StatusBarItem></StatusBar>
+        <Border Grid.Row="6" x:Name="MainStatusBar" Background="{DynamicResource StatusBarBrush}" MinHeight="20" Padding="4,2,4,2" BorderBrush="{DynamicResource SeparatorBrush}" BorderThickness="0,1,0,0">
+            <TextBlock x:Name="TxtStatus" Text="Ready" Foreground="{DynamicResource TextBrush}" FontSize="12" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+        </Border>
     </Grid>
 </Window>
