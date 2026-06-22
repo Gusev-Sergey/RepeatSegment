@@ -18,9 +18,9 @@ public partial class SettingsWindow : Window
         Owner = _mainWindow;
 
         double sw = SystemParameters.WorkArea.Width, sh = SystemParameters.WorkArea.Height;
-        Width = Math.Min(sw * 0.48, 600);
-        MinWidth = Math.Max(420, sw * 0.32);
-        MinHeight = Math.Max(400, sh * 0.35);
+        Width = Math.Min(sw * 0.40, 520);
+        MinWidth = Math.Max(400, sw * 0.28);
+        MinHeight = Math.Max(380, sh * 0.30);
 
         ApplyStrings();
         LoadSettings();

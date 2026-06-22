@@ -15,10 +15,10 @@ public partial class AboutWindow : Window
         Owner = _mw;
 
         double sw = SystemParameters.WorkArea.Width, sh = SystemParameters.WorkArea.Height;
-        Width = Math.Min(sw * 0.50, 620);
-        Height = Math.Min(sh * 0.55, 480);
-        MinWidth = Math.Max(380, sw * 0.30);
-        MinHeight = Math.Max(280, sh * 0.25);
+        Width = Math.Min(sw * 0.38, 500);
+        Height = Math.Min(sh * 0.42, 420);
+        MinWidth = Math.Max(360, sw * 0.26);
+        MinHeight = Math.Max(260, sh * 0.22);
 
         BtnClose.Content = Strings.Get("sw.ok");
         Title = Strings.Get("mw.dlg.about_title");

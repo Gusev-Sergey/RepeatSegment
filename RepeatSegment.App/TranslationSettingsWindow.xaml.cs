@@ -16,9 +16,9 @@ public partial class TranslationSettingsWindow : Window
         Owner = _mw;
 
         double sw = SystemParameters.WorkArea.Width, sh = SystemParameters.WorkArea.Height;
-        Width = Math.Min(sw * 0.45, 560);
-        MinWidth = Math.Max(380, sw * 0.28);
-        MinHeight = Math.Max(260, sh * 0.22);
+        Width = Math.Min(sw * 0.38, 500);
+        MinWidth = Math.Max(360, sw * 0.26);
+        MinHeight = Math.Max(240, sh * 0.20);
 
         WindowStartupLocation = WindowStartupLocation.CenterOwner;
         ApplyStrings();

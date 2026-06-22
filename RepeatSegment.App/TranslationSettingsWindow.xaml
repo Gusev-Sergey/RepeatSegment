@@ -3,8 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Translation Settings" x:Name="MainGrid"
         Loaded="Window_Loaded"
-        Width="500" Height="360" MinWidth="400" MinHeight="280"
-        SizeToContent="WidthAndHeight"
+        Width="480" Height="340" MinWidth="380" MinHeight="260"
         WindowStartupLocation="CenterOwner" ResizeMode="CanResizeWithGrip"
         FontFamily="Segoe UI" FontSize="11pt">
     <Window.Resources>
@@ -15,8 +14,8 @@
     </Window.Resources>
     <Grid Margin="16">
         <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-        <TextBlock x:Name="LblTranslationHeader" Grid.Row="0" FontSize="13" Foreground="{DynamicResource TextBrush}" Margin="0,4,0,4" FontWeight="Bold" TextWrapping="Wrap"/>
-        <TextBlock x:Name="LblTranslationInfo" Grid.Row="1" FontSize="11" Foreground="{DynamicResource TextDimBrush}" TextWrapping="Wrap" Margin="0,0,0,8"/>
+        <TextBlock x:Name="LblTranslationHeader" Grid.Row="0" FontSize="13" Foreground="{DynamicResource TextBrush}" Margin="0,4,0,4" FontWeight="Bold" TextWrapping="Wrap" MaxWidth="440"/>
+        <TextBlock x:Name="LblTranslationInfo" Grid.Row="1" FontSize="11" Foreground="{DynamicResource TextDimBrush}" TextWrapping="Wrap" MaxWidth="440" Margin="0,0,0,8"/>
         <StackPanel Grid.Row="2" Margin="0,2">
             <CheckBox x:Name="LblGoogle" Checked="CbTranslationGoogle_Checked" Unchecked="CbTranslationGoogle_Unchecked"/>
             <CheckBox x:Name="LblYandex" Checked="CbTranslationYandex_Checked" Unchecked="CbTranslationYandex_Unchecked" Margin="0,8,0,0"/>
