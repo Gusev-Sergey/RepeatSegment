@@ -16,6 +16,12 @@ public partial class SettingsWindow : Window
         InjectBrushesFromMainWindow();
         InitializeComponent();
         Owner = _mainWindow;
+
+        double sw = SystemParameters.WorkArea.Width, sh = SystemParameters.WorkArea.Height;
+        Width = Math.Min(sw * 0.48, 600);
+        MinWidth = Math.Max(420, sw * 0.32);
+        MinHeight = Math.Max(400, sh * 0.35);
+
         ApplyStrings();
         LoadSettings();
     }
@@ -50,9 +56,9 @@ public partial class SettingsWindow : Window
         LblDeepgram.Content = Strings.Get("sw.deepgram");
         LblApiKeysHeader.Text = Strings.Get("sw.apikeys_header");
         LblAssemblyAiHeader.Text = Strings.Get("sw.assemblyai_header");
+        LblApiKey1.Text = Strings.Get("sw.assemblyai_key");
         LblAssemblyAiWarn.Text = Strings.Get("sw.assemblyai_warn");
         LblDeepgramHeader.Text = Strings.Get("sw.deepgram_header");
-        LblApiKey1.Text = Strings.Get("sw.assemblyai_key");
         LblApiKey2.Text = Strings.Get("sw.deepgram_key");
         BtnOk.Content = Strings.Get("sw.ok");
         BtnCancel.Content = Strings.Get("sw.cancel");
@@ -68,14 +74,17 @@ public partial class SettingsWindow : Window
 
     private void BtnOk_Click(object sender, RoutedEventArgs e)
     {
-        var enabled = new List<string>();
-        if (LblAssemblyAi.IsChecked == true) enabled.Add("assemblyai");
-        if (LblDeepgram.IsChecked == true) enabled.Add("deepgram");
-        _cfg.ProvidersEnabled = enabled.Count > 0 ? enabled : new List<string> { "deepgram" };
+        var provs = new System.Collections.Generic.List<string>();
+        if (LblAssemblyAi.IsChecked == true) provs.Add("assemblyai");
+        if (LblDeepgram.IsChecked == true) provs.Add("deepgram");
+        _cfg.ProvidersEnabled = provs.Count > 0 ? provs : new System.Collections.Generic.List<string> { "deepgram" };
         _cfg.AssemblyAiApiKey = TxtAssemblyAiKey.Text.Trim();
         _cfg.DeepgramApiKey = TxtDeepgramKey.Text.Trim();
-        Saved = true; DialogResult = true; Close();
+        _cfg.Save(_cfg.Path, _cfg.FileName, 0, 0);
+        Saved = true;
+        DialogResult = true; Close();
     }
-    private void BtnCancel_Click(object sender, RoutedEventArgs e) { Saved = false; DialogResult = false; Close(); }
-    private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e) { try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true }); } catch { } e.Handled = true; }
+    private void BtnCancel_Click(object sender, RoutedEventArgs e) { DialogResult = false; Close(); }
+    private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+    { try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true }); } catch { } e.Handled = true; }
 }

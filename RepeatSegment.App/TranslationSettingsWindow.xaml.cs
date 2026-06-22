@@ -14,6 +14,12 @@ public partial class TranslationSettingsWindow : Window
         InjectBrushes();
         InitializeComponent();
         Owner = _mw;
+
+        double sw = SystemParameters.WorkArea.Width, sh = SystemParameters.WorkArea.Height;
+        Width = Math.Min(sw * 0.45, 560);
+        MinWidth = Math.Max(380, sw * 0.28);
+        MinHeight = Math.Max(260, sh * 0.22);
+
         WindowStartupLocation = WindowStartupLocation.CenterOwner;
         ApplyStrings();
         LoadSettings();
@@ -55,30 +61,28 @@ public partial class TranslationSettingsWindow : Window
 
     private void LoadSettings()
     {
-        bool preferYandex = _cfg.TranslationProviderPreference == "yandex";
-        LblGoogle.IsChecked = !preferYandex;
-        LblYandex.IsChecked = preferYandex;
-        PanelYandexTranslate.Visibility = preferYandex ? Visibility.Visible : Visibility.Collapsed;
+        LblGoogle.IsChecked = _cfg.TranslationProviderPreference == "google" || _cfg.TranslationProviderPreference == "google,yandex" || string.IsNullOrEmpty(_cfg.TranslationProviderPreference);
+        LblYandex.IsChecked = _cfg.TranslationProviderPreference.Contains("yandex");
+        PanelYandexTranslate.Visibility = LblYandex.IsChecked == true ? Visibility.Visible : Visibility.Collapsed;
         TxtYandexTranslateKey.Text = _cfg.YandexTranslateApiKey ?? "";
         TxtYandexTranslateFolderId.Text = _cfg.YandexTranslateFolderId ?? "";
     }
 
+    private void CbTranslationGoogle_Checked(object s, RoutedEventArgs e) { }
+    private void CbTranslationGoogle_Unchecked(object s, RoutedEventArgs e) { }
+    private void CbTranslationYandex_Checked(object s, RoutedEventArgs e) { PanelYandexTranslate.Visibility = Visibility.Visible; }
+    private void CbTranslationYandex_Unchecked(object s, RoutedEventArgs e) { PanelYandexTranslate.Visibility = Visibility.Collapsed; }
+
     private void BtnOk_Click(object sender, RoutedEventArgs e)
     {
-        _cfg.TranslationProviderPreference = LblYandex.IsChecked == true ? "yandex" : "google";
+        var prefs = new System.Collections.Generic.List<string>();
+        if (LblGoogle.IsChecked == true) prefs.Add("google");
+        if (LblYandex.IsChecked == true) prefs.Add("yandex");
+        _cfg.TranslationProviderPreference = prefs.Count > 0 ? string.Join(",", prefs) : "google";
         _cfg.YandexTranslateApiKey = TxtYandexTranslateKey.Text.Trim();
         _cfg.YandexTranslateFolderId = TxtYandexTranslateFolderId.Text.Trim();
+        _cfg.Save(_cfg.Path, _cfg.FileName, 0, 0);
         DialogResult = true; Close();
     }
     private void BtnCancel_Click(object sender, RoutedEventArgs e) { DialogResult = false; Close(); }
-    private void LblGoogle_Checked(object sender, RoutedEventArgs e) { LblYandex.IsChecked = false; PanelYandexTranslate.Visibility = Visibility.Collapsed; }
-    private void LblGoogle_Unchecked(object sender, RoutedEventArgs e) { if (LblYandex.IsChecked != true) LblGoogle.IsChecked = true; }
-    private void LblYandex_Checked(object sender, RoutedEventArgs e) { LblGoogle.IsChecked = false; PanelYandexTranslate.Visibility = Visibility.Visible; }
-    private void LblYandex_Unchecked(object sender, RoutedEventArgs e) { PanelYandexTranslate.Visibility = Visibility.Collapsed; if (LblGoogle.IsChecked != true) LblGoogle.IsChecked = true; }
-
-    // Old cb handler aliases
-    private void CbTranslationGoogle_Checked(object sender, RoutedEventArgs e) => LblGoogle_Checked(sender, e);
-    private void CbTranslationGoogle_Unchecked(object sender, RoutedEventArgs e) => LblGoogle_Unchecked(sender, e);
-    private void CbTranslationYandex_Checked(object sender, RoutedEventArgs e) => LblYandex_Checked(sender, e);
-    private void CbTranslationYandex_Unchecked(object sender, RoutedEventArgs e) => LblYandex_Unchecked(sender, e);
 }

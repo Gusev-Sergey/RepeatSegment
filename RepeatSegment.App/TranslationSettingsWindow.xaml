@@ -3,26 +3,27 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Translation Settings" x:Name="MainGrid"
         Loaded="Window_Loaded"
-        Width="460" Height="360" MinWidth="400" MinHeight="280"
+        Width="500" Height="360" MinWidth="400" MinHeight="280"
+        SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterOwner" ResizeMode="CanResizeWithGrip"
         FontFamily="Segoe UI" FontSize="11pt">
     <Window.Resources>
         <Style TargetType="CheckBox"><Setter Property="Foreground" Value="{DynamicResource TextBrush}"/><Setter Property="FontSize" Value="13"/><Setter Property="Margin" Value="2"/></Style>
-        <Style TargetType="TextBlock"><Setter Property="Foreground" Value="{DynamicResource TextBrush}"/><Setter Property="FontSize" Value="12"/></Style>
+        <Style TargetType="TextBlock"><Setter Property="Foreground" Value="{DynamicResource TextBrush}"/><Setter Property="FontSize" Value="12"/><Setter Property="TextWrapping" Value="Wrap"/></Style>
         <Style TargetType="TextBox"><Setter Property="Background" Value="{DynamicResource InputBgBrush}"/><Setter Property="Foreground" Value="{DynamicResource TextBrush}"/><Setter Property="BorderBrush" Value="{DynamicResource InputBorderBrush}"/><Setter Property="CaretBrush" Value="{DynamicResource TextBrush}"/><Setter Property="FontSize" Value="12"/><Setter Property="Padding" Value="4,2"/></Style>
         <Style TargetType="Button"><Setter Property="Background" Value="{DynamicResource ButtonBgBrush}"/><Setter Property="Foreground" Value="{DynamicResource TextBrush}"/><Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrush}"/><Setter Property="FontSize" Value="13"/><Setter Property="Padding" Value="12,4"/><Setter Property="Cursor" Value="Hand"/><Style.Triggers><Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{DynamicResource ButtonHoverBrush}"/></Trigger><Trigger Property="IsPressed" Value="True"><Setter Property="Background" Value="{DynamicResource ButtonPressedBrush}"/></Trigger><Trigger Property="IsDefault" Value="True"><Setter Property="Background" Value="{DynamicResource SliderAccentBrush}"/><Setter Property="Foreground" Value="White"/><Setter Property="FontWeight" Value="Bold"/></Trigger></Style.Triggers></Style>
     </Window.Resources>
     <Grid Margin="16">
-        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-        <TextBlock x:Name="LblTranslationHeader" Grid.Row="0" FontSize="13" Foreground="{DynamicResource TextBrush}" Margin="0,4,0,4" FontWeight="Bold"/>
+        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+        <TextBlock x:Name="LblTranslationHeader" Grid.Row="0" FontSize="13" Foreground="{DynamicResource TextBrush}" Margin="0,4,0,4" FontWeight="Bold" TextWrapping="Wrap"/>
         <TextBlock x:Name="LblTranslationInfo" Grid.Row="1" FontSize="11" Foreground="{DynamicResource TextDimBrush}" TextWrapping="Wrap" Margin="0,0,0,8"/>
         <StackPanel Grid.Row="2" Margin="0,2">
             <CheckBox x:Name="LblGoogle" Checked="CbTranslationGoogle_Checked" Unchecked="CbTranslationGoogle_Unchecked"/>
             <CheckBox x:Name="LblYandex" Checked="CbTranslationYandex_Checked" Unchecked="CbTranslationYandex_Unchecked" Margin="0,8,0,0"/>
             <StackPanel x:Name="PanelYandexTranslate" Visibility="Collapsed" Margin="0,8,0,0">
-                <TextBlock x:Name="LblYandexKey" FontSize="11" Foreground="{DynamicResource TextDimBrush}" Margin="0,2,0,0"/>
+                <TextBlock x:Name="LblYandexKey" FontSize="11" Foreground="{DynamicResource TextDimBrush}" Margin="0,2,0,0" TextWrapping="Wrap"/>
                 <TextBox x:Name="TxtYandexTranslateKey" Margin="0,0,0,6"/>
-                <TextBlock x:Name="LblYandexFolder" FontSize="11" Foreground="{DynamicResource TextDimBrush}" Margin="0,2,0,0"/>
+                <TextBlock x:Name="LblYandexFolder" FontSize="11" Foreground="{DynamicResource TextDimBrush}" Margin="0,2,0,0" TextWrapping="Wrap"/>
                 <TextBox x:Name="TxtYandexTranslateFolderId" Margin="0,0,0,8"/>
             </StackPanel>
         </StackPanel>
