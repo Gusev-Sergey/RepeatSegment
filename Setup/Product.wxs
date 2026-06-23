@@ -10,7 +10,6 @@
 
     <Feature Id="Main" Title="RepeatSegment" Level="1">
       <ComponentGroupRef Id="AppComponents" />
-      <ComponentGroupRef Id="LangComponents" />
       <ComponentRef Id="ConfigTemplateComponent" />
       <ComponentRef Id="ShortcutComponent" />
     </Feature>
@@ -21,7 +20,7 @@
 
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
     <Property Id="ARPCONTACT" Value="astrorum_arbor@outlook.com" />
-    <Property Id="ARPCOMMENTS" Value="Smart audio segment repeater: auto-split by pauses · transcribe · translate in-place · export to Anki. Developed with AI: VS Code + Zoo Code + DeepSeek API." />
+    <Property Id="ARPCOMMENTS" Value="Smart audio segment repeater. Developed with AI: VS Code + Zoo Code + DeepSeek API." />
     <Icon Id="AppIcon" SourceFile="..\RepeatSegment.App\Icons\app.ico" />
   </Package>
 
@@ -34,7 +33,6 @@
     </StandardDirectory>
   </Fragment>
 
-  <!-- All files from dotnet publish (framework-dependent) -->
   <Fragment>
     <ComponentGroup Id="AppComponents" Directory="INSTALLFOLDER">
       <Component Guid="*"><File Source="..\Publish\Release\RepeatSegment.App.dll" KeyPath="yes" /></Component>
@@ -63,7 +61,7 @@
       <Component Guid="*"><File Source="..\Publish\Release\SQLitePCLRaw.batteries_v2.dll" KeyPath="yes" /></Component>
       <Component Guid="*"><File Source="..\Publish\Release\SQLitePCLRaw.core.dll" KeyPath="yes" /></Component>
       <Component Guid="*"><File Source="..\Publish\Release\SQLitePCLRaw.provider.e_sqlite3.dll" KeyPath="yes" /></Component>
-      <!-- Icons -->
+      <Component Guid="*"><File Source="..\Publish\Release\runtimes\win-x64\native\WebView2Loader.dll" KeyPath="yes" /></Component>
       <Component Guid="*"><File Source="..\Publish\Release\Icons\app.ico" KeyPath="yes" /></Component>
       <Component Guid="*"><File Source="..\Publish\Release\Icons\first.png" KeyPath="yes" /></Component>
       <Component Guid="*"><File Source="..\Publish\Release\Icons\last.png" KeyPath="yes" /></Component>
@@ -79,14 +77,7 @@
       <Component Guid="*"><File Source="..\Publish\Release\Icons\Square44x44Logo.png" KeyPath="yes" /></Component>
       <Component Guid="*"><File Source="..\Publish\Release\Icons\StoreLogo.png" KeyPath="yes" /></Component>
       <Component Guid="*"><File Source="..\Publish\Release\Icons\Wide310x150Logo.png" KeyPath="yes" /></Component>
-      <!-- Runtime native -->
-      <Component Guid="*"><File Source="..\Publish\Release\runtimes\win-x64\native\WebView2Loader.dll" KeyPath="yes" /></Component>
-    </ComponentGroup>
-  </Fragment>
-
-  <!-- Language JSON files -->
-  <Fragment>
-    <ComponentGroup Id="LangComponents" Directory="INSTALLFOLDER">
+      <!-- Language files -->
       <Component Guid="*"><File Source="..\RepeatSegment.App\lang\en.json" KeyPath="yes" /></Component>
       <Component Guid="*"><File Source="..\RepeatSegment.App\lang\ru.json" KeyPath="yes" /></Component>
       <Component Guid="*"><File Source="..\RepeatSegment.App\lang\de.json" KeyPath="yes" /></Component>
@@ -95,14 +86,12 @@
     </ComponentGroup>
   </Fragment>
 
-  <!-- config.template.ini -->
   <Fragment>
     <Component Id="ConfigTemplateComponent" Directory="INSTALLFOLDER" Guid="*">
       <File Id="ConfigTemplate" Source="..\RepeatSegment.App\config.template.ini" Name="config.template.ini" KeyPath="yes" />
     </Component>
   </Fragment>
 
-  <!-- Start Menu + Desktop shortcuts -->
   <Fragment>
     <Component Id="ShortcutComponent" Directory="StartMenuDir" Guid="*">
       <RegistryValue Root="HKCU" Key="Software\RepeatSegment" Name="installed" Value="1" Type="integer" KeyPath="yes" />
