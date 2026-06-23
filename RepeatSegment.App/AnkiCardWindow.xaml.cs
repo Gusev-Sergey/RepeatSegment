@@ -148,7 +148,11 @@ public partial class AnkiCardWindow : Window
     {
         try
         {
-            await ImageBrowser.EnsureCoreWebView2Async(null);
+            string userData = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "RepeatSegment", "WebView2");
+            System.IO.Directory.CreateDirectory(userData);
+            var env = await Microsoft.Web.WebView2.Core.CoreWebView2Environment.CreateAsync(null, userData);
+            await ImageBrowser.EnsureCoreWebView2Async(env);
             ImageBrowser.DefaultBackgroundColor = System.Drawing.Color.White;
 
             // Anti-bot measures for Google Images

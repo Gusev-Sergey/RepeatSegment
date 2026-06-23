@@ -14,11 +14,6 @@
       <ComponentRef Id="ShortcutComponent" />
     </Feature>
 
-    <!-- No license dialog -->
-    <UI Id="MyWixUI">
-      <ui:WixUI Id="WixUI_Minimal" />
-    </UI>
-
     <Property Id="ARPCONTACT" Value="astrorum_arbor@outlook.com" />
     <Property Id="ARPCOMMENTS" Value="Smart audio segment repeater. Developed with AI: VS Code + Zoo Code + DeepSeek API." />
     <Icon Id="AppIcon" SourceFile="..\RepeatSegment.App\Icons\app.ico" />
@@ -79,7 +74,6 @@
       <Component Guid="*"><File Source="..\Publish\Release\Icons\Square44x44Logo.png" KeyPath="yes" /></Component>
       <Component Guid="*"><File Source="..\Publish\Release\Icons\StoreLogo.png" KeyPath="yes" /></Component>
       <Component Guid="*"><File Source="..\Publish\Release\Icons\Wide310x150Logo.png" KeyPath="yes" /></Component>
-      <!-- Language files in lang/ subdirectory -->
       <Component Guid="*" Directory="LangDir"><File Source="..\RepeatSegment.App\lang\en.json" KeyPath="yes" /></Component>
       <Component Guid="*" Directory="LangDir"><File Source="..\RepeatSegment.App\lang\ru.json" KeyPath="yes" /></Component>
       <Component Guid="*" Directory="LangDir"><File Source="..\RepeatSegment.App\lang\de.json" KeyPath="yes" /></Component>
