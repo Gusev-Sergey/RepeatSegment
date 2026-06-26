@@ -12,6 +12,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" FontSize="22" FontWeight="Bold" Margin="0,0,0,10"
                    Foreground="{DynamicResource TextBrush}">RepeatSegment</TextBlock>
@@ -23,7 +24,15 @@
                            TextWrapping="Wrap" x:Name="TxtVersion"/>
             </StackPanel>
         </ScrollViewer>
-        <Button Grid.Row="2" x:Name="BtnClose" Content="OK" Width="80" Height="30"
+        <StackPanel Grid.Row="2" Margin="0,8,0,4">
+            <TextBlock FontSize="13" TextWrapping="Wrap">
+                🌐 <Hyperlink x:Name="LinkWebsite" Click="LinkWebsite_Click" Foreground="{DynamicResource SliderAccentBrush}">repeat-segment.lovable.app</Hyperlink>
+            </TextBlock>
+            <TextBlock FontSize="13" TextWrapping="Wrap" Margin="0,2,0,0">
+                📂 <Hyperlink x:Name="LinkGitHub" Click="LinkGitHub_Click" Foreground="{DynamicResource SliderAccentBrush}">github.com/Gusev-Sergey/RepeatSegment</Hyperlink>
+            </TextBlock>
+        </StackPanel>
+        <Button Grid.Row="3" x:Name="BtnClose" Content="OK" Width="80" Height="30"
                 Margin="0,12,0,0" HorizontalAlignment="Right"
                 Click="BtnClose_Click" IsDefault="True"/>
     </Grid>

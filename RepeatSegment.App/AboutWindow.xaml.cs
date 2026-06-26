@@ -50,5 +50,7 @@ public partial class AboutWindow : Window
         if (Resources["WindowBackgroundBrush"] is System.Windows.Media.SolidColorBrush bg) Background = bg;
     }
 
+    private void LinkWebsite_Click(object sender, RoutedEventArgs e) => System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("https://repeat-segment.lovable.app/") { UseShellExecute = true });
+    private void LinkGitHub_Click(object sender, RoutedEventArgs e) => System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("https://github.com/Gusev-Sergey/RepeatSegment") { UseShellExecute = true });
     private void BtnClose_Click(object sender, RoutedEventArgs e) => Close();
 }
