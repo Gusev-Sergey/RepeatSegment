@@ -55,8 +55,10 @@ Note: `lang/` folder is NOT in publish output for framework-dependent. Source fr
 ### 5. Size Comparison
 | Mode | .msi Size | .NET Runtime | Target |
 |------|-----------|-------------|--------|
-| Framework-dependent | ~6-8 MB | Required (user installs) | Installer distribution |
-| Self-contained | ~870+ MB | Included | Portable / USB |
+| Framework-dependent | ~6-8 MB | Required (user installs) | Installer distribution (WiX) |
+| Self-contained | ~870+ MB | Included | Portable / USB / MSIX (Store) |
+
+**Важно**: Self-contained несовместим с WiX — дубликаты имён файлов в языковых папках .NET Runtime (5308 ошибок ICE30). Для self-contained использовать MSIX.
 
 ### 6. Prerequisites for Framework-Dependent
 User needs:

@@ -52,9 +52,12 @@
 
 ## Distribution Build (WiX Installer for non-Store use)
 - **Не использовать `--self-contained`** для переноса на другие ПК — добавляет .NET Runtime (+800 МБ).
+- **Self-contained несовместим с WiX**: .NET Runtime содержит 14 языковых папок с одинаковыми именами файлов → 5308 ошибок ICE30. Только MSIX поддерживает self-contained (для Store).
 - **Добавить `<SelfContained>false</SelfContained>` в `.csproj`** — без этого `dotnet publish -r win-x64` всегда self-contained.
 - Публикация: `dotnet publish -c Release -r win-x64 -o Publish/Release`.
 - WiX `Product.wxs`: перечислять файлы явно через `<Component><File Source="..."/></Component>`. Wildcard `<Files Include="**\*">` нестабилен.
+- **`<MajorUpgrade Schedule="afterInstallValidate" AllowSameVersionUpgrades="yes" DowngradeErrorMessage="..."/>`** — обязательно, иначе при переустановке старого .exe не затирается.
+- **Без UI диалога**: `WixUI_Minimal` и `WixUI_InstallDir` не работают в WiX v4 (WIX0094 / Lorem Ipsum). Убрать `<UIRef>` из Product.wxs полностью.
 - `config.template.ini` должен быть в установщике (без API ключей). API ключи пользователь вводит сам.
 - `lang/` JSON брать из исходной папки (не из `Publish/Release/lang/` — там их нет при framework-dependent).
 - Очищать `Setup/bin/` и `Setup/obj/` перед пересборкой при изменении состава файлов.
@@ -88,6 +91,15 @@
 - **ScrollViewer** для содержимого, которое может не влезть.
 - **XAML Theme**: кнопки с кастомным `TextButtonStyle` (не системный голубой hover).
 - **Тёмный title bar**: `DwmSetWindowAttribute` в `Window_Loaded`.
+
+## WebView2
+- **Warm-up обязателен**: `CoreWebView2Environment.CreateAsync(null, userData)` в фоне при `App.OnStartup()`.
+- **Единая папка userData**: `Path.Combine(LocalAppData, "RepeatSegment", "WebView2")` — и в App, и в AnkiCardWindow.
+- Без warm-up первый вызов `EnsureCoreWebView2Async` скачивает WebView2 Runtime (3–10 сек задержки).
+
+## Theme Switch
+- После `ApplyTheme()` в MainWindow перестроить параграф транскрипции: `BuildWordsParagraph(); _lastHlIdx = -1`.
+- Без этого `Run`-элементы сохраняют старый цвет `TextBrush`.
 
 ## Suggested Skills
 - `wix-installer` — сборка WiX .msi, управление компонентами, Burn bootstrapper

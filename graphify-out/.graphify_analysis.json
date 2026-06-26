@@ -1,0 +1,703 @@
+{
+  "communities": {
+    "0": [
+      "agents_doc",
+      "ai_notes_doc",
+      "android_port_plan",
+      "ankicardwindow_xaml_file",
+      "application",
+      "audit_agents_june21_plan",
+      "audit_june21_plan",
+      "build_output_doc",
+      "docs_index_html",
+      "dotnet_publish_skill",
+      "i18n_and_userguide_plan",
+      "icons_first_image",
+      "icons_last_image",
+      "icons_next_play_image",
+      "icons_play_go_image",
+      "icons_play_image",
+      "icons_pre_play_image",
+      "icons_repeat_image",
+      "icons_stop_play_image",
+      "lang_en_json_file",
+      "lang_ru_json_file",
+      "mainwindow_xaml_file",
+      "manualwindow_xaml_file",
+      "pre_store_checklist_plan",
+      "repeatsegment_app_agents_doc",
+      "repeatsegment_app_ankibuilder",
+      "repeatsegment_app_ankicardwindow_xaml",
+      "repeatsegment_app_ankiexportmanager",
+      "repeatsegment_app_app_xaml",
+      "repeatsegment_app_app_xaml_app",
+      "repeatsegment_app_app_xaml_app_onstartup",
+      "repeatsegment_app_audioengine",
+      "repeatsegment_app_configmanager",
+      "repeatsegment_app_mainwindow_xaml",
+      "repeatsegment_app_manualwindow_xaml",
+      "repeatsegment_app_silencedetector",
+      "repeatsegment_app_strings",
+      "repeatsegment_app_transcriptionprovider",
+      "repeatsegment_app_transcriptionprovider_wordtiming",
+      "repeatsegment_app_translationprovider",
+      "repeatsegment_app_ttsprovider",
+      "repeatsegment_app_volumewidget",
+      "repeatsegment_app_waveformgraph",
+      "resume_for_new_chat_doc",
+      "startupeventargs",
+      "store_publication_roadmap_plan",
+      "tts_dual_audio_plan",
+      "wix_installer_skill",
+      "wpf_adaptive_layout_skill",
+      "wpf_i18n_skill"
+    ],
+    "1": [
+      "dllimport",
+      "intptr",
+      "repeatsegment_app_aboutwindow_xaml",
+      "repeatsegment_app_aboutwindow_xaml_aboutwindow",
+      "repeatsegment_app_aboutwindow_xaml_aboutwindow_btnclose_click",
+      "repeatsegment_app_aboutwindow_xaml_aboutwindow_dwmsetwindowattribute",
+      "repeatsegment_app_aboutwindow_xaml_aboutwindow_injectbrushes",
+      "repeatsegment_app_aboutwindow_xaml_aboutwindow_window_loaded",
+      "repeatsegment_app_generalsettingswindow_xaml",
+      "repeatsegment_app_generalsettingswindow_xaml_generalsettingswindow",
+      "repeatsegment_app_generalsettingswindow_xaml_generalsettingswindow_applystrings",
+      "repeatsegment_app_generalsettingswindow_xaml_generalsettingswindow_btncancel_click",
+      "repeatsegment_app_generalsettingswindow_xaml_generalsettingswindow_btnok_click",
+      "repeatsegment_app_generalsettingswindow_xaml_generalsettingswindow_dwmsetwindowattribute",
+      "repeatsegment_app_generalsettingswindow_xaml_generalsettingswindow_injectbrushes",
+      "repeatsegment_app_generalsettingswindow_xaml_generalsettingswindow_loadsettings",
+      "repeatsegment_app_generalsettingswindow_xaml_generalsettingswindow_restartapp",
+      "repeatsegment_app_generalsettingswindow_xaml_generalsettingswindow_window_loaded",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_dwmsetwindowattribute",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_setdarktitlebar",
+      "repeatsegment_app_manualwindow_xaml_manualwindow",
+      "repeatsegment_app_manualwindow_xaml_manualwindow_addheading",
+      "repeatsegment_app_manualwindow_xaml_manualwindow_addinlinepara",
+      "repeatsegment_app_manualwindow_xaml_manualwindow_addpara",
+      "repeatsegment_app_manualwindow_xaml_manualwindow_btnclose_click",
+      "repeatsegment_app_manualwindow_xaml_manualwindow_buildguide",
+      "repeatsegment_app_manualwindow_xaml_manualwindow_dwmsetwindowattribute",
+      "repeatsegment_app_manualwindow_xaml_manualwindow_window_loaded",
+      "repeatsegment_app_settingswindow_xaml",
+      "repeatsegment_app_settingswindow_xaml_settingswindow",
+      "repeatsegment_app_settingswindow_xaml_settingswindow_applystrings",
+      "repeatsegment_app_settingswindow_xaml_settingswindow_btncancel_click",
+      "repeatsegment_app_settingswindow_xaml_settingswindow_btnok_click",
+      "repeatsegment_app_settingswindow_xaml_settingswindow_dwmsetwindowattribute",
+      "repeatsegment_app_settingswindow_xaml_settingswindow_hyperlink_requestnavigate",
+      "repeatsegment_app_settingswindow_xaml_settingswindow_injectbrushesfrommainwindow",
+      "repeatsegment_app_settingswindow_xaml_settingswindow_loadsettings",
+      "repeatsegment_app_settingswindow_xaml_settingswindow_window_loaded",
+      "requestnavigateeventargs",
+      "window"
+    ],
+    "2": [
+      "repeatsegment_app_ankicardwindow_xaml_ankicardwindow",
+      "repeatsegment_app_ankicardwindow_xaml_ankicardwindow_btncancel_click",
+      "repeatsegment_app_ankicardwindow_xaml_ankicardwindow_btncreate_click",
+      "repeatsegment_app_ankicardwindow_xaml_ankicardwindow_btndownloadimage_click",
+      "repeatsegment_app_ankicardwindow_xaml_ankicardwindow_btnnewdeck_click",
+      "repeatsegment_app_ankicardwindow_xaml_ankicardwindow_btnopendeck_click",
+      "repeatsegment_app_ankicardwindow_xaml_ankicardwindow_btnplayrecord_click",
+      "repeatsegment_app_ankicardwindow_xaml_ankicardwindow_btnpreviewdeepgram_click",
+      "repeatsegment_app_ankicardwindow_xaml_ankicardwindow_btnpreviewgoogle_click",
+      "repeatsegment_app_ankicardwindow_xaml_ankicardwindow_btnpreviewsentence_click",
+      "repeatsegment_app_ankicardwindow_xaml_ankicardwindow_btnrecordaudio_click",
+      "repeatsegment_app_ankicardwindow_xaml_ankicardwindow_btnsearchagain_click",
+      "repeatsegment_app_ankicardwindow_xaml_ankicardwindow_btnsearchimages_click",
+      "repeatsegment_app_ankicardwindow_xaml_ankicardwindow_convertrecordedtomp3",
+      "repeatsegment_app_ankicardwindow_xaml_ankicardwindow_downloadandplaydeepgramasync",
+      "repeatsegment_app_ankicardwindow_xaml_ankicardwindow_downloadandplaygoogleasync",
+      "repeatsegment_app_ankicardwindow_xaml_ankicardwindow_downloadimagefrombrowserasync",
+      "repeatsegment_app_ankicardwindow_xaml_ankicardwindow_ensuremp3path",
+      "repeatsegment_app_ankicardwindow_xaml_ankicardwindow_findsentencebounds",
+      "repeatsegment_app_ankicardwindow_xaml_ankicardwindow_loaddecks",
+      "repeatsegment_app_ankicardwindow_xaml_ankicardwindow_playmp3",
+      "repeatsegment_app_ankicardwindow_xaml_ankicardwindow_rbdeepgram_checked",
+      "repeatsegment_app_ankicardwindow_xaml_ankicardwindow_rbgoogle_checked",
+      "repeatsegment_app_ankicardwindow_xaml_ankicardwindow_rbrecord_checked",
+      "repeatsegment_app_translationsettingswindow_xaml",
+      "repeatsegment_app_translationsettingswindow_xaml_translationsettingswindow",
+      "repeatsegment_app_translationsettingswindow_xaml_translationsettingswindow_applystrings",
+      "repeatsegment_app_translationsettingswindow_xaml_translationsettingswindow_btncancel_click",
+      "repeatsegment_app_translationsettingswindow_xaml_translationsettingswindow_btnok_click",
+      "repeatsegment_app_translationsettingswindow_xaml_translationsettingswindow_cbtranslationgoogle_checked",
+      "repeatsegment_app_translationsettingswindow_xaml_translationsettingswindow_cbtranslationgoogle_unchecked",
+      "repeatsegment_app_translationsettingswindow_xaml_translationsettingswindow_cbtranslationyandex_checked",
+      "repeatsegment_app_translationsettingswindow_xaml_translationsettingswindow_cbtranslationyandex_unchecked",
+      "repeatsegment_app_translationsettingswindow_xaml_translationsettingswindow_dwmsetwindowattribute",
+      "repeatsegment_app_translationsettingswindow_xaml_translationsettingswindow_injectbrushes",
+      "repeatsegment_app_translationsettingswindow_xaml_translationsettingswindow_loadsettings",
+      "repeatsegment_app_translationsettingswindow_xaml_translationsettingswindow_window_loaded",
+      "routedeventargs",
+      "wavefilewriter",
+      "waveinevent"
+    ],
+    "3": [
+      "bool",
+      "double",
+      "mousebuttoneventargs",
+      "mouseeventargs",
+      "polygon",
+      "rectangle",
+      "repeatsegment_app_volumewidget_volumewidget",
+      "repeatsegment_app_volumewidget_volumewidget_onmousedown",
+      "repeatsegment_app_volumewidget_volumewidget_onmouseleave",
+      "repeatsegment_app_volumewidget_volumewidget_onmousemove",
+      "repeatsegment_app_volumewidget_volumewidget_onmouseup",
+      "repeatsegment_app_volumewidget_volumewidget_postovolume",
+      "repeatsegment_app_volumewidget_volumewidget_updatebars",
+      "repeatsegment_app_waveformgraph_waveformgraph",
+      "repeatsegment_app_waveformgraph_waveformgraph_drawcursor",
+      "repeatsegment_app_waveformgraph_waveformgraph_drawsegmenthighlight",
+      "repeatsegment_app_waveformgraph_waveformgraph_drawsegmentlines",
+      "repeatsegment_app_waveformgraph_waveformgraph_drawtimeruler",
+      "repeatsegment_app_waveformgraph_waveformgraph_drawusersegment",
+      "repeatsegment_app_waveformgraph_waveformgraph_drawwaveform",
+      "repeatsegment_app_waveformgraph_waveformgraph_getvisiblewindow",
+      "repeatsegment_app_waveformgraph_waveformgraph_onmouseleftbuttondown",
+      "repeatsegment_app_waveformgraph_waveformgraph_onmouseleftbuttonup",
+      "repeatsegment_app_waveformgraph_waveformgraph_onmousemove",
+      "repeatsegment_app_waveformgraph_waveformgraph_onpaintsurface",
+      "repeatsegment_app_waveformgraph_waveformgraph_pixeltoseconds",
+      "skcanvas",
+      "skcolor",
+      "skelement",
+      "skpaintsurfaceeventargs",
+      "usercontrol",
+      "visleft",
+      "visright",
+      "viswidth"
+    ],
+    "4": [
+      "byte",
+      "end",
+      "list",
+      "repeatsegment_app_ankibuilder_ankibuilder",
+      "repeatsegment_app_ankibuilder_ankibuilder_builddb",
+      "repeatsegment_app_ankibuilder_ankibuilder_builddeck",
+      "repeatsegment_app_ankibuilder_ankibuilder_cr32",
+      "repeatsegment_app_ankibuilder_ankibuilder_dcjson",
+      "repeatsegment_app_ankibuilder_ankibuilder_djson",
+      "repeatsegment_app_ankibuilder_ankibuilder_listdecks",
+      "repeatsegment_app_ankibuilder_ankibuilder_mjson",
+      "repeatsegment_app_ankibuilder_mediadata",
+      "repeatsegment_app_ankibuilder_notedata",
+      "repeatsegment_app_ankibuilder_sqe",
+      "repeatsegment_app_ankibuilder_sqe_execute",
+      "repeatsegment_app_ankiexportmanager_ankiexportmanager",
+      "repeatsegment_app_ankiexportmanager_ankiexportmanager_addmedia",
+      "repeatsegment_app_ankiexportmanager_ankiexportmanager_addnote",
+      "repeatsegment_app_ankiexportmanager_ankiexportmanager_finalize",
+      "repeatsegment_app_ankiexportmanager_ankiexportmanager_getapkgpath",
+      "repeatsegment_app_ankiexportmanager_ankiexportmanager_listdecks",
+      "repeatsegment_app_ankiexportmanager_ankiexportmanager_pf",
+      "repeatsegment_app_ankiexportmanager_ankiexportmanager_stripimgtag",
+      "repeatsegment_app_ankiexportmanager_ankiexportmanager_stripsoundtag",
+      "repeatsegment_app_silencedetector_silencedetector",
+      "repeatsegment_app_silencedetector_silencedetector_buildt1t2array",
+      "repeatsegment_app_silencedetector_silencedetector_detect",
+      "repeatsegment_app_silencedetector_silencedetector_detectsilenceinternal",
+      "repeatsegment_app_silencedetector_silencedetector_snaptosilence",
+      "repeatsegment_app_transcriptionprovider_transcriptionchunk",
+      "repeatsegment_app_transcriptionprovider_transcriptionprovider_setsilencezones",
+      "sqliteconnection",
+      "start",
+      "string"
+    ],
+    "5": [
+      "float",
+      "idisposable",
+      "int",
+      "iwaveprovider",
+      "long",
+      "object",
+      "repeatsegment_app_audioengine_audioengine",
+      "repeatsegment_app_audioengine_audioengine_createreader",
+      "repeatsegment_app_audioengine_audioengine_dispose",
+      "repeatsegment_app_audioengine_audioengine_extractchunk",
+      "repeatsegment_app_audioengine_audioengine_getcurrentposition",
+      "repeatsegment_app_audioengine_audioengine_getplaysamples",
+      "repeatsegment_app_audioengine_audioengine_getplaysamplestoend",
+      "repeatsegment_app_audioengine_audioengine_getplotsamples",
+      "repeatsegment_app_audioengine_audioengine_getsamples",
+      "repeatsegment_app_audioengine_audioengine_load",
+      "repeatsegment_app_audioengine_audioengine_pause",
+      "repeatsegment_app_audioengine_audioengine_play",
+      "repeatsegment_app_audioengine_audioengine_playsegment",
+      "repeatsegment_app_audioengine_audioengine_savesnippetmp3",
+      "repeatsegment_app_audioengine_audioengine_savesnippetwav",
+      "repeatsegment_app_audioengine_audioengine_seek",
+      "repeatsegment_app_audioengine_audioengine_stop",
+      "repeatsegment_app_audioengine_audioengine_stopplaybackinternal",
+      "repeatsegment_app_audioengine_audioengine_stretchsola",
+      "repeatsegment_app_audioengine_log",
+      "repeatsegment_app_audioengine_log_error",
+      "repeatsegment_app_audioengine_log_info",
+      "repeatsegment_app_audioengine_log_warn",
+      "repeatsegment_app_audioengine_log_writeline",
+      "repeatsegment_app_audioengine_rawsampleprovider",
+      "repeatsegment_app_audioengine_rawsampleprovider_read",
+      "waveoutevent",
+      "wavestream"
+    ],
+    "6": [
+      "hashset",
+      "httpclient",
+      "jsonelement",
+      "repeatsegment_app_ankicardwindow_xaml_ankicardwindow_initializewebviewthensearchasync",
+      "repeatsegment_app_ankicardwindow_xaml_ankicardwindow_lookupipaasync",
+      "repeatsegment_app_transcriptionprovider_transcriptionprovider",
+      "repeatsegment_app_transcriptionprovider_transcriptionprovider_chunkrange",
+      "repeatsegment_app_transcriptionprovider_transcriptionprovider_ensurechunk",
+      "repeatsegment_app_transcriptionprovider_transcriptionprovider_getwordindexat",
+      "repeatsegment_app_transcriptionprovider_transcriptionprovider_loadchunkfromcache",
+      "repeatsegment_app_transcriptionprovider_transcriptionprovider_mergechunk",
+      "repeatsegment_app_transcriptionprovider_transcriptionprovider_parseassemblyai",
+      "repeatsegment_app_transcriptionprovider_transcriptionprovider_savechunktocache",
+      "repeatsegment_app_transcriptionprovider_transcriptionprovider_snaptosilence",
+      "repeatsegment_app_transcriptionprovider_transcriptionprovider_transcribe",
+      "repeatsegment_app_transcriptionprovider_transcriptionprovider_transcribeassemblyai",
+      "repeatsegment_app_transcriptionprovider_transcriptionprovider_transcribechunkasync",
+      "repeatsegment_app_transcriptionprovider_transcriptionprovider_transcribedeepgram",
+      "repeatsegment_app_transcriptionprovider_transcriptionprovider_truncate",
+      "repeatsegment_app_transcriptionprovider_transcriptionresult",
+      "repeatsegment_app_translationprovider_translationprovider",
+      "repeatsegment_app_translationprovider_translationprovider_translateenru",
+      "repeatsegment_app_translationprovider_translationprovider_trygoogletranslate",
+      "repeatsegment_app_translationprovider_translationprovider_tryyandextranslate",
+      "repeatsegment_app_ttsprovider_ttsprovider",
+      "repeatsegment_app_ttsprovider_ttsprovider_downloaddeepgramtts",
+      "repeatsegment_app_ttsprovider_ttsprovider_downloaddeepgramttstofile",
+      "repeatsegment_app_ttsprovider_ttsprovider_downloadgoogletts",
+      "repeatsegment_app_ttsprovider_ttsprovider_downloadgooglettstofile",
+      "repeatsegment_app_ttsprovider_ttsprovider_downloadttsmp3",
+      "repeatsegment_app_ttsprovider_ttsprovider_md5hash",
+      "task"
+    ],
+    "7": [
+      "bitmapimage",
+      "cancellationtokensource",
+      "datetime",
+      "dispatchertimer",
+      "repeatsegment_app_mainwindow_xaml_mainwindow",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_adapttoscreen",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_applyallstrings",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_btnabout_click",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_btnaddtoanki_click",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_btncollapsetranscription_click",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_btnexit_click",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_btnmanual_click",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_buttongeneralsettings_click",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_buttonsettings_click",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_buttontranslationsettings_click",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_extractsentencecontaining",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_findiconsdir",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_issentenceend",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_loadicon",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_loadicons",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_mnulangen_click",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_mnulangru_click",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_opensettings",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_setwindowicon",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_switchlanguage",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_truncstatus",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_volumecontrol_volumechanged",
+      "run"
+    ],
+    "8": [
+      "diaganki_diaganki",
+      "diaganki_diaganki_csproj_framework_net8_0_windows",
+      "diaganki_diaganki_csproj_nuget_microsoft_data_sqlite",
+      "diaganki_diaganki_csproj_nuget_naudio_lame",
+      "diaganki_diaganki_csproj_sdk_microsoft_net_sdk",
+      "nuget_coverlet_collector",
+      "nuget_microsoft_net_test_sdk",
+      "nuget_microsoft_web_webview2",
+      "nuget_naudio",
+      "nuget_skiasharp_views_wpf",
+      "nuget_system_configuration_configurationmanager",
+      "nuget_xunit",
+      "nuget_xunit_runner_visualstudio",
+      "repeatsegment",
+      "repeatsegment_app_repeatsegment_app",
+      "repeatsegment_app_repeatsegment_app_csproj_framework_net8_0_windows",
+      "repeatsegment_app_repeatsegment_app_csproj_nuget_microsoft_data_sqlite",
+      "repeatsegment_app_repeatsegment_app_csproj_nuget_naudio_lame",
+      "repeatsegment_app_repeatsegment_app_csproj_sdk_microsoft_net_sdk",
+      "repeatsegment_tests_repeatsegment_tests",
+      "repeatsegment_tests_repeatsegment_tests_csproj_framework_net8_0_windows",
+      "repeatsegment_tests_repeatsegment_tests_csproj_sdk_microsoft_net_sdk"
+    ],
+    "9": [
+      "dragcompletedeventargs",
+      "eventargs",
+      "repeatsegment_app_ankicardwindow_xaml_ankicardwindow_onclosed",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_btnspeed_click",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_formattime",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_onclosed",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_positiontimer_tick",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_savestate",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_setplaybackspeed",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_skiptofragment",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_slider_dragcompleted",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_slider_valuechanged",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_startplayback",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_startplaybackinternal",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_stopplaybackinternal",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_updategraphview",
+      "routedpropertychangedeventargs"
+    ],
+    "10": [
+      "dictionary",
+      "repeatsegment_app_configmanager_configmanager",
+      "repeatsegment_app_configmanager_configmanager_getdouble",
+      "repeatsegment_app_configmanager_configmanager_getint",
+      "repeatsegment_app_configmanager_configmanager_getvalue",
+      "repeatsegment_app_configmanager_configmanager_load",
+      "repeatsegment_app_configmanager_configmanager_loadenvfile",
+      "repeatsegment_app_configmanager_configmanager_parseinifile",
+      "repeatsegment_app_configmanager_configmanager_save",
+      "repeatsegment_app_strings_strings",
+      "repeatsegment_app_strings_strings_get",
+      "repeatsegment_app_strings_strings_getguidecontent",
+      "repeatsegment_app_strings_strings_getguidesection",
+      "repeatsegment_app_strings_strings_getuserguideintro",
+      "repeatsegment_app_strings_strings_loadjson",
+      "repeatsegment_app_strings_strings_setlanguage"
+    ],
+    "11": [
+      "fact",
+      "repeatsegment_tests_unittest1",
+      "repeatsegment_tests_unittest1_audioenginetests",
+      "repeatsegment_tests_unittest1_audioenginetests_generatesine",
+      "repeatsegment_tests_unittest1_audioenginetests_stretchsola_noclipping",
+      "repeatsegment_tests_unittest1_audioenginetests_stretchsola_shortinput_returnsclone",
+      "repeatsegment_tests_unittest1_audioenginetests_stretchsola_speed05_longeroutput",
+      "repeatsegment_tests_unittest1_audioenginetests_stretchsola_speed1_returnsclone",
+      "repeatsegment_tests_unittest1_audioenginetests_stretchsola_speed2_shorteroutput",
+      "repeatsegment_tests_unittest1_audioenginetests_stretchsola_zeroinput_nocrash",
+      "repeatsegment_tests_unittest1_configmanagertests",
+      "repeatsegment_tests_unittest1_configmanagertests_load_defaults_arecorrect",
+      "repeatsegment_tests_unittest1_silencedetectortests",
+      "repeatsegment_tests_unittest1_silencedetectortests_detect_puresignal_nofragments",
+      "repeatsegment_tests_unittest1_silencedetectortests_detect_silenceatedges_findszones"
+    ],
+    "12": [
+      "repeatsegment_app_mainwindow_xaml_mainwindow_buttonfirst_click",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_buttonlast_click",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_buttonnextsegment_click",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_buttonplay_click",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_buttonplaygo_click",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_buttonprevsegment_click",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_buttonspressed",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_updatebuttonskins",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_updateskinsplaying",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_updateskinsstopped"
+    ],
+    "13": [
+      "repeatsegment_app_mainwindow_xaml_mainwindow_appendnewwords",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_btntranscribe_click",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_btntranscribeapi_click",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_btntranscribecache_click",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_buildwordsparagraph",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_buttonrepeat_click",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_highlightactiveword",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_window_keydown"
+    ],
+    "14": [
+      "repeatsegment_app_mainwindow_xaml_mainwindow_applyinitialskins",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_btnload_click",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_loadaudiofile",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_loadonstartup",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_migrateconfigfromexe",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_mnurecent_click",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_onfileselected",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_setallbuttonsenabled"
+    ],
+    "15": [
+      "keyeventargs",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_dotranslateselection",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_growwindowfortranslation",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_onpreviewkeydown",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_texttranscription_selectionchanged"
+    ],
+    "16": [
+      "repeatsegment_app_mainwindow_xaml_mainwindow_addrecentfile",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_loadrecentfiles",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_saverecentfiles",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_updaterecentmenu",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_updaterecentmenufrommemory"
+    ],
+    "17": [
+      "repeatsegment_app_mainwindow_xaml_mainwindow_applysavedtheme",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_applytheme",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_mnuthemedark_click",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_mnuthemelight_click",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_savethemesetting"
+    ],
+    "18": [
+      "repeatsegment_app_mainwindow_xaml_mainwindow_mnusegmentduration_click",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_mnusegmentdurationcustom_click",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_updatesegmentduration",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_updatewaveform",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_waveformgraph_segmentselected"
+    ],
+    "19": [
+      "framework_net8_0",
+      "genlang_genlang",
+      "genlang_genlang_csproj_sdk_microsoft_net_sdk"
+    ],
+    "20": [
+      "genicons_genicons",
+      "genicons_genicons_csproj_framework_net8_0_windows",
+      "genicons_genicons_csproj_sdk_microsoft_net_sdk"
+    ],
+    "21": [
+      "dragstartedeventargs",
+      "repeatsegment_app_mainwindow_xaml_mainwindow_slider_dragstarted"
+    ],
+    "22": [
+      "gen_self_contained_wxs",
+      "gen_self_contained_wxs_new_id"
+    ],
+    "23": [
+      "plugins_graphify",
+      "plugins_graphify_graphifyplugin"
+    ],
+    "24": [
+      "check_build"
+    ],
+    "25": [
+      "check_date"
+    ],
+    "26": [
+      "check_exe"
+    ],
+    "27": [
+      "diaganki_program"
+    ],
+    "28": [
+      "gen_components"
+    ],
+    "29": [
+      "gen_wix_components"
+    ],
+    "30": [
+      "genicons_program"
+    ],
+    "31": [
+      "genlang_program"
+    ],
+    "32": [
+      "get_exe_date"
+    ],
+    "33": [
+      "icons_large_tile_image"
+    ],
+    "34": [
+      "icons_small_tile_image"
+    ],
+    "35": [
+      "icons_square150x150logo_image"
+    ],
+    "36": [
+      "icons_square44x44logo_image"
+    ],
+    "37": [
+      "icons_storelogo_image"
+    ],
+    "38": [
+      "icons_wide310x150logo_image"
+    ],
+    "39": [
+      "publish_self_contained"
+    ],
+    "40": [
+      "rebuild"
+    ],
+    "41": [
+      "rebuild_debug"
+    ],
+    "42": [
+      "repeatsegment_app_assemblyinfo"
+    ],
+    "43": [
+      "setup_components"
+    ],
+    "44": [
+      "setup_obj2_setup_wixproj_bindtracking_neutral"
+    ],
+    "45": [
+      "setup_obj2_setup_wixproj_filelistabsolute"
+    ],
+    "46": [
+      "setup_obj_sc_setup_selfcontained_wixproj_filelistabsolute"
+    ]
+  },
+  "cohesion": {
+    "0": 0.07020408163265306,
+    "1": 0.06923076923076923,
+    "2": 0.08974358974358974,
+    "3": 0.09803921568627451,
+    "4": 0.0855614973262032,
+    "5": 0.09803921568627451,
+    "6": 0.1310483870967742,
+    "7": 0.09523809523809523,
+    "8": 0.09090909090909091,
+    "9": 0.15441176470588236,
+    "10": 0.21666666666666667,
+    "11": 0.24761904761904763,
+    "12": 0.2222222222222222,
+    "13": 0.32142857142857145,
+    "14": 0.25,
+    "15": 0.4,
+    "16": 0.5,
+    "17": 0.5,
+    "18": 0.4,
+    "19": 0.6666666666666666,
+    "20": 0.6666666666666666,
+    "21": 1.0,
+    "22": 1.0,
+    "23": 1.0,
+    "24": 1.0,
+    "25": 1.0,
+    "26": 1.0,
+    "27": 1.0,
+    "28": 1.0,
+    "29": 1.0,
+    "30": 1.0,
+    "31": 1.0,
+    "32": 1.0,
+    "33": 1.0,
+    "34": 1.0,
+    "35": 1.0,
+    "36": 1.0,
+    "37": 1.0,
+    "38": 1.0,
+    "39": 1.0,
+    "40": 1.0,
+    "41": 1.0,
+    "42": 1.0,
+    "43": 1.0,
+    "44": 1.0,
+    "45": 1.0,
+    "46": 1.0
+  },
+  "gods": [
+    {
+      "id": "repeatsegment_app_mainwindow_xaml_mainwindow",
+      "label": "MainWindow",
+      "degree": 107
+    },
+    {
+      "id": "repeatsegment_app_ankicardwindow_xaml_ankicardwindow",
+      "label": "AnkiCardWindow",
+      "degree": 36
+    },
+    {
+      "id": "repeatsegment_app_audioengine_audioengine",
+      "label": "AudioEngine",
+      "degree": 29
+    },
+    {
+      "id": "resume_for_new_chat_doc",
+      "label": "Project Overview Resume for New Chat",
+      "degree": 27
+    },
+    {
+      "id": "repeatsegment_app_transcriptionprovider_transcriptionprovider",
+      "label": "TranscriptionProvider",
+      "degree": 25
+    },
+    {
+      "id": "repeatsegment_app_waveformgraph_waveformgraph",
+      "label": "WaveformGraph",
+      "degree": 20
+    },
+    {
+      "id": "ai_notes_doc",
+      "label": "Anki .apkg Technical Reference & Bug Solutions",
+      "degree": 18
+    },
+    {
+      "id": "repeatsegment_app_translationsettingswindow_xaml_translationsettingswindow",
+      "label": "TranslationSettingsWindow",
+      "degree": 15
+    },
+    {
+      "id": "repeatsegment_app_configmanager_configmanager",
+      "label": "ConfigManager",
+      "degree": 13
+    },
+    {
+      "id": "repeatsegment_app_volumewidget_volumewidget",
+      "label": "VolumeWidget",
+      "degree": 13
+    }
+  ],
+  "surprises": [
+    {
+      "source": "Project Overview Resume for New Chat",
+      "target": "lang/en.json",
+      "source_files": [
+        "RESUME_FOR_NEW_CHAT.md",
+        "RepeatSegment.App/lang/en.json"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "crosses file types (doc \u2194 code); connects across different repos/directories; peripheral node `lang/en.json` unexpectedly reaches hub `Project Overview Resume for New Chat`"
+    },
+    {
+      "source": "Project Overview Resume for New Chat",
+      "target": "lang/ru.json",
+      "source_files": [
+        "RESUME_FOR_NEW_CHAT.md",
+        "RepeatSegment.App/lang/ru.json"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "crosses file types (doc \u2194 code); connects across different repos/directories; peripheral node `lang/ru.json` unexpectedly reaches hub `Project Overview Resume for New Chat`"
+    },
+    {
+      "source": "Project Overview Resume for New Chat",
+      "target": "Graphify Usage Rules for RepeatSegment",
+      "source_files": [
+        "RESUME_FOR_NEW_CHAT.md",
+        "AGENTS.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories; peripheral node `Graphify Usage Rules for RepeatSegment` unexpectedly reaches hub `Project Overview Resume for New Chat`"
+    },
+    {
+      "source": "Audit of Critical Rules Compliance",
+      "target": "Anki .apkg Technical Reference & Bug Solutions",
+      "source_files": [
+        "plans/audit_june21.md",
+        "AI_NOTES.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "evaluates",
+      "why": "connects across different repos/directories; peripheral node `Audit of Critical Rules Compliance` unexpectedly reaches hub `Anki .apkg Technical Reference & Bug Solutions`"
+    },
+    {
+      "source": "Audit of Critical Rules Compliance",
+      "target": "Project Overview Resume for New Chat",
+      "source_files": [
+        "plans/audit_june21.md",
+        "RESUME_FOR_NEW_CHAT.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "evaluates",
+      "why": "connects across different repos/directories; peripheral node `Audit of Critical Rules Compliance` unexpectedly reaches hub `Project Overview Resume for New Chat`"
+    }
+  ],
+  "tokens": {
+    "input": 33952,
+    "output": 18827
+  }
+}

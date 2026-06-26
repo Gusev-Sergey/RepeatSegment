@@ -1,39 +1,41 @@
 # Resume for New Chat — RepeatSegment Project
 
 ## Project Overview
-**RepeatSegment** — C# WPF (.NET 8) приложение для изучения английского языка через аудиокниги. Позволяет загружать аудио, транскрибировать через Deepgram/AssemblyAI, переводить слова/фразы через Google/Yandex Translate, выделять сегменты мышкой на волновой форме и экспортировать карточки в Anki (.apkg).
+**RepeatSegment** — C# WPF (.NET 8) приложение для изучения языков через аудиокниги. Позволяет загружать аудио, транскрибировать через Deepgram/AssemblyAI, переводить слова/фразы через Google/Yandex Translate, выделять сегменты мышкой на волновой форме и экспортировать карточки в Anki (.apkg).
 
 **GitHub**: https://github.com/Gusev-Sergey/RepeatSegment
 **Путь**: `c:\ProjectsCSharp\RepeatSegment`
 **Бэкап**: `c:\ProjectsCSharp\RepeatSegment_Backup`
 
-## Текущее состояние (21 июня 2026, ~01:00 MSK)
+## Текущее состояние (24 июня 2026)
 
 ### Работает:
 - Загрузка аудиофайлов и отображение волновой формы (SkiaSharp)
 - Транскрипция через Deepgram/AssemblyAI (с пословным таймингом `WordTimings`), **11 языков**
 - **Сегментация по длительности** — разбиение на отрезки заданной длительности (2/5/10/20 сек + Custom) с привязкой границ к ближайшей тишине (SnapToSilence, радиус 30% от длительности)
-- Перевод через Google Translate (en→ru) + Yandex Translate, выбор сервиса в Translation Settings; 3 ретрая при rate-limit
+- Перевод через Google Translate + Yandex Translate, выбор сервиса в Translation Settings; 3 ретрая при rate-limit
 - Ручное выделение сегментов мышкой на графике (drag overlay + persistent green highlight)
 - Подсветка активного слова при воспроизведении
 - **Anki экспорт** — ПОЛНОСТЬЮ РАБОЧИЙ (две карточки: en→ru + ru→en)
 - **Двойное аудио в карточках Anki** — 🔊 Word (TTS) + 📖 Sentence (из книги)
-- **TTS** — произнесение слов через Google TTS (по умолчанию) + Deepgram Aura; **ручной выбор провайдера** в AnkiCardWindow (Google/Deepgram/Record radio buttons), отдельный предпросмотр каждого
-- **Скорость воспроизведения** — кнопка "Скорость" (0.4×–1.5×, шаг 0.1) слева от плеера; **WSOLA с сохранением тембра** (окно Бартлетта, 50% перекрытие, кросс-корреляция в зоне наложения)
-- WebView2 поиск картинок (Yandex Images), автоочистка кеша при закрытии, JPEG сжатие quality=75
+- **TTS** — произнесение слов через Google TTS (по умолчанию) + Deepgram Aura; ручной выбор провайдера в AnkiCardWindow (Google/Deepgram/Record radio buttons)
+- **Скорость воспроизведения** — кнопка "Скорость" (0.4×–1.5×, шаг 0.1); **WSOLA с сохранением тембра** (окно Бартлетта, 50% перекрытие, кросс-корреляция)
+- **WebView2 поиск картинок** — Google Images (основной) + Yandex Images; извлечение URL через `elementsFromPoint()` + `fetch()` внутри браузера
 - Запись аудио с микрофона (NAudio)
 - IPA транскрипция через dictionaryapi.dev + Wiktionary
-- Инсталлятор (WiX)
+- **WiX инсталлятор** — framework-dependent .msi (~6.5 МБ), MajorUpgrade с `AllowSameVersionUpgrades="yes"`
 - **Файловое логирование** (`%APPDATA%/RepeatSegment/repeat_segment.log`)
 - **Pre-commit хук** — блокирует коммиты с API-ключами
-- **Интернационализация** — EN/RU словари, меню Language с сохранением в config.ini; **все** пункты меню и дочерние окна переведены
-- **User Guide** — RichTextBox с иконками кнопок, двухязычный, 11 разделов (обновлён под новую сегментацию и Settings)
+- **Интернационализация** — 5 языков (EN/RU/DE/FR/ES), внешние JSON-файлы `lang/{code}.json`, смена через перезапуск
+- **User Guide** — RichTextBox с иконками кнопок, 11 разделов на всех языках
 - **Схлопывание транскрипции** — кнопка ▲/▼ слева-внизу от плеера
 - **MP3 битрейт** — выбор 64/128 kbps в General Settings
 - **Тёмная тема** — сохраняется между сессиями (config.ini: `theme = dark/light`), тёмный title bar на всех окнах (DWM Immersive Dark Mode)
-- **Настройки** — разделены на 3 окна: API Keys, Translation, General
-- **About window** — вместо MessageBox, с версией, тех. стеком и ссылкой на GitHub
+- **Адаптивные размеры** — все окна и элементы привязаны к `SystemParameters.WorkArea`, формула `Math.Max(порог, доля * WorkArea)`
+- **Настройки** — разделены на 4 окна: API Keys, Translation, General (+ язык), About
 - **Recent files** — File → список недавних файлов с корректной UTF-8 кодировкой
+- **WebView2 warm-up** — `CoreWebView2Environment.CreateAsync` в `App.OnStartup()` (устраняет задержку 3–10 сек)
+- **TextButtonStyle** — кастомный стиль кнопок без системного голубого hover в тёмной теме
 
 ### Безопасность (важно):
 - Ключи в `config.template.ini` заменены на `YOUR_*` плейсхолдеры
@@ -45,31 +47,37 @@
 ```
 RepeatSegment/
 ├── RepeatSegment.App/          # Основное WPF приложение
-│   ├── AboutWindow.xaml/cs     # Окно "About" (замена MessageBox)
+│   ├── AboutWindow.xaml/cs     # Окно "About" (адаптивное)
 │   ├── AnkiBuilder.cs          # Сборка .apkg (DROP TABLE, ZipFile)
 │   ├── AnkiExportManager.cs    # API: AddMedia/AddNote/Finalize + слияние
-│   ├── AnkiCardWindow.xaml/cs  # UI форма карточки (TTS выбор, авто-поиск картинок)
-│   ├── App.xaml/cs             # Startup, обработка исключений
+│   ├── AnkiCardWindow.xaml/cs  # UI форма карточки (TTS выбор, авто-поиск картинок, WebView2)
+│   ├── App.xaml/cs             # Startup, WebView2 warm-up, обработка исключений
 │   ├── AudioEngine.cs          # NAudio: загрузка, воспроизведение, ExtractChunk, SaveSnippetMp3/Wav
 │   ├── ConfigManager.cs        # INI + .env парсинг, сохранение настроек
 │   ├── GeneralSettingsWindow.xaml/cs  # Общие настройки (язык, битрейт, чанки, latency)
-│   ├── MainWindow.xaml/cs      # Главное окно — меню, плеер, транскрипция, перевод
-│   ├── ManualWindow.xaml/cs    # User Guide (RichTextBox)
-│   ├── RSWindow.cs             # Базовый класс окна (не используется — dark title bar в каждом окне отдельно)
+│   ├── MainWindow.xaml/cs      # Главное окно — меню, плеер, транскрипция, перевод, TextButtonStyle
+│   ├── ManualWindow.xaml/cs    # User Guide (RichTextBox, адаптивный)
 │   ├── SettingsWindow.xaml/cs  # API ключи (AssemblyAI, Deepgram)
 │   ├── SilenceDetector.cs      # Сегментация по длительности + SnapToSilence
-│   ├── Strings.cs              # I18n: EN/RU словари + User Guide текст
+│   ├── Strings.cs              # I18n: загрузка из lang/{code}.json, fallback → en
 │   ├── TranscriptionProvider.cs # Deepgram/AssemblyAI API
 │   ├── TranslationProvider.cs  # Google + Yandex Translate
 │   ├── TranslationSettingsWindow.xaml/cs  # Настройки перевода (Google/Yandex, ключи)
 │   ├── TtsProvider.cs          # TTS: Google + Deepgram Aura, кеширование
 │   ├── VolumeWidget.cs         # Виджет громкости
 │   ├── WaveformGraph.cs        # Волновая форма (SkiaSharp) — drag overlay + user segment
+│   ├── lang/                   # JSON-файлы локализации (en/ru/de/fr/es.json)
 │   └── Icons/                  # Иконки кнопок (8 PNG + app.ico)
 ├── DiagAnki/                   # Диагностическая утилита
-├── Setup/                      # WiX инсталлятор
+├── Setup/                      # WiX инсталлятор (framework-dependent, ~6.5 MB)
+│   ├── Product.wxs             # Явное перечисление файлов, MajorUpgrade AllowSameVersionUpgrades="yes"
+│   └── Setup.wixproj           # WiX v4 проект
+├── docs/                       # GitHub Pages (Privacy Policy EN+RU)
 ├── plans/                      # Архитектурные планы
-├── AI_NOTES.md                 # Anki справочник + тех. находки
+├── skills/                     # Навыки для AI-ассистента (wix-installer, wpf-i18n, wpf-adaptive-layout, dotnet-publish)
+├── AI_NOTES.md                 # Anki справочник + тех. находки (все баги и решения)
+├── AGENTS.md                   # Правила для AI-ассистента (Zoo Code)
+├── RESUME_FOR_NEW_CHAT.md      # Этот файл
 └── RepeatSegment.sln
 ```
 
@@ -77,23 +85,19 @@ RepeatSegment/
 
 | Файл | Назначение |
 |------|-----------|
-| [`RepeatSegment.App/MainWindow.xaml`](RepeatSegment.App/MainWindow.xaml) | Главное окно: меню, плеер, транскрипция, перевод, Resources (кисти) |
-| [`RepeatSegment.App/MainWindow.xaml.cs`](RepeatSegment.App/MainWindow.xaml.cs) | Вся логика главного окна: загрузка, транскрипция, сегментация, тема, recent files, ApplyAllStrings |
-| [`RepeatSegment.App/SilenceDetector.cs`](RepeatSegment.App/SilenceDetector.cs) | Сегментация: деление на отрезки + SnapToSilence (радиус 30%) |
+| [`RepeatSegment.App/MainWindow.xaml`](RepeatSegment.App/MainWindow.xaml) | Главное окно: плеер, транскрипция, перевод, Resources (кисти), TextButtonStyle, статусбар (Border+TextBlock) |
+| [`RepeatSegment.App/MainWindow.xaml.cs`](RepeatSegment.App/MainWindow.xaml.cs) | Вся логика: загрузка, транскрипция, сегментация, тема, recent files, ApplyAllStrings, GrowWindowForTranslation |
+| [`RepeatSegment.App/Strings.cs`](RepeatSegment.App/Strings.cs) | I18n: загрузка JSON, fallback en, LangDir-резолюция, User Guide (жёстко в коде) |
+| [`RepeatSegment.App/lang/*.json`](RepeatSegment.App/lang/en.json) | 5 языковых файлов (152 ключа): EN, RU, DE, FR, ES |
+| [`RepeatSegment.App/App.xaml.cs`](RepeatSegment.App/App.xaml.cs) | WebView2 warm-up (`CoreWebView2Environment.CreateAsync` в фоне) |
 | [`RepeatSegment.App/ConfigManager.cs`](RepeatSegment.App/ConfigManager.cs) | Все настройки: segment_duration_sec, theme, mp3_bitrate, язык и т.д. |
-| [`RepeatSegment.App/Strings.cs`](RepeatSegment.App/Strings.cs) | Все строки EN/RU + User Guide (GetGuideSection, GetGuideContent) |
-| [`RepeatSegment.App/AudioEngine.cs`](RepeatSegment.App/AudioEngine.cs) | NAudio: SaveSnippetMp3 (Mp3BitrateKbps), SaveSnippetWav, воспроизведение |
+| [`RepeatSegment.App/AudioEngine.cs`](RepeatSegment.App/AudioEngine.cs) | NAudio: SaveSnippetMp3, SaveSnippetWav, WSOLA-растяжение |
 | [`RepeatSegment.App/WaveformGraph.cs`](RepeatSegment.App/WaveformGraph.cs) | SkiaSharp: waveform, drag overlay, user segment (зелёный), cursor, ruler |
 | [`RepeatSegment.App/AnkiBuilder.cs`](RepeatSegment.App/AnkiBuilder.cs) | Сборка .apkg: SQLite + ZIP + media.json |
-| [`RepeatSegment.App/AnkiCardWindow.xaml`](RepeatSegment.App/AnkiCardWindow.xaml) | UI карточки: TTS radio buttons, запись, картинки, Decks |
-| [`RepeatSegment.App/AnkiCardWindow.xaml.cs`](RepeatSegment.App/AnkiCardWindow.xaml.cs) | Логика карточки: авто-поиск картинок, TTS выбор, создание карточки |
-| [`RepeatSegment.App/TtsProvider.cs`](RepeatSegment.App/TtsProvider.cs) | TTS: Google + Deepgram, кеширование (gg_/dg_ префиксы), HasDeepgram |
-| [`RepeatSegment.App/SettingsWindow.xaml`](RepeatSegment.App/SettingsWindow.xaml) | Окно API ключей |
-| [`RepeatSegment.App/TranslationSettingsWindow.xaml`](RepeatSegment.App/TranslationSettingsWindow.xaml) | Окно настроек перевода |
-| [`RepeatSegment.App/GeneralSettingsWindow.xaml`](RepeatSegment.App/GeneralSettingsWindow.xaml) | Окно общих настроек (ComboBox с ControlTemplate для тёмной темы) |
-| [`RepeatSegment.App/AboutWindow.xaml`](RepeatSegment.App/AboutWindow.xaml) | Окно "About" |
-| [`RepeatSegment.App/ManualWindow.xaml`](RepeatSegment.App/ManualWindow.xaml) | User Guide |
-| [`AI_NOTES.md`](AI_NOTES.md) | Anki справочник + тех. находки |
+| [`RepeatSegment.App/AnkiCardWindow.xaml.cs`](RepeatSegment.App/AnkiCardWindow.xaml.cs) | Карточка: авто-поиск картинок (Google/Yandex), TTS, WebView2 |
+| [`Setup/Product.wxs`](Setup/Product.wxs) | WiX установщик: framework-dependent, MajorUpgrade AllowSameVersionUpgrades="yes" |
+| [`AI_NOTES.md`](AI_NOTES.md) | Полный справочник: Anki, WiX, i18n, адаптивные размеры, все баги и решения |
+| [`AGENTS.md`](RepeatSegment.App/AGENTS.md) | Правила для AI-ассистента |
 
 ## NuGet пакеты:
 - Microsoft.Data.Sqlite 10.0.9
@@ -103,6 +107,13 @@ RepeatSegment/
 - SkiaSharp.Views.WPF 2.88.7
 - OxyPlot.Wpf 2.2.0
 - System.Configuration.ConfigurationManager 8.0.0
+
+## Сборка и публикация
+- **Сборка**: `dotnet build -c Release`
+- **Тесты**: `dotnet test`
+- **WiX установщик**: `dotnet build Setup/Setup.wixproj -c Release` → `Setup/bin/Release/RepeatSegment-Installer.msi` (~6.5 МБ)
+- **Перед пересборкой WiX**: очистить `Setup/bin/` и `Setup/obj/`
+- **Framework-dependent** (для WiX): `<SelfContained>false</SelfContained>` в csproj
 
 ## ⚠️ Критические правила (выстраданы, не нарушать)
 
@@ -126,25 +137,42 @@ RepeatSegment/
 15. **Frozen Brush**: `SolidColorBrush` из XAML заморожен — всегда `new SolidColorBrush(color)` при смене темы
 16. **Title bar**: `DwmSetWindowAttribute(hwnd, 20, ref useDark, sizeof(int))` в `Window_Loaded`
 17. **Дочерние окна**: кисти копировать из MainWindow через `InjectBrushes()`, проверять `_mw.IsDarkTheme` для title bar
-18. **ComboBox в дочерних окнах**: нужен полный `ControlTemplate` с `{DynamicResource InputBgBrush}` и т.д. — StaticResource из родительского окна не наследуется
+18. **ComboBox в дочерних окнах**: нужен полный `ControlTemplate` с `{DynamicResource InputBgBrush}`
+19. **TextButtonStyle**: кнопки без кастомного ControlTemplate показывают системный голубой hover в тёмной теме
+20. **Theme switch + транскрипция**: после `ApplyTheme()` перестроить параграф: `BuildWordsParagraph(); _lastHlIdx = -1`
+
+### i18n
+21. **`Strings.SetLanguage("en")` в конструкторе MainWindow ДО `LoadOnStartup`** — иначе меню показывает raw key strings
+22. **Смена языка → перезапуск**: `Process.Start(exe) + Environment.Exit(0)`
+23. **Новые ключи**: добавлять во все 5 JSON-файлов (en/ru/de/fr/es)
+
+### WiX Installer
+24. **Framework-dependent только**: self-contained несовместим с WiX (5308 ошибок ICE30 из-за дубликатов имён в .NET Runtime)
+25. **`<SelfContained>false</SelfContained>`** в csproj обязательно
+26. **Явное перечисление файлов** в Product.wxs — wildcard нестабилен
+27. **`MajorUpgrade AllowSameVersionUpgrades="yes"`** — иначе старая версия не перезаписывается
+28. **lang/ JSON** брать из исходной папки, не из Publish/Release (их там нет при framework-dependent)
+29. **Без UI диалога** — `WixUI_Minimal` не работает в WiX v4
+
+### WebView2
+30. **Warm-up**: `CoreWebView2Environment.CreateAsync` в `App.OnStartup()` предотвращает задержку 3–10 сек
+31. **Одна папка userData**: `Path.Combine(LocalAppData, "RepeatSegment", "WebView2")` — и в App, и в AnkiCardWindow
 
 ### Кодировка
-19. **Всегда `Encoding.UTF8`** при `File.WriteAllLines`/`File.ReadAllLines` — ANSI (windows-1251) портит кириллицу
-20. **UTF-8 без BOM** для `media.json`: `new UTF8Encoding(false)`
+32. **Всегда `Encoding.UTF8`** при `File.WriteAllLines`/`File.ReadAllLines`
+33. **UTF-8 без BOM** для `media.json`: `new UTF8Encoding(false)`
 
-### Сегментация
-21. Не хардкодить язык транскрипции — использовать `_cfg.TranscriptionLanguage`
-22. `SegmentDurationSec` в ConfigManager (по умолчанию 5.0)
+### Адаптивные размеры
+34. **Никаких хардкод-пикселей**: все размеры через `Math.Max(порог, WorkArea * доля)`
+35. **GrowWindowForTranslation**: использовать `_baseWindowH` (фиксируется один раз), а не `ActualHeight`
 
 ### Запуск приложения
-23. Не использовать `ShowDialog()` в `OnStartup` до `base.OnStartup(e)` с `StartupUri`
-24. `ShutdownMode = OnMainWindowClose` при ручном создании MainWindow
-
-### Размеры окон
-25. `SizeToContent` не может опуститься ниже `MinHeight`
-26. Для схлопывания: `Height = double.NaN; MinHeight = 0; SizeToContent = Height`
+36. Не использовать `ShowDialog()` в `OnStartup` до `base.OnStartup(e)` с `StartupUri`
+37. `ShutdownMode = OnMainWindowClose` при ручном создании MainWindow
 
 ## Известные TODO / недоделки:
-- Auto-play **осознанно отключён** (`"autoplay":false` в dconf) — при двух аудио Anki проигрывает все `[sound:...]` подряд
-- Слияние колод работает но может дублировать медиафайлы при повторном создании (нет content-based дедупликации в BuildDeck)
-- `dcid` timestamp-based — накопление старых dconf-записей в JSON клиента (не критично)
+- Auto-play **осознанно отключён** (`"autoplay":false` в dconf)
+- Слияние колод может дублировать медиафайлы (нет content-based дедупликации в BuildDeck)
+- `dcid` timestamp-based — накопление старых dconf-записей (не критично)
+- **Store публикация**: ожидание регистрации в Partner Center → MSIX пакет
+- Burn bootstrapper для WiX (автоустановка .NET 8 Runtime) — опционально

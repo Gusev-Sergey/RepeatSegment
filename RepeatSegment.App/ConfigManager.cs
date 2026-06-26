@@ -104,7 +104,7 @@ public class ConfigManager
                     TranslationProviderPreference = "google";
                 ChunkMinutes = GetInt(trans, "chunk_minutes", 10);
                 PlaybackLatency = GetDouble(trans, "playback_latency", 0.32);
-                Mp3BitrateKbps = GetInt(trans, "mp3_bitrate", 128);
+                Mp3BitrateKbps = GetInt(trans, "mp3_bitrate", 64);
                 ImageSearchProvider = GetValue(trans, "image_search_provider", "google").ToLowerInvariant();
                 if (ImageSearchProvider != "google" && ImageSearchProvider != "yandex")
                     ImageSearchProvider = "google";

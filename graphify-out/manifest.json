@@ -1,0 +1,242 @@
+{
+  ".opencode/opencode.json": {
+    "mtime": 1782318704.2814875,
+    "ast_hash": "f2ae21510d07365eb2bce8159272c7a0",
+    "semantic_hash": "f2ae21510d07365eb2bce8159272c7a0"
+  },
+  ".opencode/plugins/graphify.js": {
+    "mtime": 1782318704.2802086,
+    "ast_hash": "111287aed37970b605d3ab422d1c93ec",
+    "semantic_hash": "111287aed37970b605d3ab422d1c93ec"
+  },
+  "DiagAnki/DiagAnki.csproj": {
+    "mtime": 1781711917.8742034,
+    "ast_hash": "b8263fd8aa559c1307640c73a740223c",
+    "semantic_hash": "b8263fd8aa559c1307640c73a740223c"
+  },
+  "DiagAnki/Program.cs": {
+    "mtime": 1781714569.6341386,
+    "ast_hash": "355ae002d8b9d16aec6cdde3c9e0bcea",
+    "semantic_hash": "355ae002d8b9d16aec6cdde3c9e0bcea"
+  },
+  "GenIcons/GenIcons.csproj": {
+    "mtime": 1782133468.278292,
+    "ast_hash": "c3a4fbeb6b9919cb62dab65827feae72",
+    "semantic_hash": "c3a4fbeb6b9919cb62dab65827feae72"
+  },
+  "GenIcons/Program.cs": {
+    "mtime": 1782133422.9913473,
+    "ast_hash": "812b4681d5f39dfbc6d4a7e412a01ad5",
+    "semantic_hash": "812b4681d5f39dfbc6d4a7e412a01ad5"
+  },
+  "GenLang/GenLang.csproj": {
+    "mtime": 1782151784.043907,
+    "ast_hash": "c537ebc579de1bb8eebec766c13623ab",
+    "semantic_hash": "c537ebc579de1bb8eebec766c13623ab"
+  },
+  "GenLang/Program.cs": {
+    "mtime": 1782151786.2932086,
+    "ast_hash": "6cb0afe0bc4d68f23af1af026630590d",
+    "semantic_hash": "6cb0afe0bc4d68f23af1af026630590d"
+  },
+  "RepeatSegment.App/AboutWindow.xaml.cs": {
+    "mtime": 1782156205.6125472,
+    "ast_hash": "5ae299a9957b0a7b10a695a9bdd0a3de",
+    "semantic_hash": "5ae299a9957b0a7b10a695a9bdd0a3de"
+  },
+  "RepeatSegment.App/AnkiBuilder.cs": {
+    "mtime": 1782066169.5868325,
+    "ast_hash": "10d390c1de84027263d46da44d61e500",
+    "semantic_hash": "10d390c1de84027263d46da44d61e500"
+  },
+  "RepeatSegment.App/AnkiCardWindow.xaml.cs": {
+    "mtime": 1782239845.8250177,
+    "ast_hash": "28c2e0c93da1ed497fb40eb65d68a231",
+    "semantic_hash": "28c2e0c93da1ed497fb40eb65d68a231"
+  },
+  "RepeatSegment.App/AnkiExportManager.cs": {
+    "mtime": 1781758809.1173148,
+    "ast_hash": "5d2ccb740c71d15fc4267263ca7bb658",
+    "semantic_hash": "5d2ccb740c71d15fc4267263ca7bb658"
+  },
+  "RepeatSegment.App/App.xaml.cs": {
+    "mtime": 1782239395.0903604,
+    "ast_hash": "a1ce0506c5e9ff53c30ca7f67a24dbdc",
+    "semantic_hash": "a1ce0506c5e9ff53c30ca7f67a24dbdc"
+  },
+  "RepeatSegment.App/AssemblyInfo.cs": {
+    "mtime": 1781029231.0046475,
+    "ast_hash": "8a158a8a488c0dd7d226a06783fc2860",
+    "semantic_hash": "8a158a8a488c0dd7d226a06783fc2860"
+  },
+  "RepeatSegment.App/AudioEngine.cs": {
+    "mtime": 1781985623.5033123,
+    "ast_hash": "f60ce9fc988d4d6be0615250879452e8",
+    "semantic_hash": "f60ce9fc988d4d6be0615250879452e8"
+  },
+  "RepeatSegment.App/ConfigManager.cs": {
+    "mtime": 1782071281.839695,
+    "ast_hash": "d1cfec3ca375e4bd3623402543b72d44",
+    "semantic_hash": "d1cfec3ca375e4bd3623402543b72d44"
+  },
+  "RepeatSegment.App/GeneralSettingsWindow.xaml.cs": {
+    "mtime": 1782152523.4192939,
+    "ast_hash": "b902c1e7e55ece90c6b448fc67381d99",
+    "semantic_hash": "b902c1e7e55ece90c6b448fc67381d99"
+  },
+  "RepeatSegment.App/MainWindow.xaml.cs": {
+    "mtime": 1782238118.0313253,
+    "ast_hash": "e7a78b2cae7200de263a50492cb48350",
+    "semantic_hash": "e7a78b2cae7200de263a50492cb48350"
+  },
+  "RepeatSegment.App/ManualWindow.xaml.cs": {
+    "mtime": 1782064547.262192,
+    "ast_hash": "7289cbf60d87afa87f4f105596b73091",
+    "semantic_hash": "7289cbf60d87afa87f4f105596b73091"
+  },
+  "RepeatSegment.App/RepeatSegment.App.csproj": {
+    "mtime": 1782202167.9209821,
+    "ast_hash": "45a40218f0d293adf0628579a9855925",
+    "semantic_hash": "45a40218f0d293adf0628579a9855925"
+  },
+  "RepeatSegment.App/SettingsWindow.xaml.cs": {
+    "mtime": 1782156195.8426757,
+    "ast_hash": "efb81b73f27717c7e8c8a6d9459ea8b7",
+    "semantic_hash": "efb81b73f27717c7e8c8a6d9459ea8b7"
+  },
+  "RepeatSegment.App/SilenceDetector.cs": {
+    "mtime": 1781969375.1486497,
+    "ast_hash": "ba308ac8121c8666752d948812caab72",
+    "semantic_hash": "ba308ac8121c8666752d948812caab72"
+  },
+  "RepeatSegment.App/Strings.cs": {
+    "mtime": 1782151845.4008284,
+    "ast_hash": "f6030e414269565378a304ecb7b16b9d",
+    "semantic_hash": "f6030e414269565378a304ecb7b16b9d"
+  },
+  "RepeatSegment.App/TranscriptionProvider.cs": {
+    "mtime": 1782066089.8845778,
+    "ast_hash": "7704f03593a7f96834f9c9b614f8bfb3",
+    "semantic_hash": "7704f03593a7f96834f9c9b614f8bfb3"
+  },
+  "RepeatSegment.App/TranslationProvider.cs": {
+    "mtime": 1782067032.494874,
+    "ast_hash": "4167f122f1b5e5cc8b6a240dbc9913e1",
+    "semantic_hash": "4167f122f1b5e5cc8b6a240dbc9913e1"
+  },
+  "RepeatSegment.App/TranslationSettingsWindow.xaml.cs": {
+    "mtime": 1782156201.812928,
+    "ast_hash": "c7a50fe384b4136607a6bc214fae895d",
+    "semantic_hash": "c7a50fe384b4136607a6bc214fae895d"
+  },
+  "RepeatSegment.App/TtsProvider.cs": {
+    "mtime": 1782067424.144685,
+    "ast_hash": "a8313bbb8cfc7cb7b3b1b613b8a92441",
+    "semantic_hash": "a8313bbb8cfc7cb7b3b1b613b8a92441"
+  },
+  "RepeatSegment.App/VolumeWidget.cs": {
+    "mtime": 1781360469.30559,
+    "ast_hash": "0fc61ab376330fb5b84a8f23d6e3c21c",
+    "semantic_hash": "0fc61ab376330fb5b84a8f23d6e3c21c"
+  },
+  "RepeatSegment.App/WaveformGraph.cs": {
+    "mtime": 1781961520.805036,
+    "ast_hash": "3d9559cd22f73d554f8564733c40336d",
+    "semantic_hash": "3d9559cd22f73d554f8564733c40336d"
+  },
+  "RepeatSegment.App/lang/de.json": {
+    "mtime": 1782153534.299952,
+    "ast_hash": "35b3fff51556ed00fc2b431453ec823a",
+    "semantic_hash": "35b3fff51556ed00fc2b431453ec823a"
+  },
+  "RepeatSegment.App/lang/en.json": {
+    "mtime": 1782153530.6500778,
+    "ast_hash": "2bfb40620940f41e6023a5fe9da86cae",
+    "semantic_hash": "2bfb40620940f41e6023a5fe9da86cae"
+  },
+  "RepeatSegment.App/lang/es.json": {
+    "mtime": 1782153537.9509072,
+    "ast_hash": "f3810bf93ec40a8a54acaa0ac05404cc",
+    "semantic_hash": "f3810bf93ec40a8a54acaa0ac05404cc"
+  },
+  "RepeatSegment.App/lang/fr.json": {
+    "mtime": 1782153536.0868156,
+    "ast_hash": "7c687bd91c8642542894fb275a841d49",
+    "semantic_hash": "7c687bd91c8642542894fb275a841d49"
+  },
+  "RepeatSegment.App/lang/ru.json": {
+    "mtime": 1782153532.4309275,
+    "ast_hash": "d1dee3f5bad77bc02f1a9d2ecc677c09",
+    "semantic_hash": "d1dee3f5bad77bc02f1a9d2ecc677c09"
+  },
+  "RepeatSegment.Tests/RepeatSegment.Tests.csproj": {
+    "mtime": 1782066979.513275,
+    "ast_hash": "23a47687a71d4340d8e9880ecc714841",
+    "semantic_hash": "23a47687a71d4340d8e9880ecc714841"
+  },
+  "RepeatSegment.Tests/UnitTest1.cs": {
+    "mtime": 1782066957.3045645,
+    "ast_hash": "5500709619785a9fc1d7435d8a820403",
+    "semantic_hash": "5500709619785a9fc1d7435d8a820403"
+  },
+  "RepeatSegment.sln": {
+    "mtime": 1781029234.4575517,
+    "ast_hash": "c5ec336f7377b2152b2c05648a47b7fd",
+    "semantic_hash": "c5ec336f7377b2152b2c05648a47b7fd"
+  },
+  "Setup/components.inc": {
+    "mtime": 1782201791.2074027,
+    "ast_hash": "c8c10e44b50692b18a3104789efe1338",
+    "semantic_hash": "c8c10e44b50692b18a3104789efe1338"
+  },
+  "check_build.ps1": {
+    "mtime": 1781330353.9361227,
+    "ast_hash": "6e45b4f4518480e65b8e1d21fba71eca",
+    "semantic_hash": "6e45b4f4518480e65b8e1d21fba71eca"
+  },
+  "check_date.ps1": {
+    "mtime": 1781296441.0656705,
+    "ast_hash": "2c3a8220c3206dce3c8b128875bd1fdd",
+    "semantic_hash": "2c3a8220c3206dce3c8b128875bd1fdd"
+  },
+  "check_exe.ps1": {
+    "mtime": 1781297176.8615205,
+    "ast_hash": "18a2c4c26eec4efa7588a42ba3274f5e",
+    "semantic_hash": "18a2c4c26eec4efa7588a42ba3274f5e"
+  },
+  "gen_components.ps1": {
+    "mtime": 1782201787.612471,
+    "ast_hash": "0584825a866884a1a9f83ceece30a12d",
+    "semantic_hash": "0584825a866884a1a9f83ceece30a12d"
+  },
+  "gen_self_contained_wxs.ps1": {
+    "mtime": 1782307687.2816913,
+    "ast_hash": "64314ad92adac8044fdc64425963739d",
+    "semantic_hash": "64314ad92adac8044fdc64425963739d"
+  },
+  "gen_wix_components.ps1": {
+    "mtime": 1782201705.2080612,
+    "ast_hash": "5eb18b75a83242713f78c8491c1b0426",
+    "semantic_hash": "5eb18b75a83242713f78c8491c1b0426"
+  },
+  "get_exe_date.ps1": {
+    "mtime": 1781331496.1551533,
+    "ast_hash": "647076c4d8f67f77973784edbd003b2b",
+    "semantic_hash": "647076c4d8f67f77973784edbd003b2b"
+  },
+  "publish_self_contained.ps1": {
+    "mtime": 1782241630.4074984,
+    "ast_hash": "5b759f994a515f18ca2cca0d6e2bc640",
+    "semantic_hash": "5b759f994a515f18ca2cca0d6e2bc640"
+  },
+  "rebuild.ps1": {
+    "mtime": 1781296842.0675447,
+    "ast_hash": "f503ff269185feeb8b46732c7c2a8daa",
+    "semantic_hash": "f503ff269185feeb8b46732c7c2a8daa"
+  },
+  "rebuild_debug.ps1": {
+    "mtime": 1781297349.0988004,
+    "ast_hash": "c18e313a4c44034ff03948f6f7725dc3",
+    "semantic_hash": "c18e313a4c44034ff03948f6f7725dc3"
+  }
+}

@@ -176,17 +176,18 @@ Google Images использует сложный DOM (Shadow DOM, lazy-loading,
 - `SizeToContent = Height` — `*`-ряд растягивался на весь экран
 - `GrowWindowForTranslation = ActualHeight + N` — кумулятивный рост при повторных выделениях
 
-### Финальное решение (v081):
+### Финальное решение (v088, адаптивное):
 ```csharp
 private double _baseWindowH;
 private void GrowWindowForTranslation() {
     if (_baseWindowH <= 0) _baseWindowH = ActualHeight;  // фиксируем базу ОДИН раз
-    double maxH = SystemParameters.WorkArea.Height * 0.85;
-    double newH = _baseWindowH + 100;  // всегда +100px от исходной высоты
+    double sh = SystemParameters.WorkArea.Height;
+    double grow = Math.Max(150, sh * 0.22);  // адаптивный прирост
+    double maxH = sh * 0.85;
+    double newH = _baseWindowH + grow;
     if (newH > maxH) newH = maxH;
     if (newH > ActualHeight) Height = newH;
 }
-```
 
 ### Ключевые находки:
 - Нельзя использовать `ActualHeight` для расчёта прироста — он уже изменён предыдущим вызовом
@@ -232,6 +233,30 @@ private void GrowWindowForTranslation() {
 - WiX v4 `Files Include="**\*"` работает нестабильно — лучше явно перечислить файлы
 - Очистка `bin/` и `obj/` перед пересборкой WiX предотвращает залипание старых `.msi`
 - `#` в пути WiX (из `obj\#RepeatSegment.cab`) — норма, символ для временных файлов
+
+### Self-contained несовместим с WiX
+- .NET Runtime содержит 14 языковых папок (`cs/`, `de/`, `es/`, `fr/`, `it/`, `ja/`, `ko/`, `pl/`, `pt-BR/`, `ru/`, `tr/`, `zh-Hans/`, `zh-Hant/`) с одинаковыми именами файлов (например `System.Resources.Reader.dll`).
+- WiX требует уникальных имён файлов в одной директории → 5308 ошибок ICE30 при self-contained.
+- **Вывод**: WiX-установщик возможен только framework-dependent (~6.5 МБ). Self-contained — только MSIX (для Store).
+
+### MajorUpgrade и переустановка
+- `<MajorUpgrade Schedule="afterInstallValidate" AllowSameVersionUpgrades="yes" ... />` — обязательно, иначе при переустановке той же версии старый .exe не заменяется.
+- `AllowSameVersionUpgrades="yes"` разрешает перезапись даже при одинаковом номере версии.
+
+### WixUI и диалог лицензии
+- `<UIRef Id="WixUI_Minimal"/>` не работает в WiX v4 (`WIX0094: inaccessible identifier`).
+- `<ui:WixUI Id="WixUI_Minimal"/>` конфликтует с `xmlns` корневого элемента.
+- **Решение**: убрать UI-элемент из Product.wxs полностью — установщик без GUI (тихий режим через `msiexec /i`).
+
+### WebView2 Warm-Up
+- `EnsureCoreWebView2Async(null)` при первом вызове скачивает WebView2 Runtime (3–10 сек задержки).
+- **Решение**: `CoreWebView2Environment.CreateAsync(null, userData)` в фоне при `App.OnStartup()` — прогревает браузер до того, как пользователь откроет карточку Anki.
+- **Та же папка userData** должна использоваться в `AnkiCardWindow.EnsureCoreWebView2Async(env)`: `Path.Combine(LocalAppData, "RepeatSegment", "WebView2")`.
+
+### TextButtonStyle — кастомный стиль кнопок без системного голубого hover
+- Стандартный WPF Button в тёмной теме подсвечивается системным голубым при наведении.
+- **Решение**: создать `TextButtonStyle` в `MainWindow.xaml` с `ControlTemplate`, использующим `{DynamicResource ButtonHoverBrush}` и `{DynamicResource ButtonPressedBrush}`.
+- Применить `Style="{StaticResource TextButtonStyle}"` на кнопках (`BtnCollapseTranscription`, `BtnSpeed` и др.).
 
 ## I18n: вынос строк в JSON-файлы
 

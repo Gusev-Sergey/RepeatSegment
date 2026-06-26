@@ -462,7 +462,7 @@ public partial class AnkiCardWindow : Window
             try
             {
                 string esc = url.Replace("\\", "\\\\").Replace("'", "\\'");
-                string js = "(async()=>{try{var r=await fetch('"+esc+"',{mode:'cors',credentials:'include'});if(!r.ok)return'ERR:'+r.status;var b=await r.blob();return await new Promise(rs=>{var fr=new FileReader();fr.onloadend=()=>rs(fr.result);fr.readAsDataURL(b);});}catch(e){return'ERR:'+e.message;}})()";
+                string js = "(async()=>{var ctrl=new AbortController();var t=setTimeout(()=>ctrl.abort(),10000);try{var r=await fetch('"+esc+"',{mode:'cors',credentials:'include',signal:ctrl.signal});clearTimeout(t);if(!r.ok)return'ERR:'+r.status;var b=await r.blob();return await new Promise(rs=>{var fr=new FileReader();fr.onloadend=()=>rs(fr.result);fr.readAsDataURL(b);});}catch(e){clearTimeout(t);return'ERR:'+e.message;}})()";
                 string r = await ImageBrowser.CoreWebView2.ExecuteScriptAsync(js);
                 r = r.Trim('"');
                 if (r.StartsWith("data:"))

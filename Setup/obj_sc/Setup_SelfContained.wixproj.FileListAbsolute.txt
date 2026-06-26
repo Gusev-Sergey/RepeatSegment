@@ -1,0 +1,1 @@
+c:\ProjectsCSharp\RepeatSegment\Setup\obj_sc\Setup_SelfContained.wixproj.CoreCompileInputs.cache
