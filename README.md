@@ -2,6 +2,8 @@
 
 **Smart audio segment repeater: auto-split by pauses · transcribe · translate in-place · export to Anki with images & audio.**
 
+🌐 **[repeat-segment.lovable.app](https://repeat-segment.lovable.app/)**  ·  📂 **[GitHub](https://github.com/Gusev-Sergey/RepeatSegment)**
+
 RepeatSegment is a Windows desktop app for language learners who use audiobooks. Load an audiobook, auto-split into repeatable segments, transcribe speech to text, translate words in-place, and export vocabulary cards to Anki — all in one workflow.
 
 > 🖼️ *Screenshots coming soon — add PNG files to `docs/screenshots/`*
@@ -107,6 +109,7 @@ RepeatSegment is a Windows desktop app for language learners who use audiobooks.
 
 - **Developer**: AstrorumArbor (Sergey Gusev)
 - **AI assistance**: VS Code + Zoo Code (Claude 4) + DeepSeek API
+- **Website**: [repeat-segment.lovable.app](https://repeat-segment.lovable.app/)
 - **Contact**: [astrorum_arbor@outlook.com](mailto:astrorum_arbor@outlook.com)
 - **Privacy Policy**: [gusev-sergey.github.io/RepeatSegment](https://gusev-sergey.github.io/RepeatSegment/)
 
